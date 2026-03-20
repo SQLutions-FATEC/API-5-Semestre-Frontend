@@ -1,0 +1,104 @@
+// Variáveis de Tema
+$sidebar-bg: #111827;    // gray-900
+$sidebar-hover: #1f2937; // gray-800
+$accent-blue: #2563eb;   // blue-600
+$text-muted: #9ca3af;    // gray-400
+$transition-speed: 0.3s;
+
+.sidebar {
+  background-color: $sidebar-bg;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: fixed;
+  transition: width $transition-speed ease;
+  z-index: 20;
+
+  &.expanded { width: 16rem; } // w-64
+  &.collapsed { width: 5rem; }  // w-20
+
+  .sidebar-header {
+    padding: 1.5rem; // p-6
+    display: flex;
+    align-items: center;
+    
+    &.centered { justify-content: center; }
+    .logo-box {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.25rem;
+      background-color: #3b82f6; // blue-500
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      margin-left: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      white-space: nowrap;
+      letter-spacing: 0.025em;
+    }
+  }
+
+  .toggle-button {
+    position: absolute;
+    right: -0.75rem; // -right-3
+    top: 2rem;       // top-8
+    background-color: $sidebar-hover;
+    border-radius: 9999px;
+    padding: 0.25rem;
+    border: 1px solid #374151;
+    color: #d1d5db;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      color: white;
+      background-color: #374151;
+    }
+  }
+
+  .nav-section {
+    flex: 1;
+    padding: 0 1rem; // px-4
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; // space-y-2
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    color: #d1d5db;
+    transition: background-color 0.2s;
+    text-decoration: none;
+
+    &.active {
+      background-color: $accent-blue;
+      color: white;
+    }
+
+    &:not(.active):hover {
+      background-color: $sidebar-hover;
+      color: white;
+    }
+
+    &.centered { justify-content: center; padding-left: 0; padding-right: 0; }
+    .icon { flex-shrink: 0; }
+    .label { margin-left: 0.75rem; white-space: nowrap; }
+  }
+
+  .sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid #1f2937;
+  }
+}
