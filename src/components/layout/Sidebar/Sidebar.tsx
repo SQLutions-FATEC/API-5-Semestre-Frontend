@@ -9,12 +9,6 @@ import {
   ListOrdered,
 } from 'lucide-react';
 import './Sidebar.scss';
-const navItems = [
-  { name: 'Visão Geral', path: '/Overview', icon: LayoutDashboard },
-  { name: 'Projetos', path: '/projetos', icon: FolderKanban },
-  { name: 'Compras  ', path: '/listas', icon: ListOrdered },
-  { name: 'Base de Dados', path: '/dados', icon: Database },
-];
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -23,6 +17,13 @@ interface SidebarProps {
 
 export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const location = useLocation();
+
+  const navItems = [
+    { name: 'Visão Geral', path: '/overview', icon: LayoutDashboard },
+    { name: 'Projetos', path: '/projects', icon: FolderKanban },
+    { name: 'Compras  ', path: '/lists', icon: ListOrdered },
+    { name: 'Base de Dados', path: '/data', icon: Database },
+  ];
 
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : 'expanded'}`}>
@@ -55,8 +56,8 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
 
       <div className="sidebar-footer">
         <Link
-          to="/ajuda"
-          className={`nav-item ${location.pathname === '/ajuda' ? 'active' : ''} ${isCollapsed ? 'centered' : ''}`}
+          to="/help"
+          className={`nav-item ${location.pathname === '/help' ? 'active' : ''} ${isCollapsed ? 'centered' : ''}`}
         >
           <HelpCircle size={20} className="icon" />
           {!isCollapsed && <span className="label">Ajuda</span>}
