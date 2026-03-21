@@ -1,0 +1,67 @@
+import { Link, useLocation } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  FolderKanban,
+  HelpCircle,
+  ChevronLeft,
+  ChevronRight,
+  Database,
+  ListOrdered,
+} from 'lucide-react';
+import './Sidebar.scss';
+const navItems = [
+  { name: 'Visão Geral', path: '/Overview', icon: LayoutDashboard },
+  { name: 'Projetos', path: '/projetos', icon: FolderKanban },
+  { name: 'Compras  ', path: '/listas', icon: ListOrdered },
+  { name: 'Base de Dados', path: '/dados', icon: Database },
+];
+
+interface SidebarProps {
+  isCollapsed: boolean;
+  onToggle: () => void;
+}
+
+export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
+  const location = useLocation();
+
+  return (
+    <aside className={`sidebar ${isCollapsed ? 'collapsed' : 'expanded'}`}>
+      <div className={`sidebar-header ${isCollapsed ? 'centered' : ''}`}>
+        <div className="logo-box">S</div>
+        {!isCollapsed && <span className="brand-name">SIATT</span>}
+      </div>
+
+      <button onClick={onToggle} className="toggle-button">
+        {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+      </button>
+
+      <nav className="nav-section">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path;
+          return (
+            <Link
+              key={item.name}
+              to={item.path}
+              title={isCollapsed ? item.name : undefined}
+              className={`nav-item ${isActive ? 'active' : ''} ${isCollapsed ? 'centered' : ''}`}
+            >
+              <Icon size={20} className="icon" />
+              {!isCollapsed && <span className="label">{item.name}</span>}
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="sidebar-footer">
+        <Link
+          to="/ajuda"
+          className={`nav-item ${location.pathname === '/ajuda' ? 'active' : ''} ${isCollapsed ? 'centered' : ''}`}
+        >
+          <HelpCircle size={20} className="icon" />
+          {!isCollapsed && <span className="label">Ajuda</span>}
+        </Link>
+      </div>
+    </aside>
+  );
+}
