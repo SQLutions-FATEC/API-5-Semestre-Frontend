@@ -5,14 +5,14 @@ export default function Header() {
   return (
     <header className="header">
       <div className="header-search">
-        <div className="search-wrapper">
+        {/* <div className="search-wrapper">
           <Search size={18} className="search-icon" />
           <input
             type="text"
             placeholder="Buscar projetos, programas..."
             className="search-input"
           />
-        </div>
+        </div> */}
       </div>
 
       <div className="header-actions">

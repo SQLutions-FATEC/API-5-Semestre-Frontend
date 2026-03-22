@@ -1,12 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
-  FolderKanban,
   HelpCircle,
   ChevronLeft,
   ChevronRight,
-  Database,
-  ListOrdered,
 } from 'lucide-react';
 import './Sidebar.scss';
 
@@ -19,10 +16,7 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const location = useLocation();
 
   const navItems = [
-    { name: 'Visão Geral', path: '/overview', icon: LayoutDashboard },
-    { name: 'Projetos', path: '/projects', icon: FolderKanban },
-    { name: 'Compras  ', path: '/lists', icon: ListOrdered },
-    { name: 'Base de Dados', path: '/data', icon: Database },
+    { name: 'Visão Geral', path: '/', icon: LayoutDashboard }
   ];
 
   return (
