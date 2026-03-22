@@ -1,20 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
-  FolderKanban,
   HelpCircle,
   ChevronLeft,
   ChevronRight,
-  Database,
-  ListOrdered,
 } from 'lucide-react';
 import './Sidebar.scss';
-const navItems = [
-  { name: 'Visão Geral', path: '/Overview', icon: LayoutDashboard },
-  { name: 'Projetos', path: '/projetos', icon: FolderKanban },
-  { name: 'Compras  ', path: '/listas', icon: ListOrdered },
-  { name: 'Base de Dados', path: '/dados', icon: Database },
-];
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -23,6 +14,10 @@ interface SidebarProps {
 
 export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const location = useLocation();
+
+  const navItems = [
+    { name: 'Visão Geral', path: '/', icon: LayoutDashboard }
+  ];
 
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : 'expanded'}`}>
@@ -55,8 +50,8 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
 
       <div className="sidebar-footer">
         <Link
-          to="/ajuda"
-          className={`nav-item ${location.pathname === '/ajuda' ? 'active' : ''} ${isCollapsed ? 'centered' : ''}`}
+          to="/help"
+          className={`nav-item ${location.pathname === '/help' ? 'active' : ''} ${isCollapsed ? 'centered' : ''}`}
         >
           <HelpCircle size={20} className="icon" />
           {!isCollapsed && <span className="label">Ajuda</span>}

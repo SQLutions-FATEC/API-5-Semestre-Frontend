@@ -34,11 +34,12 @@ $sidebar-collapsed: 5rem;
     min-height: 0;
     box-sizing: border-box;
     padding: 2rem; // p-8
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     > * {
       flex: 1;
-      min-height: 0;
+      min-height: max-content;
     }
   }
 }
