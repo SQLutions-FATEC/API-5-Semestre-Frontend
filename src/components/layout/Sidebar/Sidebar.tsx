@@ -48,7 +48,7 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         })}
       </nav>
 
-      <div className="sidebar-footer">
+      {/* <div className="sidebar-footer">
         <Link
           to="/help"
           className={`nav-item ${location.pathname === '/help' ? 'active' : ''} ${isCollapsed ? 'centered' : ''}`}
@@ -56,7 +56,7 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
           <HelpCircle size={20} className="icon" />
           {!isCollapsed && <span className="label">Ajuda</span>}
         </Link>
-      </div>
+      </div> */}
     </aside>
   );
 }

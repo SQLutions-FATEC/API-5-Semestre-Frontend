@@ -1,75 +1,45 @@
-import { Hash, Briefcase, UserCircle, CalendarRange, CircleDollarSign, Clock, Landmark } from 'lucide-react';
+import { CircleDollarSign, Clock, Timer, Boxes } from 'lucide-react';
 import './OverviewMetrics.scss';
 
 export default function OverviewMetrics() {
-  const projectStats = [
+  const financialMetrics = [
+    // Soma da coluna horas_trabalhadas da tabela tempo_tarefas para as tarefas relacionadas a este projeto 
+    // (através da tabela tarefas_projeto).
     {
-      title: 'Custo Empenhado',
-      value: 'R$ 32.189.432,00',
-      icon: <CircleDollarSign size={24} color="#10b981" />,
-      bgClass: 'bg-green'
-    },
-    {
-      title: 'Horas trabalhadas',
-      value: '321 horas',
-      icon: <Clock size={24} color="#3b82f6" />,
-      bgClass: 'bg-blue'
-    },
-    {
-      title: 'Custo Total',
-      value: 'R$ 312.312.312.312,00',
-      icon: <Landmark size={24} color="#f59e0b" />,
-      bgClass: 'bg-orange'
-    }
-  ];
-
-  const programMetrics = [
-    {
-      title: 'Código do Programa',
-      value: 'MAX12AC',
-      icon: <Hash size={24} color="#10b981" />,
-      bgClass: 'bg-green'
-    },
-    {
-      title: 'Nome do Programa',
-      value: 'MAX 1.2 AC',
-      icon: <Briefcase size={24} color="#3b82f6" />,
-      bgClass: 'bg-blue'
-    },
-    {
-      title: 'Gerente do Programa',
-      value: 'Ana Paula Ribeiro',
-      icon: <UserCircle size={24} color="#f59e0b" />,
+      title: 'Total em Horas Trabalhadas',
+      value: '3,02',
+      icon: <Clock size={24} />,
       bgClass: 'bg-orange'
     },
+    // Soma da coluna estimativa_horas da tabela tarefas_projeto para as tarefas relacionadas a este projeto.
     {
-      title: 'Previsão de Fim',
-      value: '30/01/2027',
-      icon: <CalendarRange size={24} color="#8b5cf6" />,
+      title: 'Total de Horas Previstas',
+      value: '92,0',
+      icon: <Timer size={24} />,
+      bgClass: 'bg-blue'
+    },
+    // Soma da coluna valor_alocado da tabela compras_projeto para este projeto.
+    {
+      title: 'Valor Empenhado',
+      value: 'R$ 50,00',
+      icon: <CircleDollarSign size={24} />,
+      bgClass: 'bg-green'
+    },
+    //  Soma do custo_estimado_usd da tabela materiais_engenharia multiplicado pela quantidade_empenhada 
+    // da tabela empenho_materiais para os materiais relacionados a este projeto (através da tabela empenho_materiais).
+    {
+      title: 'Gasto Total',
+      value: 'R$ 7.053,04',
+      icon: <Boxes size={24} />,
       bgClass: 'bg-purple'
     }
   ];
 
   return (
     <div className="overview-metrics-wrapper">
-
-      <div className="metrics-grid grid-3">
-        {projectStats.map((m, idx) => (
-          <div key={`stat-${idx}`} className="metric-card">
-            <div className="metric-header">
-              <div className={`icon-container ${m.bgClass}`}>
-                {m.icon}
-              </div>
-              <span className="metric-title">{m.title}</span>
-            </div>
-            <div className="metric-value">{m.value}</div>
-          </div>
-        ))}
-      </div>
-
       <div className="metrics-grid grid-4">
-        {programMetrics.map((m, idx) => (
-          <div key={`prog-${idx}`} className="metric-card">
+        {financialMetrics.map((m, idx) => (
+          <div key={`fin-${idx}`} className="metric-card">
             <div className="metric-header">
               <div className={`icon-container ${m.bgClass}`}>
                 {m.icon}
@@ -80,7 +50,6 @@ export default function OverviewMetrics() {
           </div>
         ))}
       </div>
-
     </div>
   );
 }
