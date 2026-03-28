@@ -54,7 +54,17 @@ export default function ProjectOverviewHeader({
 
     if (months < 0) return 'Iniciando';
 
-    return `${months} meses e ${daysDiff} dias`;
+    const elapsedParts: string[] = [];
+
+    if (months > 0) {
+      elapsedParts.push(`${months} ${months === 1 ? 'mês' : 'meses'}`);
+    }
+
+    if (daysDiff > 0 || months === 0) {
+      elapsedParts.push(`${daysDiff} ${daysDiff === 1 ? 'dia' : 'dias'}`);
+    }
+
+    return elapsedParts.join(' e ');
   };
 
   const elapsedText = calculateElapsed(startDate);
