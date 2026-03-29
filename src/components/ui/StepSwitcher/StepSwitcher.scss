@@ -1,0 +1,60 @@
+@import '../../../styles/variables';
+
+.step-switcher-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+
+  .step-navigation {
+    display: flex;
+    justify-content: flex-start;
+    position: relative;
+    z-index: 2;
+
+    .step-switcher-container {
+      display: flex;
+      background: rgba(225, 239, 254, 0.4);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid #e1effe;
+      border-bottom: none;
+      backdrop-filter: blur(8px);
+
+      .step-button {
+        padding: 8px 24px;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #718096;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: $main-font;
+
+        &:hover {
+          color: $primary-color;
+        }
+
+        &.active {
+          background: #ffffff;
+          color: $primary-color;
+          box-shadow: 0 4px 12px rgba(0, 123, 255, 0.12);
+        }
+      }
+    }
+  }
+
+  .step-content-box {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e1effe;
+    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.05);
+    padding: 2rem;
+    min-height: 400px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+}
