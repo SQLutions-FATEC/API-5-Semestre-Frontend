@@ -1,0 +1,56 @@
+@import '../../../../styles/variables';
+
+.alert-sections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+
+  .alert-box {
+    background: #ffffff;
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 1px solid #e1effe;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+    .alert-title {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      .alert-item {
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        transition: transform 0.2s;
+
+        &:hover {
+          transform: translateX(4px);
+        }
+
+        &.error { background: #fff5f5; color: #c53030; border-left: 4px solid #f56565; }
+        &.warning { background: #fffaf0; color: #9c4221; border-left: 4px solid #ed8936; }
+        &.info { background: #ebf8ff; color: #2b6cb0; border-left: 4px solid #4299e1; }
+      }
+    }
+
+    .empty-message {
+      font-size: 0.8125rem;
+      color: #94a3b8;
+      font-style: italic;
+      margin: 0;
+    }
+  }
+}
