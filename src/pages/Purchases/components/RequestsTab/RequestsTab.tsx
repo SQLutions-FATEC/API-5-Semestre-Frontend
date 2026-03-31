@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import StepSwitcher from '../../../../components/ui/StepSwitcher/StepSwitcher';
-import AcompanhamentoGastosDashboard from '../AcompanhamentoGastos/AcompanhamentoGastosDashboard';
-import './SolicitacoesPedidosTab.scss';
+import TrackingDashboard from '../TrackingDashboard/TrackingDashboard';
+import './RequestsTab.scss';
 
-export default function SolicitacoesPedidosTab() {
+export default function RequestsTab() {
   const [activeSubTab, setActiveSubTab] = useState('Acompanhamento');
   const subTabs = ['Acompanhamento', 'Gastos'];
 
   return (
-    <div className="solicitacoes-pedidos-tab-container">
+    <div className="requests-tab-container">
       <div className="nested-step-switcher">
         <StepSwitcher
           options={subTabs}
@@ -17,7 +17,7 @@ export default function SolicitacoesPedidosTab() {
         >
           {activeSubTab === 'Acompanhamento' && (
             <div className="sub-tab-content">
-              <AcompanhamentoGastosDashboard />
+              <TrackingDashboard />
             </div>
           )}
           {activeSubTab === 'Gastos' && (

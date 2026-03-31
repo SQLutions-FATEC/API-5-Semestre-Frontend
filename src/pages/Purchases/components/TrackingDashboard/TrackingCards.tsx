@@ -22,10 +22,10 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ orders }) => {
   });
 
   const priorityOrders = orders.filter(
-    o => ['Alta', 'Urgente'].includes(o.priority) && ['Aberto', 'Enviado', 'Em rota'].includes(o.status)
+    o => ['Alta', 'Urgente'].includes(o.priority) && ['Aberto', 'Enviado'].includes(o.status)
   );
 
-  const activeOrdersCount = orders.filter(o => ['Aberto', 'Enviado', 'Em rota'].includes(o.status)).length;
+  const activeOrdersCount = orders.filter(o => ['Aberto', 'Enviado'].includes(o.status)).length;
 
   return (
     <div className="tracking-cards-grid">

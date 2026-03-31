@@ -12,11 +12,12 @@ interface TrackingTableProps {
 
 const TrackingTable: React.FC<TrackingTableProps> = ({ orders }) => {
   const columns: GridColDef[] = [
-    { field: 'orderNumber', headerName: 'Cód do pedido', width: 130, headerClassName: 'table-header' },
+    { field: 'orderNumber', headerName: 'Cód do pedido', width: 140, headerClassName: 'table-header' },
     {
       field: 'materialName',
       headerName: 'Nome do material',
-      width: 250,
+      flex: 1,
+      minWidth: 250,
       renderCell: (params) => {
         const isObsolete = params.row.materialStatus === 'Obsoleto';
         const content = <span style={{ color: isObsolete ? '#e53e3e' : 'inherit', fontWeight: isObsolete ? 600 : 'normal' }}>{params.value}</span>;
@@ -31,9 +32,9 @@ const TrackingTable: React.FC<TrackingTableProps> = ({ orders }) => {
         return content;
       }
     },
-    { field: 'issueDate', headerName: 'Data de emissão', width: 140, valueFormatter: (value) => value ? new Date(value as string).toLocaleDateString('pt-BR') : '' },
+    { field: 'issueDate', headerName: 'Data de emissão', width: 150, valueFormatter: (value) => value ? new Date(value as string).toLocaleDateString('pt-BR') : '' },
     { field: 'deliveryDate', headerName: 'Data de previsão de entrega', width: 220, valueFormatter: (value) => value ? new Date(value as string).toLocaleDateString('pt-BR') : '' },
-    { field: 'supplier', headerName: 'Fornecedor', width: 220 },
+    { field: 'supplier', headerName: 'Fornecedor', flex: 1, minWidth: 200 },
     { field: 'totalValue', headerName: 'Valor total pedido', width: 160, valueFormatter: (value) => (value as number)?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) },
     {
       field: 'status',
@@ -99,6 +100,9 @@ const TrackingTable: React.FC<TrackingTableProps> = ({ orders }) => {
             '& .MuiDataGrid-columnHeaderTitle': {
               fontWeight: 'bold !important',
             },
+            '& .MuiDataGrid-columnHeader': {
+              paddingLeft: '24px',
+            },
             '& .MuiDataGrid-row:nth-of-type(even)': {
               backgroundColor: '#f8fafc',
             },
@@ -108,6 +112,7 @@ const TrackingTable: React.FC<TrackingTableProps> = ({ orders }) => {
             '& .MuiDataGrid-cell': {
               display: 'flex',
               alignItems: 'center',
+              paddingLeft: '24px !important',
             },
             '& .MuiDataGrid-cell:focus': {
               outline: 'none',

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import StepSwitcher from '../../../../components/ui/StepSwitcher/StepSwitcher';
-import SolicitacoesPedidosTab from '../SolicitacoesPedidosTab/SolicitacoesPedidosTab';
+import RequestsTab from '../RequestsTab/RequestsTab';
 import './PurchasesTabs.scss';
 
 export default function PurchasesTabs() {
@@ -16,7 +16,7 @@ export default function PurchasesTabs() {
       >
         {activeTab === 'Solicitações' && (
           <div className="tab-content">
-            <SolicitacoesPedidosTab />
+            <RequestsTab />
           </div>
         )}
         {activeTab === 'Pedidos' && (
