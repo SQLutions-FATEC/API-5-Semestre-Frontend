@@ -1,0 +1,19 @@
+.solicitacoes-pedidos-tab-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .sub-tab-content {
+    margin-top: 1.5rem;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .nested-step-switcher {
+    /* Scale down the nested step switcher out of the box to match the mock */
+    .step-switcher-container {
+      transform: scale(0.9);
+      transform-origin: left top;
+      margin-bottom: -0.25rem;
+    }
+  }
+}

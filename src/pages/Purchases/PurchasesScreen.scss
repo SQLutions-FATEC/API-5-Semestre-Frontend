@@ -1,0 +1,11 @@
+.purchases-page {
+  background-color: var(--background-secondary, #f8fafc);
+  min-height: 100vh;
+
+  .purchases-content {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}

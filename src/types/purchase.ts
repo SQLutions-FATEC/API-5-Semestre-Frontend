@@ -12,4 +12,6 @@ export interface PurchaseOrder {
   status: string;
   priority: string;
   notes: string;
+  materialName?: string;
+  materialStatus?: string;
 }

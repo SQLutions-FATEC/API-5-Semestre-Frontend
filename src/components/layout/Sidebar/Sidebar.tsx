@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
+  ShoppingCart,
   HelpCircle,
   ChevronLeft,
   ChevronRight,
@@ -16,7 +17,8 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const location = useLocation();
 
   const navItems = [
-    { name: 'Visão Geral', path: '/', icon: LayoutDashboard }
+    { name: 'Visão Geral', path: '/', icon: LayoutDashboard },
+    { name: 'Compras', path: '/compras', icon: ShoppingCart }
   ];
 
   return (
