@@ -61,6 +61,8 @@ const tableData = [
   },
 ];
 
+export const tooltipFormatter = (value: any) => [`${value}h`, 'Horas'];
+
 export default function HoursTracking() {
   return (
     <div className="hours-tracking-wrapper">
@@ -107,7 +109,7 @@ export default function HoursTracking() {
                   itemStyle={{ color: '#fff' }}
                   cursor={{ fill: 'transparent' }}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  formatter={(value: any) => [`${value}h`, 'Horas']}
+                  formatter={tooltipFormatter}
                 />
                 <Line
                   type="linear"
