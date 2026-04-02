@@ -9,11 +9,7 @@ export default function PurchasesTabs() {
 
   return (
     <div className="purchases-tabs-container">
-      <StepSwitcher
-        options={tabs}
-        activeOption={activeTab}
-        onOptionChange={setActiveTab}
-      >
+      <StepSwitcher options={tabs} activeOption={activeTab} onOptionChange={setActiveTab}>
         {activeTab === 'Solicitações' && (
           <div className="tab-content">
             <RequestsTab />

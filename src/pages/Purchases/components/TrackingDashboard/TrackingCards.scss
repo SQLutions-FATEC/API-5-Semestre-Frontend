@@ -27,7 +27,7 @@
       margin-top: 0;
 
       .icon-alert {
-        color: #4a5568; 
+        color: #4a5568;
       }
       .icon-critical {
         color: #c53030;
@@ -47,7 +47,8 @@
       flex-direction: column;
       gap: 0.5rem;
 
-      .list-header, .list-row {
+      .list-header,
+      .list-row {
         display: grid;
         align-items: center;
         width: 100%;
@@ -71,21 +72,24 @@
   }
 
   .delayed-card {
-    .list-header, .list-row {
+    .list-header,
+    .list-row {
       grid-template-columns: 1fr 1.5fr 1fr;
     }
   }
 
   .priority-card {
-    .list-header, .list-row {
+    .list-header,
+    .list-row {
       grid-template-columns: 2fr 1.5fr 1.5fr;
       text-align: center;
     }
-    
-    .list-header > span:first-child, .list-row > span:first-child {
+
+    .list-header > span:first-child,
+    .list-row > span:first-child {
       text-align: left;
     }
-    
+
     .status-cell {
       display: flex;
       align-items: center;

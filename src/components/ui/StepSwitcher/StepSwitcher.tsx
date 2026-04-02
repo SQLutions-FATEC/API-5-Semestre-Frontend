@@ -29,9 +29,7 @@ const StepSwitcher: React.FC<StepSwitcherProps> = ({
           ))}
         </div>
       </div>
-      <div className="step-content-box">
-        {children}
-      </div>
+      <div className="step-content-box">{children}</div>
     </div>
   );
 };

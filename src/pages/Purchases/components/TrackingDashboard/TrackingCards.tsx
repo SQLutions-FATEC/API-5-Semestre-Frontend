@@ -16,16 +16,16 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ orders }) => {
     return Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
   };
 
-  const delayedOrders = orders.filter(o => {
+  const delayedOrders = orders.filter((o) => {
     const deliveryDate = new Date(o.deliveryDate);
     return deliveryDate < today && !['Entregue', 'Recebido', 'Cancelado'].includes(o.status);
   });
 
   const priorityOrders = orders.filter(
-    o => ['Alta', 'Urgente'].includes(o.priority) && ['Aberto', 'Enviado'].includes(o.status)
+    (o) => ['Alta', 'Urgente'].includes(o.priority) && ['Aberto', 'Enviado'].includes(o.status)
   );
 
-  const activeOrdersCount = orders.filter(o => ['Aberto', 'Enviado'].includes(o.status)).length;
+  const activeOrdersCount = orders.filter((o) => ['Aberto', 'Enviado'].includes(o.status)).length;
 
   return (
     <div className="tracking-cards-grid">
@@ -42,7 +42,7 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ orders }) => {
               <span>Atraso</span>
             </div>
             <div className="list-body">
-              {delayedOrders.map(o => (
+              {delayedOrders.map((o) => (
                 <div key={o.id} className="list-row">
                   <span>{o.orderNumber}</span>
                   <span>{o.supplier}</span>
@@ -59,7 +59,8 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ orders }) => {
       {/* Card 2: Alta Prioridade */}
       <div className="tracking-card complex-list-card priority-card">
         <h4 className="card-title">
-          <AlertCircle size={20} className="icon-critical" /> Pedidos de alta prioridade abertos ou em rota
+          <AlertCircle size={20} className="icon-critical" /> Pedidos de alta prioridade abertos ou
+          em rota
         </h4>
         {priorityOrders.length > 0 ? (
           <div className="list-container">
@@ -69,12 +70,13 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ orders }) => {
               <span>Dias desde a emissão</span>
             </div>
             <div className="list-body">
-              {priorityOrders.map(o => {
+              {priorityOrders.map((o) => {
                 const priorityClass = o.priority === 'Urgente' ? 'badge-urgent' : 'badge-high';
                 return (
                   <div key={o.id} className="list-row">
                     <span className={`priority-badge ${priorityClass}`}>
-                      {o.orderNumber} {o.priority} {o.priority === 'Urgente' && <AlertCircle size={12} />}
+                      {o.orderNumber} {o.priority}{' '}
+                      {o.priority === 'Urgente' && <AlertCircle size={12} />}
                     </span>
                     <span className="status-cell">
                       {o.status === 'Aberto' ? <ShoppingCart size={16} /> : <Truck size={16} />}

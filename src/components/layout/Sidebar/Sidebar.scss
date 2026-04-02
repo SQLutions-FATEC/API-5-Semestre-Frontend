@@ -1,8 +1,8 @@
 // Variáveis de Tema
-$sidebar-bg: #111827;    // gray-900
+$sidebar-bg: #111827; // gray-900
 $sidebar-hover: #1f2937; // gray-800
-$accent-blue: #2563eb;   // blue-600
-$text-muted: #9ca3af;    // gray-400
+$accent-blue: #2563eb; // blue-600
+$text-muted: #9ca3af; // gray-400
 $transition-speed: 0.3s;
 
 .sidebar {
@@ -15,15 +15,21 @@ $transition-speed: 0.3s;
   transition: width $transition-speed ease;
   z-index: 20;
 
-  &.expanded { width: 16rem; } // w-64
-  &.collapsed { width: 5rem; }  // w-20
+  &.expanded {
+    width: 16rem;
+  } // w-64
+  &.collapsed {
+    width: 5rem;
+  } // w-20
 
   .sidebar-header {
     padding: 1.5rem; // p-6
     display: flex;
     align-items: center;
-    
-    &.centered { justify-content: center; }
+
+    &.centered {
+      justify-content: center;
+    }
     .logo-box {
       width: 2rem;
       height: 2rem;
@@ -49,7 +55,7 @@ $transition-speed: 0.3s;
   .toggle-button {
     position: absolute;
     right: -0.75rem; // -right-3
-    top: 2rem;       // top-8
+    top: 2rem; // top-8
     background-color: $sidebar-hover;
     border-radius: 9999px;
     padding: 0.25rem;
@@ -92,9 +98,18 @@ $transition-speed: 0.3s;
       color: white;
     }
 
-    &.centered { justify-content: center; padding-left: 0; padding-right: 0; }
-    .icon { flex-shrink: 0; }
-    .label { margin-left: 0.75rem; white-space: nowrap; }
+    &.centered {
+      justify-content: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .icon {
+      flex-shrink: 0;
+    }
+    .label {
+      margin-left: 0.75rem;
+      white-space: nowrap;
+    }
   }
 
   .sidebar-footer {
