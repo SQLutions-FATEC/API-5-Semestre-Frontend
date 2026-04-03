@@ -1,10 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  HelpCircle,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, HelpCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import './Sidebar.scss';
 
 interface SidebarProps {
@@ -16,7 +11,8 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const location = useLocation();
 
   const navItems = [
-    { name: 'Visão Geral', path: '/', icon: LayoutDashboard }
+    { name: 'Visão Geral', path: '/', icon: LayoutDashboard },
+    { name: 'Compras', path: '/compras', icon: ShoppingCart },
   ];
 
   return (

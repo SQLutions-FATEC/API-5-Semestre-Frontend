@@ -24,7 +24,6 @@ export default function ProjectOverviewHeader({
   responsible = 'Felipe Rocha',
   status = 'Em andamento',
 }: ProjectOverviewHeaderProps) {
-
   const calculateProgress = () => {
     const sDate = new Date(startDate);
     const eDate = new Date(finishDate.split('/').reverse().join('-'));
@@ -72,7 +71,6 @@ export default function ProjectOverviewHeader({
 
   return (
     <div className="unified-project-header">
-
       <div className="header-main-surface">
         <div className="program-context-section">
           <div className="program-info">
@@ -148,7 +146,10 @@ export default function ProjectOverviewHeader({
             </div>
             <div className="timeline-footer">
               <span className="footer-label">Gerente: {programManager}</span>
-              <div className="info-tooltip" title="Percentual baseado no tempo estimado vs decorrido">
+              <div
+                className="info-tooltip"
+                title="Percentual baseado no tempo estimado vs decorrido"
+              >
                 <Info size={14} />
               </div>
             </div>

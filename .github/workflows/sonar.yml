@@ -2,7 +2,7 @@ name: SonarCloud Analysis
 
 on:
   push:
-    branches: [ "main", "develop-1", "develop-2", "devlop-3" ]
+    branches: ['main', 'develop-1', 'develop-2', 'devlop-3']
   pull_request:
     types: [opened, synchronize, reopened]
   schedule:
@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 
+          fetch-depth: 0
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master

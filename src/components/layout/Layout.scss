@@ -1,17 +1,17 @@
-$sidebar-expanded: 16rem; 
-$sidebar-collapsed: 5rem; 
+$sidebar-expanded: 16rem;
+$sidebar-collapsed: 5rem;
 
 .layout-container {
   display: flex;
   height: 100dvh;
-  background-color: #f9fafb;
+  background-color: #f0f9ff;
   overflow: hidden;
 
   .layout-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    transition: margin-left 0.3s ease; 
+    transition: margin-left 0.3s ease;
     height: 100dvh;
     overflow: hidden;
     min-width: 0;
