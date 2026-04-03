@@ -4,6 +4,7 @@ import NotFound from '../pages/NotFoundScreen/NotFoundScreen';
 import OverviewScreen from '../pages/Overview/OverviewScreen';
 import PurchasesScreen from '../pages/Purchases/PurchasesScreen';
 import HelpScreen from '../pages/HelpScreen/HelpScreen';
+import CommitmentMaterial from '../pages/CommitmentMaterial/CommitmentMaterial';
 
 const AppRoutes = () => {
   return (
@@ -13,6 +14,7 @@ const AppRoutes = () => {
         <Route path="compras" element={<PurchasesScreen />} />
         <Route path="help" element={<HelpScreen />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="empenho" element={<CommitmentMaterial />} />
       </Route>
     </Routes>
   );
