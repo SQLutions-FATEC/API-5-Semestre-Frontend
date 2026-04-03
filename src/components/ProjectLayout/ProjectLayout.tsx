@@ -4,9 +4,9 @@ import ProjectOverviewHeader from '../../pages/Overview/components/ProjectOvervi
 import { projectService, type ProjectOverviewResponse } from '../../services/projectService';
 
 interface ProjectLayoutProps {
-  children: (data: ProjectOverviewResponse | null) => ReactNode;
-  pageClassName?: string;
-  contentClassName?: string;
+  readonly children: (data: ProjectOverviewResponse | null) => ReactNode;
+  readonly pageClassName?: string;
+  readonly contentClassName?: string;
 }
 
 export default function ProjectLayout({
@@ -27,7 +27,8 @@ export default function ProjectLayout({
 
         const response = await projectService.getOverview(idToFetch);
         setData(response);
-      } catch (err: any) {
+      } catch (err) {
+        console.error('Error fetching project overview:', err);
         setData(null);
       } finally {
         setLoading(false);
