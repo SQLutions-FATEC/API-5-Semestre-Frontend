@@ -4,7 +4,7 @@ import './OverviewMetrics.scss';
 import type { Financeiro } from '../../../../services/projectService';
 
 interface OverviewMetricsProps {
-  financeiro?: Financeiro;
+  readonly financeiro?: Financeiro;
 }
 
 const formatCurrency = (value: number) => {
@@ -12,7 +12,7 @@ const formatCurrency = (value: number) => {
 };
 
 const formatHours = (decimalHours: number): string => {
-  if (!decimalHours || isNaN(decimalHours)) return '0h 00m';
+  if (!decimalHours || Number.isNaN(decimalHours)) return '0h 00m';
   const hours = Math.floor(decimalHours);
   const minutes = Math.round((decimalHours - hours) * 60);
 
