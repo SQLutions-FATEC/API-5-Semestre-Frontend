@@ -8,7 +8,6 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell,
 } from 'recharts';
 import {
   Clock,
@@ -30,8 +29,8 @@ const lineData = [
 ];
 
 const pieData = [
-  { name: 'Felipe Rocha', value: 35.8, color: '#003a70' }, // Dark Blue
-  { name: 'Carla souza', value: 64.2, color: '#ff4500' }, // Orange Red
+  { name: 'Felipe Rocha', value: 35.8, fill: '#003a70' }, // Dark Blue
+  { name: 'Carla souza', value: 64.2, fill: '#ff4500' }, // Orange Red
 ];
 
 const tableData = [
@@ -66,7 +65,7 @@ export const tooltipFormatter = (value: any) => [`${value}h`, 'Horas'];
 export default function HoursTracking() {
   return (
     <div className="hours-tracking-wrapper">
-      <div className="header">
+      <div className="hours-header">
         <h2>Acompanhamento de horas</h2>
       </div>
 
@@ -187,20 +186,16 @@ export default function HoursTracking() {
                     paddingAngle={0}
                     dataKey="value"
                     stroke="none"
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
+                  />
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
             </div>
 
             <div className="legend-container">
-              {pieData.map((entry, index) => (
-                <div key={index} className="legend-item">
-                  <div className="legend-color" style={{ backgroundColor: entry.color }} />
+              {pieData.map((entry) => (
+                <div key={entry.name} className="legend-item">
+                  <div className="legend-color" style={{ backgroundColor: entry.fill }} />
                   <span>
                     {entry.value.toString().replace('.', ',')}% {entry.name}
                   </span>
@@ -225,8 +220,8 @@ export default function HoursTracking() {
             </tr>
           </thead>
           <tbody>
-            {tableData.map((row, idx) => (
-              <tr key={idx}>
+            {tableData.map((row) => (
+              <tr key={row.code}>
                 <td>{row.code}</td>
                 <td>{row.title}</td>
                 <td>{row.responsible}</td>

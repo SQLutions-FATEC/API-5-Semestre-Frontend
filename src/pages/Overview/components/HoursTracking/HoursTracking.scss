@@ -9,12 +9,14 @@
   flex-direction: column;
   gap: 2rem;
 
-  .header {
-    text-align: center;
+  .hours-header {
+    text-align: left;
+
     h2 {
       font-size: 1.25rem;
       font-weight: 600;
-      color: #003a70; /* match design dark blue */
+      color: #003a70;
+      /* match design dark blue */
       margin: 0;
     }
   }
@@ -24,7 +26,7 @@
     flex-direction: row;
     gap: 2rem;
     align-items: flex-start;
-    
+
     @media (max-width: 1024px) {
       flex-direction: column;
     }
@@ -60,7 +62,7 @@
       font-weight: 500;
       font-size: 0.875rem;
       margin-top: 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
       svg {
         width: 16px;
@@ -103,14 +105,15 @@
         font-size: 1.1rem;
         font-weight: 500;
         color: #003a70;
-        padding-left: 1.5rem; /* Indent based on icon */
+        padding-left: 1.5rem;
+        /* Indent based on icon */
       }
 
       .prop-value-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        
+
         .task-code {
           border: 1px solid #cbd5e0;
           border-radius: 20px;
