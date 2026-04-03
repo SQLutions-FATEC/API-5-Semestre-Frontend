@@ -1,8 +1,12 @@
 .hours-tracking-wrapper {
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   font-family: 'Inter', sans-serif;
   color: #1a202c;
   display: flex;
@@ -187,31 +191,8 @@
   }
 
   .table-section {
-    overflow-x: auto;
     width: 100%;
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.875rem;
-
-      th {
-        color: #4a5568;
-        font-weight: 500;
-        padding: 0.75rem 1rem;
-        border-bottom: 2px solid #e2e8f0;
-      }
-
-      td {
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid #edf2f7;
-        color: #1a202c;
-      }
-
-      tbody tr:hover {
-        background-color: #f7fafc;
-      }
-    }
+    display: flex;
+    flex-direction: column;
   }
 }

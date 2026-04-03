@@ -19,6 +19,9 @@ import {
   CalendarDays,
   PieChart as PieChartIcon,
 } from 'lucide-react';
+import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { ptBR } from '@mui/x-data-grid/locales';
+import { Chip } from '@mui/material';
 import './HoursTracking.scss';
 
 // Mock Data
@@ -61,6 +64,48 @@ const tableData = [
 ];
 
 export const tooltipFormatter = (value: any) => [`${value}h`, 'Horas'];
+
+const columns: GridColDef[] = [
+  { field: 'code', headerName: 'Código da tarefa', width: 160 },
+  { field: 'title', headerName: 'Título', flex: 1, minWidth: 200 },
+  { field: 'responsible', headerName: 'Responsável', width: 220 },
+  { field: 'workedHours', headerName: 'Horas trabalhadas', width: 170 },
+  { field: 'estimate', headerName: 'Estimativa de horas', width: 180 },
+  {
+    field: 'status',
+    headerName: 'Status',
+    width: 150,
+    renderCell: (params) => {
+      let colors = { bg: '#edf2f7', text: '#4a5568' };
+
+      switch (params.value) {
+        case 'Concluída':
+          colors = { bg: '#e6fffa', text: '#047481' };
+          break;
+        case 'Bloqueada':
+          colors = { bg: '#fff5f5', text: '#c53030' };
+          break;
+        case 'Em andamento':
+          colors = { bg: '#ebf8ff', text: '#2b6cb0' };
+          break;
+      }
+
+      return (
+        <Chip
+          label={params.value as string}
+          size="small"
+          sx={{
+            fontWeight: 700,
+            backgroundColor: colors.bg,
+            color: colors.text,
+            fontSize: '0.75rem',
+            textTransform: 'uppercase',
+          }}
+        />
+      );
+    },
+  },
+];
 
 export default function HoursTracking() {
   return (
@@ -206,32 +251,59 @@ export default function HoursTracking() {
         </div>
       </div>
 
-      {/* Bottom Data Table */}
       <div className="table-section">
-        <table>
-          <thead>
-            <tr>
-              <th>Codigo da tarefa</th>
-              <th>Titulo</th>
-              <th>Responsavel</th>
-              <th>Horas trabalhadas</th>
-              <th>Estimativa de horas</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map((row) => (
-              <tr key={row.code}>
-                <td>{row.code}</td>
-                <td>{row.title}</td>
-                <td>{row.responsible}</td>
-                <td>{row.workedHours}</td>
-                <td>{row.estimate}</td>
-                <td>{row.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div style={{ width: '100%' }}>
+          <DataGrid
+            rows={tableData}
+            columns={columns}
+            getRowId={(row) => row.code}
+            autoHeight
+            initialState={{
+              pagination: {
+                paginationModel: { pageSize: 5 },
+              },
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            disableRowSelectionOnClick
+            localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+            sx={{
+              border: 'none',
+              '& .MuiDataGrid-columnHeaders': {
+                backgroundColor: '#ffffff',
+                color: '#4a5568',
+                fontWeight: 700,
+                borderBottom: '2px solid #e2e8f0',
+              },
+              '& .MuiDataGrid-columnHeaderTitle': {
+                fontWeight: 'bold !important',
+              },
+              '& .MuiDataGrid-columnHeader': {
+                paddingLeft: '24px',
+              },
+              '& .MuiDataGrid-row:nth-of-type(even)': {
+                backgroundColor: '#f8fafc',
+              },
+              '& .MuiDataGrid-row:hover': {
+                backgroundColor: '#edf2f7 !important',
+              },
+              '& .MuiDataGrid-cell': {
+                display: 'flex',
+                alignItems: 'center',
+                paddingLeft: '24px !important',
+                borderBottom: '1px solid #edf2f7',
+              },
+              '& .MuiDataGrid-cell:focus': {
+                outline: 'none',
+              },
+              '& .MuiDataGrid-root': {
+                border: 'none',
+              },
+              '& .MuiDataGrid-main': {
+                borderBottom: 'none',
+              }
+            }}
+          />
+        </div>
       </div>
     </div>
   );
