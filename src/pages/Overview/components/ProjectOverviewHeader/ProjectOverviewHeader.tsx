@@ -11,6 +11,7 @@ interface ProjectOverviewHeaderProps {
   startDate?: string;
   responsible?: string;
   status?: string;
+  hasError?: boolean;
 }
 
 export default function ProjectOverviewHeader({
@@ -23,8 +24,10 @@ export default function ProjectOverviewHeader({
   startDate = '2024-06-27',
   responsible = 'Felipe Rocha',
   status = 'Em andamento',
+  hasError = false,
 }: ProjectOverviewHeaderProps) {
   const calculateProgress = () => {
+    if (hasError) return 0;
     const sDate = new Date(startDate);
     const eDate = new Date(finishDate.split('/').reverse().join('-'));
     const now = new Date();
@@ -36,18 +39,21 @@ export default function ProjectOverviewHeader({
     return Math.round(percent);
   };
 
-  const calculateElapsed = (start: string) => {
+  const calculateElapsed = (start: string, finish: string) => {
+    if (hasError) return '--';
     const sDate = new Date(start);
-    const now = new Date();
+    const endDate = finish.includes('/')
+      ? new Date(finish.split('/').reverse().join('-'))
+      : new Date(finish);
 
-    let months = (now.getFullYear() - sDate.getFullYear()) * 12;
+    let months = (endDate.getFullYear() - sDate.getFullYear()) * 12;
     months -= sDate.getMonth();
-    months += now.getMonth();
+    months += endDate.getMonth();
 
-    let daysDiff = now.getDate() - sDate.getDate();
+    let daysDiff = endDate.getDate() - sDate.getDate();
     if (daysDiff < 0) {
       months--;
-      const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+      const prevMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0);
       daysDiff += prevMonth.getDate();
     }
 
@@ -66,7 +72,7 @@ export default function ProjectOverviewHeader({
     return elapsedParts.join(' e ');
   };
 
-  const elapsedText = calculateElapsed(startDate);
+  const elapsedText = calculateElapsed(startDate, finishDate);
   const progressPercent = calculateProgress();
 
   return (
@@ -121,14 +127,16 @@ export default function ProjectOverviewHeader({
               <Calendar size={16} className="meta-icon" />
               <div className="meta-text">
                 <span className="label">Início:</span>
-                <span className="value">{new Date(startDate).toLocaleDateString('pt-BR')}</span>
+                <span className="value">
+                  {hasError ? '--' : new Date(startDate).toLocaleDateString('pt-BR')}
+                </span>
               </div>
             </div>
             <div className="meta-compact">
               <Calendar size={16} className="meta-icon" />
               <div className="meta-text">
                 <span className="label">Previsão:</span>
-                <span className="value">{finishDate}</span>
+                <span className="value">{hasError ? '--' : finishDate}</span>
               </div>
             </div>
           </div>
@@ -137,12 +145,17 @@ export default function ProjectOverviewHeader({
             <div className="timeline-header">
               <div className="elapsed-info">
                 <Clock size={16} className="icon" />
-                <span className="text">{elapsedText} decorridos</span>
+                <span className="text">{hasError ? '-- no total' : `${elapsedText} no total`}</span>
               </div>
-              <span className="percent-label">{progressPercent}% concluído</span>
+              <span className="percent-label">
+                {hasError ? '--%' : `${progressPercent}%`} concluído
+              </span>
             </div>
             <div className="progress-track">
-              <div className="progress-fill" style={{ width: `${progressPercent}%` }}></div>
+              <div
+                className="progress-fill"
+                style={{ width: `${hasError ? 0 : progressPercent}%` }}
+              ></div>
             </div>
             <div className="timeline-footer">
               <span className="footer-label">Gerente: {programManager}</span>
@@ -155,6 +168,18 @@ export default function ProjectOverviewHeader({
             </div>
           </div>
         </div>
+
+        {hasError && (
+          <div className="mt-6 bg-amber-50 border border-amber-200 text-amber-700 p-4 rounded-lg flex items-center justify-between shadow-sm">
+            <div>
+              <h2 className="text-sm font-semibold">Informações do projeto indisponíveis</h2>
+              <p className="text-xs mt-1">
+                Não foi possível carregar as informações superiores, mas você ainda pode consultar
+                os dados abaixo.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

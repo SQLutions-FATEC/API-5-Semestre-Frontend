@@ -1,35 +1,51 @@
 import { CircleDollarSign, Clock, Timer, Boxes } from 'lucide-react';
 import './OverviewMetrics.scss';
 
-export default function OverviewMetrics() {
+import type { Financeiro } from '../../../../services/projectService';
+
+interface OverviewMetricsProps {
+  readonly financeiro?: Financeiro;
+}
+
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+};
+
+const formatHours = (decimalHours: number): string => {
+  if (!decimalHours || Number.isNaN(decimalHours)) return '0h 00m';
+  const hours = Math.floor(decimalHours);
+  const minutes = Math.round((decimalHours - hours) * 60);
+
+  if (minutes === 60) {
+    return `${hours + 1}h 00m`;
+  }
+
+  return `${hours}h ${minutes.toString().padStart(2, '0')}m`;
+};
+
+export default function OverviewMetrics({ financeiro }: OverviewMetricsProps) {
   const financialMetrics = [
-    // Soma da coluna horas_trabalhadas da tabela tempo_tarefas para as tarefas relacionadas a este projeto
-    // (através da tabela tarefas_projeto).
     {
       title: 'Total em Horas Trabalhadas',
-      value: '3,02',
+      value: financeiro ? formatHours(financeiro.total_horas_trabalhadas) : '0h 00m',
       icon: <Clock size={24} />,
       bgClass: 'bg-orange',
     },
-    // Soma da coluna estimativa_horas da tabela tarefas_projeto para as tarefas relacionadas a este projeto.
     {
       title: 'Total de Horas Previstas',
-      value: '92,0',
+      value: formatHours(46),
       icon: <Timer size={24} />,
       bgClass: 'bg-blue',
     },
-    // Soma da coluna valor_alocado da tabela compras_projeto para este projeto.
     {
       title: 'Valor Empenhado',
-      value: 'R$ 50,00',
+      value: financeiro ? formatCurrency(financeiro.custo_total_materiais) : 'R$ 0,00',
       icon: <CircleDollarSign size={24} />,
       bgClass: 'bg-green',
     },
-    //  Soma do custo_estimado_usd da tabela materiais_engenharia multiplicado pela quantidade_empenhada
-    // da tabela empenho_materiais para os materiais relacionados a este projeto (através da tabela empenho_materiais).
     {
       title: 'Gasto Total',
-      value: 'R$ 7.053,04',
+      value: financeiro ? formatCurrency(financeiro.custo_total_projeto) : 'R$ 0,00',
       icon: <Boxes size={24} />,
       bgClass: 'bg-purple',
     },

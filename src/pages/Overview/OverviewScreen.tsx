@@ -1,14 +1,11 @@
 import OverviewMetrics from './components/OverviewMetrics/OverviewMetrics';
-import ProjectOverviewHeader from './components/ProjectOverviewHeader/ProjectOverviewHeader';
+import ProjectLayout from '../../components/ProjectLayout/ProjectLayout';
 import './OverviewScreen.scss';
 
 export default function Overview() {
   return (
-    <div className="overview-page">
-      <div className="overview-content">
-        <ProjectOverviewHeader />
-        <OverviewMetrics />
-      </div>
-    </div>
+    <ProjectLayout pageClassName="overview-page" contentClassName="overview-content">
+      {(data) => <OverviewMetrics financeiro={data?.financeiro} />}
+    </ProjectLayout>
   );
 }
