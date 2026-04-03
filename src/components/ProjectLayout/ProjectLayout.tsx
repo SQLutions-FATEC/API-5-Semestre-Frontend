@@ -14,7 +14,7 @@ export default function ProjectLayout({
   pageClassName = 'overview-page',
   contentClassName = 'overview-content'
 }: ProjectLayoutProps) {
-  const { id = 'PRJ007' } = useParams<{ id: string }>();
+  const { id = 'PRJ003' } = useParams<{ id: string }>();
   const [data, setData] = useState<ProjectOverviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +23,7 @@ export default function ProjectLayout({
       try {
         setLoading(true);
 
-        const idToFetch = id === '1' ? 'PRJ007' : id;
+        const idToFetch = id === '1' ? 'PRJ003' : id;
 
         const response = await projectService.getOverview(idToFetch);
         setData(response);
