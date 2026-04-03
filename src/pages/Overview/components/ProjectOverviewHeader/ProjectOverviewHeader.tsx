@@ -127,7 +127,9 @@ export default function ProjectOverviewHeader({
               <Calendar size={16} className="meta-icon" />
               <div className="meta-text">
                 <span className="label">Início:</span>
-                <span className="value">{hasError ? '--' : new Date(startDate).toLocaleDateString('pt-BR')}</span>
+                <span className="value">
+                  {hasError ? '--' : new Date(startDate).toLocaleDateString('pt-BR')}
+                </span>
               </div>
             </div>
             <div className="meta-compact">
@@ -145,10 +147,15 @@ export default function ProjectOverviewHeader({
                 <Clock size={16} className="icon" />
                 <span className="text">{hasError ? '-- no total' : `${elapsedText} no total`}</span>
               </div>
-              <span className="percent-label">{hasError ? '--%' : `${progressPercent}%`} concluído</span>
+              <span className="percent-label">
+                {hasError ? '--%' : `${progressPercent}%`} concluído
+              </span>
             </div>
             <div className="progress-track">
-              <div className="progress-fill" style={{ width: `${hasError ? 0 : progressPercent}%` }}></div>
+              <div
+                className="progress-fill"
+                style={{ width: `${hasError ? 0 : progressPercent}%` }}
+              ></div>
             </div>
             <div className="timeline-footer">
               <span className="footer-label">Gerente: {programManager}</span>
@@ -166,7 +173,10 @@ export default function ProjectOverviewHeader({
           <div className="mt-6 bg-amber-50 border border-amber-200 text-amber-700 p-4 rounded-lg flex items-center justify-between shadow-sm">
             <div>
               <h2 className="text-sm font-semibold">Informações do projeto indisponíveis</h2>
-              <p className="text-xs mt-1">Não foi possível carregar as informações superiores, mas você ainda pode consultar os dados abaixo.</p>
+              <p className="text-xs mt-1">
+                Não foi possível carregar as informações superiores, mas você ainda pode consultar
+                os dados abaixo.
+              </p>
             </div>
           </div>
         )}

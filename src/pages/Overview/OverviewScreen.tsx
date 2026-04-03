@@ -34,7 +34,9 @@ export default function Overview() {
       <div className="overview-content">
         {loading ? (
           <div className="flex justify-center items-center h-32 mb-6 bg-white rounded-lg shadow-sm border border-gray-100">
-            <h2 className="text-sm font-medium text-gray-500">Carregando informações do projeto...</h2>
+            <h2 className="text-sm font-medium text-gray-500">
+              Carregando informações do projeto...
+            </h2>
           </div>
         ) : (
           <>
@@ -42,9 +44,11 @@ export default function Overview() {
               programName={data?.programa?.nome || 'Não disponível'}
               programCode={data?.programa?.codigo || '---'}
               programManager={data?.programa?.gerente || 'Não disponível'}
-              finishDate={data?.projeto?.data_fim_prevista
-                ? new Date(data.projeto.data_fim_prevista).toLocaleDateString('pt-BR')
-                : new Date().toLocaleDateString('pt-BR')}
+              finishDate={
+                data?.projeto?.data_fim_prevista
+                  ? new Date(data.projeto.data_fim_prevista).toLocaleDateString('pt-BR')
+                  : new Date().toLocaleDateString('pt-BR')
+              }
               projectName={data?.projeto?.nome || 'Não disponível'}
               projectCode={data?.projeto?.codigo || '---'}
               startDate={data?.projeto?.data_inicio || new Date().toISOString().split('T')[0]}

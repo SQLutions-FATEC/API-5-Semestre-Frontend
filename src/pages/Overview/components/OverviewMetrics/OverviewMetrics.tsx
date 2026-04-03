@@ -15,11 +15,11 @@ const formatHours = (decimalHours: number): string => {
   if (!decimalHours || isNaN(decimalHours)) return '0h 00m';
   const hours = Math.floor(decimalHours);
   const minutes = Math.round((decimalHours - hours) * 60);
-  
+
   if (minutes === 60) {
     return `${hours + 1}h 00m`;
   }
-  
+
   return `${hours}h ${minutes.toString().padStart(2, '0')}m`;
 };
 
