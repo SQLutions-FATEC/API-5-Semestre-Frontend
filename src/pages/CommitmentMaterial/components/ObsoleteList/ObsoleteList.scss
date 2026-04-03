@@ -1,0 +1,13 @@
+.obsolete-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .old {
+    color: #ff4757;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
