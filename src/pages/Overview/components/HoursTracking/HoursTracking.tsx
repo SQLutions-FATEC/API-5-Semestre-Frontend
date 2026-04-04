@@ -25,7 +25,7 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import { Chip } from '@mui/material';
 import { sharedDataGridStyles } from '../../../../styles/sharedDataGridStyles';
-import { taskService, type tarefa } from '../../../../services/taskService';
+import { taskService, type EvolucaoHoras, type tarefa } from '../../../../services/taskService';
 import './HoursTracking.scss';
 
 type PieSlice = {
@@ -46,6 +46,16 @@ const pieColors = ['#003a70', '#ff4500', '#2b6cb0', '#c53030', '#047481', '#805a
 const tooltipFormatter = (value: unknown) => [`${value}h`, 'Horas'];
 
 const formatHours = (value: number) => `${value.toFixed(1).replace('.', ',')}h`;
+
+const formatDateLabel = (date: string) => {
+  const [year, month, day] = date.split('-');
+
+  if (year && month && day) {
+    return `${day}/${month}/${year}`;
+  }
+
+  return date;
+};
 
 const formatTotalHours = (value: number) => {
   const totalMinutes = Math.round(value * 60);
@@ -79,13 +89,13 @@ const columns: GridColDef[] = [
     field: 'total_horas_trabalhadas',
     headerName: 'Horas trabalhadas',
     width: 170,
-    valueFormatter: ({ value }) => formatHours(Number(value)),
+    renderCell: (params) => formatHours(Number(params.value ?? 0)),
   },
   {
     field: 'estimativa_horas',
     headerName: 'Estimativa de horas',
     width: 180,
-    valueFormatter: ({ value }) => formatHours(Number(value)),
+    renderCell: (params) => formatHours(Number(params.value ?? 0)),
   },
   {
     field: 'status',
@@ -115,6 +125,8 @@ export default function HoursTracking() {
   const { id = 'PRJ003' } = useParams<{ id: string }>();
   const projectId = id === '1' ? 'PRJ003' : id;
   const [tasks, setTasks] = useState<tarefa[]>([]);
+  const [evolutionHours, setEvolutionHours] = useState<EvolucaoHoras>({});
+  const [selectedTaskCode, setSelectedTaskCode] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -124,11 +136,13 @@ export default function HoursTracking() {
         setLoading(true);
         setError(false);
 
-        const response = await taskService.getTasks(projectId);
-        setTasks(Array.isArray(response) ? response : []);
+        const response = await taskService.getTaskTracking(projectId);
+        setTasks(Array.isArray(response?.tarefas) ? response.tarefas : []);
+        setEvolutionHours(response?.evolucao_horas ?? {});
       } catch (fetchError) {
         console.error('Error fetching task hours:', fetchError);
         setTasks([]);
+        setEvolutionHours({});
         setError(true);
       } finally {
         setLoading(false);
@@ -142,24 +156,52 @@ export default function HoursTracking() {
 
   const lineData = useMemo(
     () =>
-      tasks.map((task) => ({
-        label: task.codigo,
-        hours: task.total_horas_trabalhadas,
-      })),
-    [tasks]
+      Object.entries(evolutionHours)
+        .sort(([leftDate], [rightDate]) => leftDate.localeCompare(rightDate))
+        .map(([date, hours]) => ({
+          date: formatDateLabel(date),
+          hours: Number(hours ?? 0),
+        })),
+    [evolutionHours]
   );
 
   const pieData = useMemo(() => buildPieData(tasks), [tasks]);
+
+  useEffect(() => {
+    if (!tasks.length) {
+      setSelectedTaskCode('');
+      return;
+    }
+
+    const hasSelectedTask = tasks.some((task) => task.codigo === selectedTaskCode);
+
+    if (hasSelectedTask) {
+      return;
+    }
+
+    const defaultTask = [...tasks].sort(
+      (left, right) => right.total_horas_trabalhadas - left.total_horas_trabalhadas
+    )[0];
+
+    setSelectedTaskCode(defaultTask.codigo);
+  }, [tasks, selectedTaskCode]);
 
   const selectedTask = useMemo(() => {
     if (!tasks.length) {
       return null;
     }
 
+    if (selectedTaskCode) {
+      const task = tasks.find((item) => item.codigo === selectedTaskCode);
+      if (task) {
+        return task;
+      }
+    }
+
     return [...tasks].sort(
       (left, right) => right.total_horas_trabalhadas - left.total_horas_trabalhadas
     )[0];
-  }, [tasks]);
+  }, [tasks, selectedTaskCode]);
 
   const totalHours = useMemo(
     () => tasks.reduce((sum, task) => sum + task.total_horas_trabalhadas, 0),
@@ -175,7 +217,7 @@ export default function HoursTracking() {
 
       <div className="charts-section">
         <div className="line-chart-container">
-          <span className="chart-label">Horas trabalhadas por tarefa</span>
+          <span className="chart-label">Evolução de horas trabalhadas</span>
 
           <div className="chart-wrapper">
             {loading ? (
@@ -191,7 +233,7 @@ export default function HoursTracking() {
                 <LineChart data={lineData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis
-                    dataKey="label"
+                    dataKey="date"
                     tick={{ fontSize: 12, fill: '#4a5568' }}
                     axisLine={{ stroke: '#e2e8f0' }}
                     tickLine={false}
@@ -251,7 +293,21 @@ export default function HoursTracking() {
               </span>
               <div className="task-code">
                 <span style={{ fontSize: '0.75rem', color: '#718096' }}>Código da tarefa</span>
-                {selectedTask?.codigo || '---'} <ChevronDown />
+                <div className="task-code-select-wrapper">
+                  <select
+                    className="task-code-select"
+                    value={selectedTaskCode}
+                    onChange={(event) => setSelectedTaskCode(event.target.value)}
+                    disabled={!tasks.length || loading}
+                  >
+                    {tasks.map((task) => (
+                      <option key={task.codigo} value={task.codigo}>
+                        {task.codigo}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown />
+                </div>
               </div>
             </div>
           </div>

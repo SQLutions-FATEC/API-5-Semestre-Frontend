@@ -28,6 +28,12 @@ export type EvolucaoHoras = {
   [key: string]: number;
 };
 
+export type TaskTrackingData = {
+  projeto?: projeto;
+  tarefas: tarefa[];
+  evolucao_horas: EvolucaoHoras;
+};
+
 const normalizeTask = (task: tarefaApi): tarefa => ({
   codigo: task.codigo,
   titulo: task.titulo,
@@ -37,26 +43,45 @@ const normalizeTask = (task: tarefaApi): tarefa => ({
   total_horas_trabalhadas: Number(task.total_horas_trabalhadas ?? 0),
 });
 
+const normalizeEvolution = (value: unknown): EvolucaoHoras => {
+  if (!value || typeof value !== 'object') {
+    return {};
+  }
+
+  return Object.entries(value as Record<string, unknown>).reduce<EvolucaoHoras>((acc, [date, hours]) => {
+    acc[date] = Number(hours ?? 0);
+    return acc;
+  }, {});
+};
+
 export const taskService = {
-  async getTasks(codigo_projeto: string): Promise<tarefa[]> {
+  async getTaskTracking(codigo_projeto: string): Promise<TaskTrackingData> {
     const { data } = await api.get(`/projetos/tarefas/${codigo_projeto}`);
 
     if (Array.isArray(data)) {
-      return data.map((task) => normalizeTask(task as tarefaApi));
+      return {
+        tarefas: data.map((task) => normalizeTask(task as tarefaApi)),
+        evolucao_horas: {},
+      };
     }
 
-    if (Array.isArray(data?.tarefas)) {
-      return data.tarefas.map((task: tarefaApi) => normalizeTask(task));
-    }
+    const tarefas = Array.isArray(data?.tarefas)
+      ? data.tarefas.map((task: tarefaApi) => normalizeTask(task))
+      : Array.isArray(data?.data)
+        ? data.data.map((task: tarefaApi) => normalizeTask(task))
+        : Array.isArray(data?.results)
+          ? data.results.map((task: tarefaApi) => normalizeTask(task))
+          : [];
 
-    if (Array.isArray(data?.data)) {
-      return data.data.map((task: tarefaApi) => normalizeTask(task));
-    }
+    return {
+      projeto: data?.projeto,
+      tarefas,
+      evolucao_horas: normalizeEvolution(data?.evolucao_horas),
+    };
+  },
 
-    if (Array.isArray(data?.results)) {
-      return data.results.map((task: tarefaApi) => normalizeTask(task));
-    }
-
-    return [];
+  async getTasks(codigo_projeto: string): Promise<tarefa[]> {
+    const tracking = await this.getTaskTracking(codigo_projeto);
+    return tracking.tarefas;
   },
 };
