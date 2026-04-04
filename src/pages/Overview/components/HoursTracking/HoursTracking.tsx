@@ -208,6 +208,11 @@ export default function HoursTracking() {
     [tasks]
   );
 
+  const baseCellStyles = sharedDataGridStyles['& .MuiDataGrid-cell'];
+  const mergedCellStyles = baseCellStyles
+    ? { ...baseCellStyles, borderBottom: '1px solid #edf2f7' }
+    : { borderBottom: '1px solid #edf2f7' };
+
   const renderChartContent = () => {
     if (loading) {
       return (
@@ -431,8 +436,7 @@ export default function HoursTracking() {
             sx={{
               ...sharedDataGridStyles,
               '& .MuiDataGrid-cell': {
-                ...(sharedDataGridStyles['& .MuiDataGrid-cell'] ?? {}),
-                borderBottom: '1px solid #edf2f7',
+                ...mergedCellStyles,
               },
               '& .MuiDataGrid-root': {
                 border: 'none',
