@@ -1,17 +1,20 @@
 .commitment-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 0 24px 24px 24px;
+  gap: 12px;
+  padding: 16px;
 
-  // GRID que coloca Obsoletos à direita
-  .analytics-section {
-    display: grid;
-    grid-template-columns: 1fr 350px; // Gráficos ocupam o resto, Obsoletos 350px
-    gap: 24px;
-    align-items: stretch; // Garante que ambos tenham a mesma altura visual
+  .commitment-card {
+    margin-bottom: 0;
   }
 }
+
+  .analytics-section {
+    display: grid;
+    grid-template-columns: 1fr 350px; 
+    gap: 24px;
+    align-items: stretch; 
+  }
 
 .filter-wrapper {
   padding: 15px 24px;
@@ -23,25 +26,74 @@
   }
 }
 
-// Estilo da Tabela para não ficar "espremida"
 .custom-table {
   width: 100%;
   border-collapse: collapse;
-  
-  th, td {
-    padding: 16px; // Aumenta o respiro das células
-    text-align: left;
-    border-bottom: 1px solid #f1f5f9;
+  background-color: white;
+  font-size: 0.850rem; 
+
+  thead {
+    tr {
+      background-color: #f8fafc;
+    }
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      border-bottom: 2px solid #e2e8f0;
+    }
   }
 
-  .text-red {
-    color: #ef4444;
-    font-weight: 600;
+  tbody {
+    tr {
+      border-bottom: 1px solid #f1f5f9;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #f1f5f9; 
+      }
+
+      &.row-obsolete {
+        background-color: #fff5f5;
+        td {
+          color: #ef4444;
+          font-weight: 600;
+        }
+      }
+    }
+
+    td {
+      padding: 14px 16px;
+      color: #334155;
+      vertical-align: middle;
+    }
   }
 
-  .total-row {
-    font-weight: 800;
-    font-size: 1.1rem;
-    background-color: #fafafa;
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  .font-bold { font-weight: 600; color: #1e293b; }
+
+  tfoot {
+    .total-row {
+      background-color: #f8fafc;
+      td {
+        padding: 18px 16px;
+        border-top: 2px solid #e2e8f0;
+        color: #1e293b;
+        font-size: 0.95rem;
+      }
+      .total-label {
+        font-weight: 700;
+        color: #475569;
+      }
+      .total-value {
+        font-weight: 800;
+        color: #0f172a;
+      }
+    }
   }
 }

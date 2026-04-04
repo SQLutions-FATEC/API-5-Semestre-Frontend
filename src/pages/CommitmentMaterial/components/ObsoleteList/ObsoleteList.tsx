@@ -1,18 +1,26 @@
-// ObsoleteList.tsx
 import type { Material } from '../../../../types/commitment';
+import './ObsoleteList.scss';
 
-export default function ObsoleteList({ dados }: { dados: Material[] }) {
+export default function ObsoleteList({ data }: { data: Material[] }) {
   return (
-    <div className="commitment-card h-full"> 
+    <div className="commitment-card">
       <div className="card-header">
-        <h2 style={{ fontSize: '1rem', color: '#64748b' }}>⚠️ MATERIAIS OBSOLETOS</h2>
+        <h2>Materiais Obsoletos</h2>
       </div>
-      <div style={{ marginTop: '15px' }}>
-        {dados.map(item => (
-          <div key={item.id} style={{ color: '#ef4444', marginBottom: '8px', fontWeight: 500 }}>
-             • {item.nome} ({item.categoria})
-          </div>
-        ))}
+      <div className="obsolete-list-container">
+        {data.length > 0 ? (
+          data.map(item => (
+            <div key={item.id} className="obsolete-item">
+              <span className="warning-icon">⚠️</span>
+              <div className="item-info">
+                <span className="item-name">{item.name}</span>
+                <span className="item-category">{item.category}</span>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="empty-msg">Nenhum material obsoleto encontrado.</p>
+        )}
       </div>
     </div>
   );

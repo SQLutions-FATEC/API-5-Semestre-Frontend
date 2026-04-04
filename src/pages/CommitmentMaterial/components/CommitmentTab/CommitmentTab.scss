@@ -1,95 +1,107 @@
-.commitment-card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 24px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  margin-bottom: 24px;
+.commitment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; 
+  padding: 16px;
 
-  .card-header {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #f1f5f9;
-    padding-bottom: 12px;
-
-    h2 {
-      font-size: 1.1rem;
-      color: #1e293b;
-      font-weight: 700;
-      margin: 0;
-    }
+  .commitment-card {
+    margin-bottom: 0;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
 }
 
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto; // Garante que não quebre em telas menores
+.analytics-section {
+  display: grid;
+  grid-template-columns: 1fr 380px; 
+  gap: 12px;
+  align-items: stretch; 
+}
+
+.filter-wrapper {
+  padding: 15px 24px;
+  display: flex;
+  align-items: center;
+  
+  select {
+    margin-left: 10px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background-color: #fff;
+    color: #334155;
+    outline: none;
+    &:focus { border-color: #3b82f6; }
+  }
 }
 
 .custom-table {
-  width: 100%; // FORÇA A TABELA A OCUPAR TODO O ESPAÇO
+  width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
 
-  thead {
+  thead tr {
     background-color: #f8fafc;
-    
     th {
-      padding: 16px;
+      padding: 12px 16px;
       text-align: left;
       color: #64748b;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
       font-size: 0.75rem;
-      letter-spacing: 0.025em;
       border-bottom: 2px solid #e2e8f0;
     }
+  }
 
-    td {
-    padding: 18px 16px; // Dá o "respiro" vertical nas linhas
+  tbody tr {
     border-bottom: 1px solid #f1f5f9;
-  }
-  }
-
-  tbody {
-    tr {
-      border-bottom: 1px solid #f1f5f9;
-      transition: background-color 0.2s;
-
-      &:hover {
-        background-color: #f8fafc;
-      }
-
-      // ESTILO PARA O MATERIAL OBSOLETO (US-1)
-      &.row-obsolete {
-        td {
-          color: #ef4444 !important; // Vermelho SIATT
-          font-weight: 600;
-        }
-      }
-    }
-
-    td {
-      padding: 16px;
-      color: #334155;
-      vertical-align: middle;
+    &:hover { background-color: #f8fafc; }
+    
+    &.row-obsolete {
+      background-color: #fff5f5;
+      td { color: #ef4444; font-weight: 600; }
     }
   }
 
-  tfoot {
-    .total-row {
-      background-color: #f8fafc;
-      
-      .total-row td {
-    padding: 20px 16px; // Destaca a linha de total
+  td { padding: 14px 16px; color: #334155; }
+
+  tfoot .total-row {
     background-color: #f8fafc;
-    border-top: 2px solid #cbd5e1;
+    td {
+      padding: 18px 16px;
+      border-top: 2px solid #cbd5e1;
+    }
+    .total-label { font-weight: 700; color: #475569; text-transform: uppercase; }
+    .total-value { font-weight: 800; font-size: 1.1rem; color: #0f172a; }
   }
 }
-  }
 
-  // CLASSES DE UTILIDADE (Garantindo que funcionem)
-  .text-right { text-align: right !important; }
-  .text-center { text-align: center !important; }
-  .font-bold { font-weight: 700; }
-  .font-mono { font-family: monospace; font-size: 0.95rem; }
+.obsolete-list-container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .obsolete-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background-color: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 8px;
+
+    .warning-icon { font-size: 1.2rem; }
+    
+    .item-info {
+      display: flex;
+      flex-direction: column;
+      .item-name { font-weight: 700; color: #c53030; font-size: 0.9rem; }
+      .item-category { font-size: 0.75rem; color: #9b2c2c; }
+    }
+  }
 }
+
+.text-center { text-align: center; }
+.font-bold { font-weight: 700; }
