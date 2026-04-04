@@ -22,6 +22,7 @@ import {
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import { Chip } from '@mui/material';
+import { sharedDataGridStyles } from '../../../../styles/sharedDataGridStyles';
 import './HoursTracking.scss';
 
 // Mock Data
@@ -267,33 +268,10 @@ export default function HoursTracking() {
             disableRowSelectionOnClick
             localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
             sx={{
-              border: 'none',
-              '& .MuiDataGrid-columnHeaders': {
-                backgroundColor: '#ffffff',
-                color: '#4a5568',
-                fontWeight: 700,
-                borderBottom: '2px solid #e2e8f0',
-              },
-              '& .MuiDataGrid-columnHeaderTitle': {
-                fontWeight: 'bold !important',
-              },
-              '& .MuiDataGrid-columnHeader': {
-                paddingLeft: '24px',
-              },
-              '& .MuiDataGrid-row:nth-of-type(even)': {
-                backgroundColor: '#f8fafc',
-              },
-              '& .MuiDataGrid-row:hover': {
-                backgroundColor: '#edf2f7 !important',
-              },
+              ...sharedDataGridStyles,
               '& .MuiDataGrid-cell': {
-                display: 'flex',
-                alignItems: 'center',
-                paddingLeft: '24px !important',
+                ...(sharedDataGridStyles['& .MuiDataGrid-cell'] as any),
                 borderBottom: '1px solid #edf2f7',
-              },
-              '& .MuiDataGrid-cell:focus': {
-                outline: 'none',
               },
               '& .MuiDataGrid-root': {
                 border: 'none',
