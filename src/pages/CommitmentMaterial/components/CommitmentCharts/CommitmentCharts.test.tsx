@@ -18,7 +18,7 @@ describe('CommitmentCharts Component', () => {
     render(<CommitmentCharts allData={mockAll} filteredData={mockAll} selectedCategory="todas" />);
     
     expect(screen.getByText('Visão Geral: Categorias')).toBeDefined();
-    // O segundo título NÃO deve aparecer
+
     expect(screen.queryByText(/Itens em:/)).toBeNull();
   });
 
