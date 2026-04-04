@@ -62,7 +62,7 @@ const formatTotalHours = (value: number) => {
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
 
-  return `${hours} horas${minutes ? ` e ${minutes} minutos` : ''}`;
+  return hours + ' horas' + (minutes ? ' e ' + minutes + ' minutos' : '');
 };
 
 const buildPieData = (tasks: tarefa[]): PieSlice[] => {
@@ -208,6 +208,78 @@ export default function HoursTracking() {
     [tasks]
   );
 
+  const renderChartContent = () => {
+    if (loading) {
+      return (
+        <div style={{ color: '#718096', fontSize: '0.95rem', padding: '1rem' }}>
+          Carregando dados do projeto...
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div style={{ color: '#c53030', fontSize: '0.95rem', padding: '1rem' }}>
+          Não foi possível carregar as tarefas do projeto.
+        </div>
+      );
+    }
+
+    if (lineData.length) {
+      return (
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={lineData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: 12, fill: '#4a5568' }}
+              axisLine={{ stroke: '#e2e8f0' }}
+              tickLine={false}
+              dy={10}
+            />
+            <YAxis
+              domain={[0, 'auto']}
+              tick={{ fontSize: 12, fill: '#4a5568' }}
+              axisLine={{ stroke: '#e2e8f0' }}
+              tickLine={false}
+              label={{
+                value: 'Horas trabalhadas',
+                angle: -90,
+                position: 'insideLeft',
+                style: { fontSize: 12, fill: '#4a5568' },
+              }}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#1a202c',
+                color: '#fff',
+                borderRadius: '4px',
+                border: 'none',
+              }}
+              itemStyle={{ color: '#fff' }}
+              cursor={{ fill: 'transparent' }}
+              formatter={(value) => tooltipFormatter(value ?? '')}
+            />
+            <Line
+              type="linear"
+              dataKey="hours"
+              stroke="#003a70"
+              strokeWidth={3}
+              dot={{ r: 4, fill: '#003a70', strokeWidth: 0 }}
+              activeDot={{ r: 6, fill: '#1a202c' }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      );
+    }
+
+    return (
+      <div style={{ color: '#718096', fontSize: '0.95rem', padding: '1rem' }}>
+        Nenhuma tarefa encontrada para este projeto.
+      </div>
+    );
+  };
+
   return (
     <div className="hours-tracking-wrapper">
       <div className="hours-header">
@@ -219,65 +291,7 @@ export default function HoursTracking() {
         <div className="line-chart-container">
           <span className="chart-label">Evolução de horas trabalhadas</span>
 
-          <div className="chart-wrapper">
-            {loading ? (
-              <div style={{ color: '#718096', fontSize: '0.95rem', padding: '1rem' }}>
-                Carregando dados do projeto...
-              </div>
-            ) : error ? (
-              <div style={{ color: '#c53030', fontSize: '0.95rem', padding: '1rem' }}>
-                Não foi possível carregar as tarefas do projeto.
-              </div>
-            ) : lineData.length ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={lineData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    tick={{ fontSize: 12, fill: '#4a5568' }}
-                    axisLine={{ stroke: '#e2e8f0' }}
-                    tickLine={false}
-                    dy={10}
-                  />
-                  <YAxis
-                    domain={[0, 'auto']}
-                    tick={{ fontSize: 12, fill: '#4a5568' }}
-                    axisLine={{ stroke: '#e2e8f0' }}
-                    tickLine={false}
-                    label={{
-                      value: 'Horas trabalhadas',
-                      angle: -90,
-                      position: 'insideLeft',
-                      style: { fontSize: 12, fill: '#4a5568' },
-                    }}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1a202c',
-                      color: '#fff',
-                      borderRadius: '4px',
-                      border: 'none',
-                    }}
-                    itemStyle={{ color: '#fff' }}
-                    cursor={{ fill: 'transparent' }}
-                    formatter={(value) => tooltipFormatter(value ?? '')}
-                  />
-                  <Line
-                    type="linear"
-                    dataKey="hours"
-                    stroke="#003a70"
-                    strokeWidth={3}
-                    dot={{ r: 4, fill: '#003a70', strokeWidth: 0 }}
-                    activeDot={{ r: 6, fill: '#1a202c' }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : (
-              <div style={{ color: '#718096', fontSize: '0.95rem', padding: '1rem' }}>
-                Nenhuma tarefa encontrada para este projeto.
-              </div>
-            )}
-          </div>
+          <div className="chart-wrapper">{renderChartContent()}</div>
 
           <div className="total-hours-badge">
             <Clock />
