@@ -1,30 +1,80 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
-import HoursTracking, { tooltipFormatter } from './HoursTracking';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { taskService } from '../../../../services/taskService';
+import HoursTracking from './HoursTracking';
+
+vi.mock('../../../../services/taskService', () => ({
+  taskService: {
+    getTasks: vi.fn(),
+  },
+}));
+
+const mockedTasks = [
+  {
+    codigo: 'TSK001',
+    titulo: 'Teste de isolação',
+    responsavel: 'Gabriel Martins',
+    estimativa_horas: 148,
+    status: 'Bloqueada',
+    total_horas_trabalhadas: 54.9,
+  },
+  {
+    codigo: 'TSK002',
+    titulo: 'Prototipação da placa',
+    responsavel: 'João Pedro Alves',
+    estimativa_horas: 29,
+    status: 'Concluída',
+    total_horas_trabalhadas: 86.3,
+  },
+  {
+    codigo: 'TSK003',
+    titulo: 'Roteamento multicamada',
+    responsavel: 'Tatiane Duarte',
+    estimativa_horas: 180,
+    status: 'Em andamento',
+    total_horas_trabalhadas: 12.6,
+  },
+];
+
+const tooltipFormatter = (value: unknown) => [`${value}h`, 'Horas'];
+
+const renderComponent = () =>
+  render(
+    <MemoryRouter initialEntries={['/PRJ003']}>
+      <Routes>
+        <Route path="/:id" element={<HoursTracking />} />
+      </Routes>
+    </MemoryRouter>
+  );
+
+beforeEach(() => {
+  vi.mocked(taskService.getTasks).mockResolvedValue(mockedTasks);
+});
 
 describe('HoursTracking Component', () => {
-  it('should render the component header correctly', () => {
-    render(<HoursTracking />);
+  it('should render the component header correctly', async () => {
+    renderComponent();
 
-    // Verifies if the main title is present
-    expect(screen.getByText('Acompanhamento de horas')).toBeInTheDocument();
+    const header = await screen.findByText('Acompanhamento de horas');
+    expect(header).toBeDefined();
   });
 
-  it('should render table data correctly (coverage for table map)', () => {
-    render(<HoursTracking />);
+  it('should render fetched task data correctly', async () => {
+    renderComponent();
 
-    // Verifies if row data is rendered, covering the table row map function
-    expect(screen.getByText('TSK001')).toBeInTheDocument();
-    expect(screen.getByText('Prototipação da placa')).toBeInTheDocument();
-    expect(screen.getByText('Roteamento multicamada')).toBeInTheDocument();
+    expect(await screen.findByText('TSK001')).toBeDefined();
+    expect(await screen.findByText('Prototipação da placa')).toBeDefined();
+    expect(await screen.findByText('Roteamento multicamada')).toBeDefined();
   });
 
-  it('should render pie chart details correctly (coverage for pie legend map)', () => {
-    render(<HoursTracking />);
+  it('should render selected task details from real data', async () => {
+    renderComponent();
 
-    // Verifies if the text and users mapped by legend are present
-    expect(screen.getByText(/35,8% Felipe Rocha/i)).toBeInTheDocument();
-    expect(screen.getByText(/64,2% Carla souza/i)).toBeInTheDocument();
+    expect(await screen.findByText('TSK002')).toBeDefined();
+    expect(await screen.findByText('Prototipação da placa')).toBeDefined();
+    expect(await screen.findByText('João Pedro Alves')).toBeDefined();
+    expect(await screen.findByText('Concluída')).toBeDefined();
   });
 
   it('should format tooltip tooltip correctly (coverage for formatter)', () => {
