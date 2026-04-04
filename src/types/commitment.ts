@@ -1,9 +1,9 @@
 export type Material = {
   id: string;
-  nome: string;
-  categoria: string;
-  quantidade_empenhada: number;
-  custo_unitario: number;
-  data_empenho: string;
+  name: string;
+  category: string;
+  amount_committed: number;
+  unit_cost: number;
+  commitment_date: string;
   status: string;
 };
