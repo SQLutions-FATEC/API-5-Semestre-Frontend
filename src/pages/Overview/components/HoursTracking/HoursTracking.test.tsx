@@ -6,7 +6,7 @@ import HoursTracking from './HoursTracking';
 
 vi.mock('../../../../services/taskService', () => ({
   taskService: {
-    getTasks: vi.fn(),
+    getTaskTracking: vi.fn(),
   },
 }));
 
@@ -49,7 +49,12 @@ const renderComponent = () =>
   );
 
 beforeEach(() => {
-  vi.mocked(taskService.getTasks).mockResolvedValue(mockedTasks);
+  vi.mocked(taskService.getTaskTracking).mockResolvedValue({
+    tarefas: mockedTasks,
+    evolucao_horas: {
+      '2022-05-09': 26.44,
+    },
+  });
 });
 
 describe('HoursTracking Component', () => {
