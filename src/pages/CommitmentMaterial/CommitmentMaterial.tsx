@@ -1,11 +1,8 @@
-import ProjectOverviewHeader from '../Overview/components/ProjectOverviewHeader/ProjectOverviewHeader';
-
-import CommitmentTab from './components/CommitmentTab/CommitmentTab';
-import CommitmentCharts from './components/CommitmentCharts/CommitmentCharts';
-import ObsoleteList from './components/ObsoleteList/ObsoleteList';
-
-import './CommitmentMaterial.scss';
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from "react";
+import ProjectOverviewHeader from "../Overview/components/ProjectOverviewHeader/ProjectOverviewHeader";
+import CommitmentTab from "./components/CommitmentTab/CommitmentTab";
+import CommitmentCharts from "./components/CommitmentCharts/CommitmentCharts";
+import ObsoleteList from "./components/ObsoleteList/ObsoleteList";
 
 export default function CommitmentMaterial() {
   const [categoria, setCategoria] = useState('todas');
@@ -48,29 +45,27 @@ export default function CommitmentMaterial() {
     <div className="commitment-page">
       <div className="commitment-content">
 
-        {/* HEADER PADRÃO */}
         <ProjectOverviewHeader />
 
-        {/* FILTRO */}
-        <div className="card">
-          <h2>Filtro</h2>
+        <ProjectOverviewHeader />
 
-          <select onChange={(e) => setCategoria(e.target.value)}>
-            <option value="todas">Todas</option>
-            {categorias.map(cat => (
-              <option key={cat}>{cat}</option>
-            ))}
-          </select>
-        </div>
+{/* Filtro */}
+<div className="card">
+  <h2>Filtro</h2>
+  ...
+</div>
 
-        {/* TABELA */}
-        <CommitmentTab dados={filtrados} total={total} />
+{/* Tabela */}
+<CommitmentTab dados={filtrados} total={total} />
 
-        {/* GRÁFICOS */}
-        <CommitmentCharts dados={filtrados} />
+{/* Analytics */}
+<CommitmentCharts
+  dados={filtrados}
+  categoriaSelecionada={categoria}
+/>
 
-        {/* OBSOLETOS */}
-        <ObsoleteList dados={obsoletos} />
+{/* Obsoletos */}
+<ObsoleteList dados={obsoletos} />
 
       </div>
     </div>

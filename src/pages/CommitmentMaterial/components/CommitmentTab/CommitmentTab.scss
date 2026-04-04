@@ -1,20 +1,25 @@
-.tabs-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-  .card {
-    background-color: #ffffff;
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
+.table th {
+  text-align: left;
+  font-weight: 600;
+  padding: 12px;
+  border-bottom: 2px solid #eee;
+}
 
-  select {
-    margin-top: 0.5rem;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
-  }
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.row-obsolete {
+  color: #dc2626; // vermelho
+  font-weight: 600;
 }

@@ -1,87 +1,102 @@
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
+  PieChart,
+  Pie,
+  Cell,
   Tooltip,
-  CartesianGrid,
   ResponsiveContainer
 } from 'recharts';
 import type { Material } from '../../../../types/commitment';
 
+
 type Props = {
   dados: Material[];
+  categoriaSelecionada: string; // 👈 ADICIONA ISSO
 };
 
-export default function CommitmentCharts({ dados }: Props) {
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
 
-  // 📊 Custo por categoria
-  const custoPorCategoria = Object.values(
-    dados.reduce((acc: any, item: any) => {
+export default function CommitmentCharts({ dados, categoriaSelecionada }: Props) {
+
+  // 📊 Agrupar por categoria
+  const porCategoria = Object.values(
+    dados.reduce<Record<string, { name: string; value: number }>>((acc, item) => {
       const custo = item.quantidade_empenhada * item.custo_unitario;
 
       if (!acc[item.categoria]) {
-        acc[item.categoria] = { categoria: item.categoria, total: 0 };
+        acc[item.categoria] = { name: item.categoria, value: 0 };
       }
 
-      acc[item.categoria].total += custo;
+      acc[item.categoria].value += custo;
       return acc;
     }, {})
   );
 
-  // 📊 Comparação mensal
-  const hoje = new Date();
+  // 📊 Por material (direto)
+  const porMaterial = dados.map(item => ({
+    name: item.nome,
+    value: item.quantidade_empenhada * item.custo_unitario
+  }));
 
-  const custoMesAtual = dados
-    .filter((m: any) => new Date(m.data_empenho).getMonth() === hoje.getMonth())
-    .reduce((acc: number, m: any) => acc + m.quantidade_empenhada * m.custo_unitario, 0);
-
-  const custoMesAnterior = dados
-    .filter((m: any) => new Date(m.data_empenho).getMonth() === hoje.getMonth() - 1)
-    .reduce((acc: number, m: any) => acc + m.quantidade_empenhada * m.custo_unitario, 0);
-
-  const comparacao = [
-    { nome: 'Atual', valor: custoMesAtual },
-    { nome: 'Anterior', valor: custoMesAnterior }
-  ];
+  // 🎯 Verifica se está filtrado (somente 1 categoria)
+  const isFiltrado = new Set(dados.map(d => d.categoria)).size === 1;
 
   return (
     <div className="card">
       <h2>Analytics</h2>
 
-      <div style={{ display: 'flex', gap: '2rem' }}>
-        
-        {/* Gráfico 1 */}
-        <div style={{ width: '50%', height: 300 }}>
-          <h4>Custo por Categoria</h4>
+      <div className="charts-container">
 
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={custoPorCategoria}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="categoria" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="total" />
-            </BarChart>
+        {/* 🔵 POR CATEGORIA */}
+{categoriaSelecionada !== 'todas' && (
+  <div className="chart-box">
+    <h3>Por Material</h3>
+    ...
+  </div>
+)}
+
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={porCategoria}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={60}
+                outerRadius={90}
+              >
+                {porCategoria.map((_, index) => (
+                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+
+              <Tooltip formatter={(value) => `R$ ${value}`} />
+            </PieChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Gráfico 2 */}
-        <div style={{ width: '50%', height: 300 }}>
-          <h4>Comparação Mensal</h4>
+        {/* 🟢 POR MATERIAL (APENAS SE FILTRADO) */}
+        {isFiltrado && (
+          <div className="chart-box">
+            <h3>Por Material</h3>
 
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={comparacao}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="nome" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="valor" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={porMaterial}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={60}
+                  outerRadius={90}
+                >
+                  {porMaterial.map((_, index) => (
+                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value) => `R$ ${value}`} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        )}
 
       </div>
-    </div>
   );
 }

@@ -1,4 +1,4 @@
-import type { Material } from "../../../../types/commitment";
+import type { Material } from '../../../../types/commitment';
 
 type Props = {
   dados: Material[];
@@ -12,8 +12,8 @@ export default function ObsoleteList({ dados }: Props) {
       {dados.length === 0 ? (
         <p>Nenhum material obsoleto</p>
       ) : (
-        dados.map((item: any) => (
-          <p key={item.id} className="old">
+        dados.map(item => (
+          <p key={item.id} className="obsolete-text">
             ⚠️ {item.nome}
           </p>
         ))
