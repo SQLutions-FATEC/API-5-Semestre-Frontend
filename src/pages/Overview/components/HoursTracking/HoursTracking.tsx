@@ -36,6 +36,7 @@ type PieSlice = {
 
 const statusColors: Record<string, { bg: string; text: string }> = {
   Concluída: { bg: '#e6fffa', text: '#047481' },
+  Concluído: { bg: '#e6fffa', text: '#047481' },
   Bloqueada: { bg: '#fff5f5', text: '#c53030' },
   'Em andamento': { bg: '#ebf8ff', text: '#2b6cb0' },
 };
