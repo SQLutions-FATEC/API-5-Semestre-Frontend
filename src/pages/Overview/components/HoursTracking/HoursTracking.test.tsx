@@ -48,6 +48,15 @@ const renderComponent = () =>
     </MemoryRouter>
   );
 
+const renderComponentWithRoute = (route: string) =>
+  render(
+    <MemoryRouter initialEntries={[route]}>
+      <Routes>
+        <Route path="/:id" element={<HoursTracking />} />
+      </Routes>
+    </MemoryRouter>
+  );
+
 beforeEach(() => {
   vi.mocked(taskService.getTaskTracking).mockResolvedValue({
     tarefas: mockedTasks,
@@ -90,5 +99,35 @@ describe('HoursTracking Component', () => {
     // Call the formatter directly
     const result = tooltipFormatter(10);
     expect(result).toEqual(['10h', 'Horas']);
+  });
+
+  it('should render API error message when request fails', async () => {
+    vi.mocked(taskService.getTaskTracking).mockRejectedValueOnce(new Error('network error'));
+
+    renderComponent();
+
+    expect(
+      await screen.findByText('Não foi possível carregar as tarefas do projeto.')
+    ).toBeDefined();
+  });
+
+  it('should render empty states when no data is returned', async () => {
+    vi.mocked(taskService.getTaskTracking).mockResolvedValueOnce({
+      tarefas: [],
+      evolucao_horas: {},
+    });
+
+    renderComponent();
+
+    expect(await screen.findByText('Nenhuma tarefa encontrada para este projeto.')).toBeDefined();
+    expect(await screen.findByText('Sem dados para exibir')).toBeDefined();
+  });
+
+  it('should map route id 1 to PRJ003 when fetching tasks', async () => {
+    renderComponentWithRoute('/1');
+
+    await screen.findByText('Acompanhamento de horas');
+
+    expect(taskService.getTaskTracking).toHaveBeenCalledWith('PRJ003');
   });
 });
