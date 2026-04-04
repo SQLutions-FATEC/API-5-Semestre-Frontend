@@ -1,14 +1,47 @@
 .commitment-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
+  padding: 0 24px 24px 24px;
+
+  // GRID que coloca Obsoletos à direita
+  .analytics-section {
+    display: grid;
+    grid-template-columns: 1fr 350px; // Gráficos ocupam o resto, Obsoletos 350px
+    gap: 24px;
+    align-items: stretch; // Garante que ambos tenham a mesma altura visual
+  }
 }
 
-.charts-container {
-  display: flex;
-  gap: 20px;
+.filter-wrapper {
+  padding: 15px 24px;
+  select {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+  }
 }
 
-.chart-box {
-  flex: 1;
+// Estilo da Tabela para não ficar "espremida"
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  th, td {
+    padding: 16px; // Aumenta o respiro das células
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .text-red {
+    color: #ef4444;
+    font-weight: 600;
+  }
+
+  .total-row {
+    font-weight: 800;
+    font-size: 1.1rem;
+    background-color: #fafafa;
+  }
 }

@@ -1,25 +1,95 @@
-.table {
+.commitment-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+
+  .card-header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 12px;
+
+    h2 {
+      font-size: 1.1rem;
+      color: #1e293b;
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+}
+
+.table-wrapper {
   width: 100%;
+  overflow-x: auto; // Garante que não quebre em telas menores
+}
+
+.custom-table {
+  width: 100%; // FORÇA A TABELA A OCUPAR TODO O ESPAÇO
   border-collapse: collapse;
-}
+  font-size: 0.9rem;
 
-.table th {
-  text-align: left;
-  font-weight: 600;
-  padding: 12px;
-  border-bottom: 2px solid #eee;
-}
+  thead {
+    background-color: #f8fafc;
+    
+    th {
+      padding: 16px;
+      text-align: left;
+      color: #64748b;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.025em;
+      border-bottom: 2px solid #e2e8f0;
+    }
 
-.table td {
-  padding: 12px;
-  border-bottom: 1px solid #f2f2f2;
-}
+    td {
+    padding: 18px 16px; // Dá o "respiro" vertical nas linhas
+    border-bottom: 1px solid #f1f5f9;
+  }
+  }
 
-.table tbody tr:hover {
-  background: #f9fafb;
-}
+  tbody {
+    tr {
+      border-bottom: 1px solid #f1f5f9;
+      transition: background-color 0.2s;
 
-.row-obsolete {
-  color: #dc2626; // vermelho
-  font-weight: 600;
+      &:hover {
+        background-color: #f8fafc;
+      }
+
+      // ESTILO PARA O MATERIAL OBSOLETO (US-1)
+      &.row-obsolete {
+        td {
+          color: #ef4444 !important; // Vermelho SIATT
+          font-weight: 600;
+        }
+      }
+    }
+
+    td {
+      padding: 16px;
+      color: #334155;
+      vertical-align: middle;
+    }
+  }
+
+  tfoot {
+    .total-row {
+      background-color: #f8fafc;
+      
+      .total-row td {
+    padding: 20px 16px; // Destaca a linha de total
+    background-color: #f8fafc;
+    border-top: 2px solid #cbd5e1;
+  }
+}
+  }
+
+  // CLASSES DE UTILIDADE (Garantindo que funcionem)
+  .text-right { text-align: right !important; }
+  .text-center { text-align: center !important; }
+  .font-bold { font-weight: 700; }
+  .font-mono { font-family: monospace; font-size: 0.95rem; }
 }
