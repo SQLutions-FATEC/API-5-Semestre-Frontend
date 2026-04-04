@@ -13,7 +13,7 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const navItems = [
     { name: 'Visão Geral', path: '/', icon: LayoutDashboard },
     { name: 'Compras', path: '/compras', icon: ShoppingCart },
-    { name: 'Materiais', path: '/empenho', icon: Boxes },
+    { name: 'Empenho de Materiais', path: '/empenho', icon: Boxes },
   ];
 
   return (
