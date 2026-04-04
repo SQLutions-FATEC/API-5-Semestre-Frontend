@@ -48,10 +48,13 @@ const normalizeEvolution = (value: unknown): EvolucaoHoras => {
     return {};
   }
 
-  return Object.entries(value as Record<string, unknown>).reduce<EvolucaoHoras>((acc, [date, hours]) => {
-    acc[date] = Number(hours ?? 0);
-    return acc;
-  }, {});
+  return Object.entries(value as Record<string, unknown>).reduce<EvolucaoHoras>(
+    (acc, [date, hours]) => {
+      acc[date] = Number(hours ?? 0);
+      return acc;
+    },
+    {}
+  );
 };
 
 export const taskService = {
@@ -65,13 +68,15 @@ export const taskService = {
       };
     }
 
-    const tarefas = Array.isArray(data?.tarefas)
-      ? data.tarefas.map((task: tarefaApi) => normalizeTask(task))
-      : Array.isArray(data?.data)
-        ? data.data.map((task: tarefaApi) => normalizeTask(task))
-        : Array.isArray(data?.results)
-          ? data.results.map((task: tarefaApi) => normalizeTask(task))
-          : [];
+    let tarefas: tarefa[] = [];
+
+    if (Array.isArray(data?.tarefas)) {
+      tarefas = data.tarefas.map((task: tarefaApi) => normalizeTask(task));
+    } else if (Array.isArray(data?.data)) {
+      tarefas = data.data.map((task: tarefaApi) => normalizeTask(task));
+    } else if (Array.isArray(data?.results)) {
+      tarefas = data.results.map((task: tarefaApi) => normalizeTask(task));
+    }
 
     return {
       projeto: data?.projeto,

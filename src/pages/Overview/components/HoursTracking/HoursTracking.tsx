@@ -285,6 +285,36 @@ export default function HoursTracking() {
     );
   };
 
+  const renderDonutContent = () => {
+    if (loading) {
+      return (
+        <div style={{ color: '#718096', fontSize: '0.85rem', padding: '1rem' }}>Carregando...</div>
+      );
+    }
+
+    if (pieData.length) {
+      return (
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={pieData}
+              cx="50%"
+              cy="50%"
+              innerRadius={35}
+              outerRadius={65}
+              paddingAngle={0}
+              dataKey="value"
+              stroke="none"
+            />
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className="hours-tracking-wrapper">
       <div className="hours-header">
@@ -374,29 +404,7 @@ export default function HoursTracking() {
             <span className="donut-label">
               <PieChartIcon /> Horas trabalhadas
             </span>
-            <div className="donut-wrapper">
-              {loading ? (
-                <div style={{ color: '#718096', fontSize: '0.85rem', padding: '1rem' }}>
-                  Carregando...
-                </div>
-              ) : pieData.length ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={35}
-                      outerRadius={65}
-                      paddingAngle={0}
-                      dataKey="value"
-                      stroke="none"
-                    />
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : null}
-            </div>
+            <div className="donut-wrapper">{renderDonutContent()}</div>
 
             <div className="legend-container">
               {pieData.length ? (
