@@ -41,33 +41,29 @@ export default function CommitmentMaterial() {
 
   const obsoletos = filtrados.filter(m => m.status === 'Obsoleto');
 
-  return (
-    <div className="commitment-page">
-      <div className="commitment-content">
+return (
+  <div className="commitment-page">
+    <ProjectOverviewHeader />
+    
+    <div className="commitment-content">
+      {/* Filtro */}
+      <div className="commitment-card filter-wrapper">
+        <span>Filtrar por Categoria: </span>
+        <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+          <option value="todas">Todas as Categorias</option>
+          {categorias.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+        </select>
+      </div>
 
-        <ProjectOverviewHeader />
+      {/* Tabela de Empenho */}
+      <CommitmentTab dados={filtrados} total={total} />
 
-        <ProjectOverviewHeader />
-
-{/* Filtro */}
-<div className="card">
-  <h2>Filtro</h2>
-  ...
-</div>
-
-{/* Tabela */}
-<CommitmentTab dados={filtrados} total={total} />
-
-{/* Analytics */}
-<CommitmentCharts
-  dados={filtrados}
-  categoriaSelecionada={categoria}
-/>
-
-{/* Obsoletos */}
-<ObsoleteList dados={obsoletos} />
-
+      {/* SEÇÃO ANALYTICS: Aqui o CSS fará a mágica de colocar lado a lado */}
+      <div className="analytics-section">
+        <CommitmentCharts dados={filtrados} categoriaSelecionada={categoria} />
+        <ObsoleteList dados={obsoletos} />
       </div>
     </div>
-  );
+  </div>
+);
 }
