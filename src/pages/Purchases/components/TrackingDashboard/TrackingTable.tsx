@@ -4,6 +4,7 @@ import type { GridColDef } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import { Chip, Tooltip } from '@mui/material';
 import type { PurchaseOrder } from '../../../../types/purchase';
+import { sharedDataGridStyles } from '../../../../styles/sharedDataGridStyles';
 import './TrackingTable.scss';
 
 interface TrackingTableProps {
@@ -125,35 +126,7 @@ const TrackingTable: React.FC<TrackingTableProps> = ({ orders }) => {
           pageSizeOptions={[5, 10, 25]}
           disableRowSelectionOnClick
           localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-          sx={{
-            border: 'none',
-            '& .MuiDataGrid-columnHeaders': {
-              backgroundColor: '#ffffff',
-              color: '#4a5568',
-              fontWeight: 700,
-              borderBottom: '2px solid #e2e8f0',
-            },
-            '& .MuiDataGrid-columnHeaderTitle': {
-              fontWeight: 'bold !important',
-            },
-            '& .MuiDataGrid-columnHeader': {
-              paddingLeft: '24px',
-            },
-            '& .MuiDataGrid-row:nth-of-type(even)': {
-              backgroundColor: '#f8fafc',
-            },
-            '& .MuiDataGrid-row:hover': {
-              backgroundColor: '#edf2f7 !important',
-            },
-            '& .MuiDataGrid-cell': {
-              display: 'flex',
-              alignItems: 'center',
-              paddingLeft: '24px !important',
-            },
-            '& .MuiDataGrid-cell:focus': {
-              outline: 'none',
-            },
-          }}
+          sx={sharedDataGridStyles}
         />
       </div>
     </div>
