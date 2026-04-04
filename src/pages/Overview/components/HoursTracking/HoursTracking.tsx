@@ -124,7 +124,7 @@ export default function HoursTracking() {
         setError(false);
 
         const response = await taskService.getTasks(projectId);
-        setTasks(response);
+        setTasks(Array.isArray(response) ? response : []);
       } catch (fetchError) {
         console.error('Error fetching task hours:', fetchError);
         setTasks([]);
