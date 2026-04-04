@@ -285,7 +285,7 @@ export default function HoursTracking() {
           </div>
         </div>
 
-        <div className="task-details-card">
+        <div className="task-details-card" data-testid="task-details-card">
           <div className="property-group">
             <div className="prop-value-row">
               <span className="prop-label" style={{ fontSize: '1.2rem', color: '#4a5568' }}>

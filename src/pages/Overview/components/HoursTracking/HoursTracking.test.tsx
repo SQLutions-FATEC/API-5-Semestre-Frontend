@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { taskService } from '../../../../services/taskService';
@@ -76,10 +76,14 @@ describe('HoursTracking Component', () => {
   it('should render selected task details from real data', async () => {
     renderComponent();
 
-    expect(await screen.findByText('TSK002')).toBeDefined();
-    expect(await screen.findByText('Prototipação da placa')).toBeDefined();
-    expect(await screen.findByText('João Pedro Alves')).toBeDefined();
-    expect(await screen.findByText('Concluída')).toBeDefined();
+    const taskDetailsCard = await screen.findByTestId('task-details-card');
+    expect(taskDetailsCard).toBeDefined();
+    expect(screen.getByText('Prototipação da placa')).toBeDefined();
+
+    // Use within() para evitar duplicatas de texto
+    const { getByText } = within(taskDetailsCard);
+    expect(getByText('João Pedro Alves')).toBeDefined();
+    expect(getByText('Concluída')).toBeDefined();
   });
 
   it('should format tooltip tooltip correctly (coverage for formatter)', () => {
