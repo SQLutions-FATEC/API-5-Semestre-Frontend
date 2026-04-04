@@ -21,17 +21,20 @@ describe('CommitmentMaterial Component', () => {
     render(<CommitmentMaterial />);
     
     expect(screen.getByText('Microcontrolador ARM Cortex-M4')).toBeDefined();
-    expect(screen.getByText('Relé 12V 5A DPDT')).toBeDefined();
+    
+    // Como é obsoleto, aparece na tabela e no card lateral. Usamos getAllByText.
+    expect(screen.getAllByText('Relé 12V 5A DPDT').length).toBeGreaterThan(0);
   });
 
   it('deve filtrar a lista quando uma categoria diferente for selecionada', () => {
     render(<CommitmentMaterial />);
     
     const select = screen.getByRole('combobox');
-    
     fireEvent.change(select, { target: { value: 'Sensor' } });
     
-    expect(screen.getByText('Sensor Corrente ACS712')).toBeDefined();
+    // Sensor também é obsoleto, aparece em dois lugares.
+    expect(screen.getAllByText('Sensor Corrente ACS712').length).toBeGreaterThan(0);
+    
     const microcontrolador = screen.queryByText('Microcontrolador ARM Cortex-M4');
     expect(microcontrolador).toBeNull();
   });
@@ -39,17 +42,18 @@ describe('CommitmentMaterial Component', () => {
   it('deve calcular o total corretamente com base nos dados iniciais', () => {
     render(<CommitmentMaterial />);
 
-    expect(screen.getByText(/3700/)).toBeDefined();
+    // A formatação do toLocaleString inclui um ponto na milhar (3.700,00)
+    expect(screen.getByText(/3\.700,00/)).toBeDefined();
   });
 
   it('deve atualizar o total ao filtrar por uma categoria específica', () => {
     render(<CommitmentMaterial />);
     
     const select = screen.getByRole('combobox');
-    
     fireEvent.change(select, { target: { value: 'Relé' } });
     
-    expect(screen.getByText(/375/)).toBeDefined();
-    expect(screen.queryByText(/3700/)).toBeNull();
+    // O valor 375 aparece duas vezes: no custo do item e no total geral
+    expect(screen.getAllByText(/375,00/).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/3\.700,00/)).toBeNull();
   });
 });
