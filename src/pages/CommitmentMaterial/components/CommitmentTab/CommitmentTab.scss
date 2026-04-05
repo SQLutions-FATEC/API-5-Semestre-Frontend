@@ -1,0 +1,51 @@
+.commitment-card {
+    &::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f3f4f6;
+        /* gray-100 */
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        /* gray-300 */
+        border-radius: 4px;
+
+        &:hover {
+            background: #9ca3af;
+            /* gray-400 */
+        }
+    }
+
+    table {
+        th {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            border-bottom-width: 2px;
+            border-color: #e5e7eb;
+            /* gray-200 */
+        }
+
+        td {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        tbody {
+            tr {
+                transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
+        }
+    }
+}
