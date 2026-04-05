@@ -8,12 +8,10 @@ vi.mock('recharts', async () => {
   const original = await vi.importActual('recharts');
   return {
     ...original,
-    // Substitui o ResponsiveContainer por uma div simples para o teste conseguir renderizar os filhos
     ResponsiveContainer: ({ children }: any) => <div data-testid="responsive-container">{children}</div>,
   };
 });
 
-// Mock dos novos dados que vêm da API
 const mockEmpenhoCategoria: EmpenhoCategoria[] = [
   { categoria: 'Conector', total_custo: 18630.80 },
   { categoria: 'Sensor', total_custo: 5000.00 }
@@ -25,28 +23,24 @@ const mockEmpenhoTempo: EmpenhoTempo[] = [
 ];
 
 describe('CommitmentCharts Component', () => {
-  it('deve renderizar o cabeçalho principal do card de gráficos', () => {
-    render(<CommitmentCharts empenhoCategoria={mockEmpenhoCategoria} empenhoTempo={mockEmpenhoTempo} />);
-
-    // Verifica se o título geral do componente está na tela
-    expect(screen.getByText('Análise de Custos e Empenhos')).toBeDefined();
-  });
-
   it('deve renderizar os títulos de identificação de ambos os gráficos', () => {
-    render(<CommitmentCharts empenhoCategoria={mockEmpenhoCategoria} empenhoTempo={mockEmpenhoTempo} />);
+    render(<CommitmentCharts empenhoCategoria={mockEmpenhoCategoria} empenhoTempo={mockEmpenhoTempo} total={18630.80} />);
 
-    // Verifica se os rótulos de cada gráfico estão presentes
-    expect(screen.getByText('Custo por Categoria')).toBeDefined();
-    expect(screen.getByText('Evolução do Empenho')).toBeDefined();
+    expect(screen.getByText('Custo empenhado')).toBeDefined();
+    expect(screen.getByText('Custo por categoria')).toBeDefined();
   });
 
-  it('deve renderizar exatamente dois containers de gráficos (Barras e Linhas)', () => {
-    render(<CommitmentCharts empenhoCategoria={mockEmpenhoCategoria} empenhoTempo={mockEmpenhoTempo} />);
+  it('deve renderizar exatamente dois containers de gráficos (Linhas e Rosca)', () => {
+    render(<CommitmentCharts empenhoCategoria={mockEmpenhoCategoria} empenhoTempo={mockEmpenhoTempo} total={18630.80} />);
 
-    // Procura pela div que mockamos no ResponsiveContainer do Recharts
     const containers = screen.getAllByTestId('responsive-container');
-
-    // Esperamos 2 containers: 1 do BarChart e 1 do LineChart
     expect(containers).toHaveLength(2);
+  });
+
+  it('deve renderizar a tag de gasto total formatada corretamente', () => {
+    render(<CommitmentCharts empenhoCategoria={mockEmpenhoCategoria} empenhoTempo={mockEmpenhoTempo} total={18630.80} />);
+
+    // Verifica se a string formatada aparece na tela (ex: R$ 18.630,80)
+    expect(screen.getByText(/18\.630,80/)).toBeDefined();
   });
 });
