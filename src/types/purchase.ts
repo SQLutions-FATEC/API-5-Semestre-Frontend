@@ -15,3 +15,19 @@ export interface PurchaseOrder {
   materialName?: string;
   materialStatus?: string;
 }
+
+export type PurchaseOrderData = {
+  numero: string;
+  emissao: string;
+  previsao: string;
+  fornecedor: string;
+  centro_custo: string;
+  status: string;
+  dias_previstos_entrega: number;
+};
+
+export type PurchasesResponse = {
+  projeto: string;
+  tempo_medio_entrega_dias: number;
+  pedidos: PurchaseOrderData[];
+};
