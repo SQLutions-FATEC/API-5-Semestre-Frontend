@@ -1,63 +1,88 @@
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import type { Material } from '../../../../types/commitment';
+import { CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import type { EmpenhoCategoria, EmpenhoTempo } from '../../../../services/commitmentService';
 import './CommitmentCharts.scss';
 
 type Props = {
-  allData: Material[];      
-  filteredData: Material[]; 
-  selectedCategory: string;
+  empenhoCategoria: EmpenhoCategoria[];
+  empenhoTempo: EmpenhoTempo[];
+  total: number;
 };
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+// Cores baseadas no mockup para o gráfico de rosca
+const COLORS = ['#0f4a8e', '#facc15', '#ea580c', '#10b981', '#8b5cf6'];
 
-export default function CommitmentCharts({ allData, filteredData, selectedCategory }: Props) {
-  
-  const dataCategorias = Object.values(
-    allData.reduce<Record<string, { name: string; value: number }>>((acc, item) => {
-      const custo = item.amount_committed * item.unit_cost;
-      if (!acc[item.category]) acc[item.category] = { name: item.category, value: 0 };
-      acc[item.category].value += custo;
-      return acc;
-    }, {})
-  );
-
-  const dataPorMaterial = filteredData.map(item => ({
-    name: item.name,
-    value: item.amount_committed * item.unit_cost
-  }));
-
+export default function CommitmentCharts({ empenhoCategoria, empenhoTempo, total }: Props) {
   return (
-    <div className="commitment-card charts-container">
-      <div className="card-header">
-        <h2>Análise de Custos</h2>
+    <div className="commitment-card charts-container bg-white border border-gray-200 rounded-lg p-6 relative shadow-sm">
+
+      {/* Seletor Centralizado */}
+      <div className="flex justify-center mb-8 relative z-10">
+        <div className="flex items-center gap-2 bg-white border border-gray-300 rounded shadow-sm px-3 py-1">
+          <span className="text-sm text-gray-700">Empenho geral</span>
+          <select className="bg-transparent border-none outline-none text-sm font-semibold cursor-pointer text-blue-600">
+            <option>Geral</option>
+            <option>Categoria</option>
+          </select>
+        </div>
       </div>
-      
-      <div className="charts-display-wrapper">
-        <div className="chart-item">
-          <p className="chart-label">Visão Geral: Categorias</p>
-          <ResponsiveContainer width="100%" height={220}>
-            <PieChart>
-              <Pie data={dataCategorias} innerRadius={60} outerRadius={80} dataKey="value" paddingAngle={5}>
-                {dataCategorias.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-              </Pie>
-              <Tooltip formatter={(val: any) => `R$ ${Number(val).toLocaleString('pt-BR')}`} />
-            </PieChart>
+
+      <div className="charts-display-wrapper flex flex-wrap gap-8 items-center justify-between">
+
+        {/* Gráfico 1: Linhas (Custo empenhado) */}
+        <div className="chart-item flex-1 min-w-[300px]">
+          <p className="chart-label font-semibold mb-2 text-gray-700 ml-4">Custo empenhado</p>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={empenhoTempo} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={true} />
+              <XAxis dataKey="data" tick={{ fontSize: 11 }} angle={-35} textAnchor="end" height={60} />
+              <YAxis tick={{ fontSize: 11 }} />
+              <Tooltip formatter={(val: any) => `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
+              <Legend verticalAlign="bottom" height={36} iconType="rect" />
+              {/* CORREÇÃO AQUI: removido o shape: 'square' do objeto dot */}
+              <Line
+                type="linear"
+                dataKey="total_custo"
+                stroke="#0f4a8e"
+                strokeWidth={3}
+                name="Total_gasto"
+                dot={{ stroke: '#0f4a8e', strokeWidth: 2, fill: '#0f4a8e', r: 4 }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
           </ResponsiveContainer>
         </div>
 
-        {selectedCategory !== 'todas' && (
-          <div className="chart-item">
-            <p className="chart-label">Itens em: {selectedCategory}</p>
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie data={dataPorMaterial} innerRadius={60} outerRadius={80} dataKey="value" paddingAngle={5}>
-                  {dataPorMaterial.map((_, i) => <Cell key={i} fill={COLORS[(i + 2) % COLORS.length]} />)}
-                </Pie>
-                <Tooltip formatter={(val: any) => `R$ ${Number(val).toLocaleString('pt-BR')}`} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        )}
+        {/* Gráfico 2: Rosca (Custo por categoria) */}
+        <div className="chart-item flex-1 min-w-[300px]">
+          <p className="chart-label font-semibold mb-2 text-center text-gray-700">Custo por categoria</p>
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={empenhoCategoria}
+                dataKey="total_custo"
+                nameKey="categoria"
+                cx="50%"
+                cy="50%"
+                innerRadius={50}
+                outerRadius={80}
+              >
+                {empenhoCategoria.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(val: any) => `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
+              <Legend verticalAlign="bottom" height={36} iconType="square" />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Badge de Gasto Total Inferior */}
+      <div className="flex justify-center mt-2 relative z-10">
+        <div className="bg-[#e0f2fe] text-[#0369a1] px-6 py-2 rounded-full text-sm font-bold flex items-center gap-2 border border-[#bae6fd]">
+          <span className="bg-white rounded-full w-5 h-5 flex items-center justify-center text-xs"></span>
+          Gasto total: {total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+        </div>
       </div>
     </div>
   );

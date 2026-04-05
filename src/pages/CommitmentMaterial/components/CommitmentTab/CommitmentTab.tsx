@@ -1,55 +1,61 @@
-import type { Material } from '../../../../types/commitment';
 import './CommitmentTab.scss';
 
-type Props = {
-  data: Material[];
-  total: number;
+// Tipagem baseada nos dados cruzados que vamos enviar da página pai
+type MaterialTabela = {
+    codigo_material: string;
+    descricao: string;
+    categoria: string;
+    quantidade_total: number;
+    total_custo: number;
+    isObsoleto: boolean; // Flag que usaremos para pintar de vermelho
 };
 
-export default function CommitmentTab({ data, total }: Props) {
-  return (
-    <div className="commitment-card">
-      <div className="card-header">
-        <h2>Empenho de Materiais</h2>
-      </div>
+type Props = {
+    data: MaterialTabela[];
+};
 
-      <div className="table-wrapper">
-        <table className="custom-table">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Categoria</th>
-              <th className="text-center">Quantidade</th>
-              <th>Data</th>
-              <th className="text-right">Custo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map(item => {
-              const Obsolete = item.status === 'Obsoleto';
-              return (
-                <tr key={item.id} className={Obsolete ? 'row-obsolete' : ''}>
-                  <td className="font-bold">{item.name}</td>
-                  <td>{item.category}</td>
-                  <td className="text-center">{item.amount_committed}</td>
-                  <td>{new Date(item.commitment_date).toLocaleDateString('pt-BR')}</td>
-                  <td className="text-right font-mono">
-                    {(item.amount_committed * item.unit_cost).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-          <tfoot>
- <tr className="total-row">
-  <td colSpan={4} className="total-label">Custo Total Empenhado</td>
-  <td className="text-right total-value">
-    {total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-  </td>
-</tr>
-</tfoot>
-        </table>
-      </div>
-    </div>
-  );
+export default function CommitmentTab({ data }: Props) {
+    return (
+        <div className="commitment-card bg-white border border-gray-200 rounded-lg p-6 shadow-sm overflow-x-auto mt-6">
+            <table className="w-full text-left text-sm border-collapse">
+                <thead>
+                    <tr className="border-b border-gray-300 text-gray-600">
+                        <th className="pb-3 font-medium">Código</th>
+                        <th className="pb-3 font-medium">Nome do material</th>
+                        <th className="pb-3 font-medium">Categoria</th>
+                        <th className="pb-3 font-medium text-center">Quantidade</th>
+                        <th className="pb-3 font-medium text-right">Total Gasto</th>
+                        <th className="pb-3 font-medium text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {data && data.length > 0 ? (
+                        data.map((item) => (
+                            <tr
+                                key={item.codigo_material}
+                                // LÓGICA DA COR: Se for obsoleto, aplica as classes vermelhas do Tailwind
+                                className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${item.isObsoleto ? 'text-red-600 font-medium bg-red-50/40' : 'text-gray-800'
+                                    }`}
+                            >
+                                <td className="py-3 pl-2">{item.codigo_material}</td>
+                                <td className="py-3">{item.descricao}</td>
+                                <td className="py-3">{item.categoria}</td>
+                                <td className="py-3 text-center">{item.quantidade_total}</td>
+                                <td className="py-3 text-right">
+                                    {item.total_custo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                </td>
+                                <td className={`py-3 text-center font-bold ${item.isObsoleto ? 'text-red-600' : 'text-green-600'}`}>
+                                    {item.isObsoleto ? 'Obsoleto' : 'Ativo'}
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={6} className="text-center py-6 text-gray-500">Nenhum empenho encontrado.</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
+    );
 }
