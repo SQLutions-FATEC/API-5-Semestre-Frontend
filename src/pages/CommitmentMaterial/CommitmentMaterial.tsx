@@ -1,92 +1,63 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { commitmentService, type EmpenhoCategoria, type EmpenhoTempo, type MaterialObsoleto } from "../../services/commitmentService";
 import ProjectOverviewHeader from "../Overview/components/ProjectOverviewHeader/ProjectOverviewHeader";
-import CommitmentTab from "./components/CommitmentTab/CommitmentTab";
+import './CommitmentMaterial.scss';
 import CommitmentCharts from "./components/CommitmentCharts/CommitmentCharts";
 import ObsoleteList from "./components/ObsoleteList/ObsoleteList";
-import './CommitmentMaterial.scss';
 
 export default function CommitmentMaterial() {
-  const [category, setCategory] = useState('todas');
+  const { id } = useParams<{ id: string }>();
+  console.log("Código do Projeto na URL:", id);
 
-  const materials = [
-  {
-    id: '1',
-    name: 'Microcontrolador ARM Cortex-M4',
-    category: 'Processador',
-    amount_committed: 75,
-    unit_cost: 30,
-    commitment_date: '2026-03-10',
-    status: 'Ativo'
-  },
-  {
-    id: '2',
-    name: 'Sensor Corrente ACS712',
-    category: 'Sensor',
-    amount_committed: 50,
-    unit_cost: 20,
-    commitment_date: '2026-02-10',
-    status: 'Obsoleto'
-  },
-  {
-    id: '3',
-    name: 'Capacitor Cerâmico 10uF 0603',
-    category: 'Capacitor',
-    amount_committed: 150,
-    unit_cost: 0.50,
-    commitment_date: '2026-01-15',
-    status: 'Ativo'
-  },
-  {
-    id: '4',
-    name: 'Relé 12V 5A DPDT',
-    category: 'Relé',
-    amount_committed: 25,
-    unit_cost: 15,
-    commitment_date: '2026-03-05',
-    status: 'Obsoleto'
-  }
-];
+  // Estados para guardar os dados da API
+  const [obsoletos, setObsoletos] = useState<MaterialObsoleto[]>([]);
+  const [analyticsCategoria, setAnalyticsCategoria] = useState<EmpenhoCategoria[]>([]);
+  const [analyticsTempo, setAnalyticsTempo] = useState<EmpenhoTempo[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const categorias = [...new Set(materials.map(m => m.category))];
+  useEffect(() => {
+    async function carregarDados() {
+      if (!id) return;
 
-  const filtrados = useMemo(() => {
-    return category === 'todas' 
-      ? materials 
-      : materials.filter(m => m.category === category);
-  }, [category, materials]);
+      try {
+        setLoading(true);
+        const [alertasData, empenhosData] = await Promise.all([
+          commitmentService.getAlerts(id),
+          commitmentService.getAnalytics(id)
+        ]);
 
-  const total = useMemo(() => 
-    filtrados.reduce((acc, item) => acc + (item.amount_committed * item.unit_cost), 0)
-  , [filtrados]);
+        setObsoletos(alertasData.alertas_criticos.materiais_obsoletos);
+        setAnalyticsCategoria(empenhosData.empenho_por_categoria);
+        setAnalyticsTempo(empenhosData.empenho_por_tempo);
+      } catch (error) {
+        console.error("Erro ao carregar os dados de integração:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  const obsoletos = useMemo(() => 
-    filtrados.filter(m => m.status === 'Obsoleto')
-  , [filtrados]);
+    carregarDados();
+  }, [id]);
 
   return (
     <div className="commitment-page">
       <ProjectOverviewHeader />
-      <div className="commitment-content">
-        <CommitmentTab data={filtrados} total={total} />
-        
-        <div className="commitment-card filter-wrapper">
-          <div className="filter-group">
-            <label>Filtrar por Categoria:</label>
-            <select value={category} onChange={(e) => setCategory(e.target.value)}>
-              <option value="todas">Todas as Categorias</option>
-              {categorias.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-            </select>
-          </div>
-        </div>
 
-        <div className="analytics-section">
-          <CommitmentCharts 
-            allData={materials} 
-            filteredData={filtrados} 
-            selectedCategory={category} 
-          />
-          <ObsoleteList data={obsoletos} />
-        </div>
+      <div className="commitment-content">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <p>A carregar painel analítico...</p>
+          </div>
+        ) : (
+          <div className="analytics-section flex flex-col gap-6 mt-6">
+            <CommitmentCharts
+              empenhoCategoria={analyticsCategoria}
+              empenhoTempo={analyticsTempo}
+            />
+            <ObsoleteList data={obsoletos} />
+          </div>
+        )}
       </div>
     </div>
   );
