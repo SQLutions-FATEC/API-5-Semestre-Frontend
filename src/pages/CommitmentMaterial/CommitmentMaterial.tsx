@@ -8,6 +8,7 @@ import CommitmentTab from "./components/CommitmentTab/CommitmentTab";
 
 export default function CommitmentMaterial() {
   const [analyticsCategoria, setAnalyticsCategoria] = useState<EmpenhoCategoria[]>([]);
+  const [analyticsMaterial, setAnalyticsMaterial] = useState<any[]>([]);
   const [analyticsTempo, setAnalyticsTempo] = useState<EmpenhoTempo[]>([]);
   const [totalEmpenho, setTotalEmpenho] = useState(0);
   const [materiaisTabela, setMateriaisTabela] = useState<any[]>([]);
@@ -29,6 +30,7 @@ export default function CommitmentMaterial() {
         const listaObsoletos = alertasData.alertas_criticos.materiais_obsoletos;
 
         setAnalyticsCategoria(empenhosData.empenho_por_categoria);
+        setAnalyticsMaterial(empenhosData.empenho_por_material);
         setAnalyticsTempo(empenhosData.empenho_por_tempo);
         setTotalEmpenho(empenhosData.empenho_total);
 
@@ -78,6 +80,7 @@ export default function CommitmentMaterial() {
                 <CommitmentCharts
                   empenhoCategoria={analyticsCategoria}
                   empenhoTempo={analyticsTempo}
+                  empenhoMaterial={analyticsMaterial}
                   total={totalEmpenho}
                 />
               </div>
