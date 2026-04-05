@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { EmpenhoCategoria, EmpenhoTempo } from '../../../../services/commitmentService';
 import CommitmentCharts from './CommitmentCharts';
@@ -22,6 +22,11 @@ const mockEmpenhoTempo: EmpenhoTempo[] = [
   { data: '2024-11-04', total_custo: 23630.80, materiais: [] }
 ];
 
+const mockEmpenhoMaterial = [
+  { codigo_material: 'MAT1', descricao: 'Resistor', categoria: 'Conector', total_custo: 100 },
+  { codigo_material: 'MAT2', descricao: 'Capacitor', categoria: 'Sensor', total_custo: 200 }
+];
+
 describe('CommitmentCharts Component', () => {
   it('deve renderizar os títulos de identificação de ambos os gráficos', () => {
     render(<CommitmentCharts empenhoCategoria={mockEmpenhoCategoria} empenhoTempo={mockEmpenhoTempo} total={18630.80} />);
@@ -42,5 +47,27 @@ describe('CommitmentCharts Component', () => {
 
     // Verifica se a string formatada aparece na tela (ex: R$ 18.630,80)
     expect(screen.getByText(/18\.630,80/)).toBeDefined();
+  });
+
+  it('deve alternar a visualização e mudar os títulos para o modo Categoria', () => {
+    render(
+      <CommitmentCharts 
+        empenhoCategoria={mockEmpenhoCategoria} 
+        empenhoTempo={mockEmpenhoTempo} 
+        empenhoMaterial={mockEmpenhoMaterial}
+        total={18630.80} 
+      />
+    );
+
+    // Initial state check
+    expect(screen.getByText('Custo por categoria')).toBeDefined();
+
+    // Find the select element and change its value
+    const select = screen.getByRole('combobox');
+    fireEvent.change(select, { target: { value: 'categoria' } });
+
+    // After change, the title should be "Custo por material"
+    expect(screen.getByText('Custo por material')).toBeDefined();
+    expect(screen.queryByText('Custo por categoria')).toBeNull();
   });
 });
