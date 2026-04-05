@@ -1,59 +1,88 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { commitmentService } from '../../services/commitmentService';
 import CommitmentMaterial from './CommitmentMaterial';
 
-vi.mock('../Overview/components/ProjectOverviewHeader/ProjectOverviewHeader', () => ({
-  default: () => <div data-testid="header">Header</div>
+// 1. Mock do Layout (para renderizar os filhos direto e ignorar lógica extra de rota)
+vi.mock('../../components/ProjectLayout/ProjectLayout', () => ({
+  default: ({ children }: any) => <div data-testid="project-layout">{children(null)}</div>
 }));
+
+// 2. Mock dos subcomponentes visuais
 vi.mock('./components/CommitmentCharts/CommitmentCharts', () => ({
-  default: () => <div data-testid="charts">Charts</div>
+  default: () => <div data-testid="charts">Charts Component</div>
+}));
+
+vi.mock('./components/ObsoleteList/ObsoleteList', () => ({
+  default: () => <div data-testid="obsolete-list">Obsolete List Component</div>
+}));
+
+// 3. Mock do Serviço de API
+vi.mock('../../../services/commitmentService', () => ({
+  commitmentService: {
+    getAlerts: vi.fn(),
+    getAnalytics: vi.fn()
+  }
 }));
 
 describe('CommitmentMaterial Component', () => {
-  it('deve renderizar o componente e mostrar o título do filtro', () => {
-    render(<CommitmentMaterial />);
-    
-    expect(screen.getByText('Filtrar por Categoria:')).toBeDefined();
-    expect(screen.getByRole('combobox')).toBeDefined();
+  const mockAlerts = {
+    alertas_criticos: {
+      materiais_obsoletos: [{ codigo_material: 'MAT123', descricao: 'Cabo Teste' }]
+    }
+  };
+
+  const mockAnalytics = {
+    empenho_por_categoria: [{ categoria: 'Cabos', total_custo: 1000 }],
+    empenho_por_tempo: [{ data: '2024-01-01', total_custo: 1000 }]
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it('deve renderizar a lista completa de materiais por padrão', () => {
+  it('deve exibir a mensagem de carregamento ao montar o componente', () => {
+    vi.mocked(commitmentService.getAlerts).mockReturnValue(new Promise(() => { }));
+    vi.mocked(commitmentService.getAnalytics).mockReturnValue(new Promise(() => { }));
+
     render(<CommitmentMaterial />);
-    
-    expect(screen.getByText('Microcontrolador ARM Cortex-M4')).toBeDefined();
-    
-    // Como é obsoleto, aparece na tabela e no card lateral. Usamos getAllByText.
-    expect(screen.getAllByText('Relé 12V 5A DPDT').length).toBeGreaterThan(0);
+
+    expect(screen.getByText('Carregando painel analítico...')).toBeDefined();
   });
 
-  it('deve filtrar a lista quando uma categoria diferente for selecionada', () => {
+  it('deve carregar os dados da API e renderizar os gráficos e a lista', async () => {
+    vi.mocked(commitmentService.getAlerts).mockResolvedValue(mockAlerts as any);
+    vi.mocked(commitmentService.getAnalytics).mockResolvedValue(mockAnalytics as any);
+
     render(<CommitmentMaterial />);
-    
-    const select = screen.getByRole('combobox');
-    fireEvent.change(select, { target: { value: 'Sensor' } });
-    
-    // Sensor também é obsoleto, aparece em dois lugares.
-    expect(screen.getAllByText('Sensor Corrente ACS712').length).toBeGreaterThan(0);
-    
-    const microcontrolador = screen.queryByText('Microcontrolador ARM Cortex-M4');
-    expect(microcontrolador).toBeNull();
+
+    await waitFor(() => {
+      expect(screen.queryByText('Carregando painel analítico...')).toBeNull();
+    });
+
+    // Verificamos se as APIs foram chamadas com o ID padrão
+    expect(commitmentService.getAlerts).toHaveBeenCalledWith('PRJ003');
+    expect(commitmentService.getAnalytics).toHaveBeenCalledWith('PRJ003');
+
+    // Verificamos se os subcomponentes foram montados na tela
+    expect(screen.getByTestId('charts')).toBeDefined();
+    expect(screen.getByTestId('obsolete-list')).toBeDefined();
   });
 
-  it('deve calcular o total corretamente com base nos dados iniciais', () => {
+  it('deve remover o loading e não quebrar mesmo se a API retornar erro', async () => {
+    // Simulamos um erro no backend (API caindo)
+    vi.mocked(commitmentService.getAlerts).mockRejectedValue(new Error('Erro na API'));
+    vi.mocked(commitmentService.getAnalytics).mockRejectedValue(new Error('Erro na API'));
+
     render(<CommitmentMaterial />);
 
-    // A formatação do toLocaleString inclui um ponto na milhar (3.700,00)
-    expect(screen.getByText(/3\.700,00/)).toBeDefined();
-  });
+    // O loading deve sumir mesmo com erro (graças ao bloco finally no useEffect)
+    await waitFor(() => {
+      expect(screen.queryByText('Carregando painel analítico...')).toBeNull();
+    });
 
-  it('deve atualizar o total ao filtrar por uma categoria específica', () => {
-    render(<CommitmentMaterial />);
-    
-    const select = screen.getByRole('combobox');
-    fireEvent.change(select, { target: { value: 'Relé' } });
-    
-    // O valor 375 aparece duas vezes: no custo do item e no total geral
-    expect(screen.getAllByText(/375,00/).length).toBeGreaterThan(0);
-    expect(screen.queryByText(/3\.700,00/)).toBeNull();
+    // Os componentes devem renderizar (provavelmente vazios, mas a página não deve "crashar")
+    expect(screen.getByTestId('charts')).toBeDefined();
+    expect(screen.getByTestId('obsolete-list')).toBeDefined();
   });
 });
