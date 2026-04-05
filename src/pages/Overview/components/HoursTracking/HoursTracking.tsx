@@ -278,7 +278,7 @@ export default function HoursTracking() {
               },
               '& .MuiDataGrid-main': {
                 borderBottom: 'none',
-              }
+              },
             }}
           />
         </div>

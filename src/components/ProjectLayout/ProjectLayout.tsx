@@ -1,7 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useParams } from 'react-router-dom';
 import ProjectOverviewHeader from '../../pages/Overview/components/ProjectOverviewHeader/ProjectOverviewHeader';
-import { projectService, type ProjectOverviewResponse } from '../../services/projectService';
+import { projectService } from '../../services/projectService';
+import type { ProjectOverviewResponse } from '../../types/project';
 
 interface ProjectLayoutProps {
   readonly children: (data: ProjectOverviewResponse | null) => ReactNode;
@@ -12,7 +13,7 @@ interface ProjectLayoutProps {
 export default function ProjectLayout({
   children,
   pageClassName = 'overview-page',
-  contentClassName = 'overview-content'
+  contentClassName = 'overview-content',
 }: ProjectLayoutProps) {
   const { id = 'PRJ003' } = useParams<{ id: string }>();
   const [data, setData] = useState<ProjectOverviewResponse | null>(null);

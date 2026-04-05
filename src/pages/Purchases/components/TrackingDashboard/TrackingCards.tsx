@@ -1,31 +1,33 @@
 import React from 'react';
-import type { PurchaseOrder } from '../../../../types/purchase';
+import type { PurchasesResponse } from '../../../../types/purchase';
+import type { CriticalAlertsResponse } from '../../../../types/alerts';
 import { Truck, AlertCircle, ShoppingCart } from 'lucide-react';
 import './TrackingCards.scss';
 
 interface TrackingCardsProps {
-  orders: PurchaseOrder[];
+  alertas: CriticalAlertsResponse;
+  compras: PurchasesResponse;
 }
 
-const TrackingCards: React.FC<TrackingCardsProps> = ({ orders }) => {
+const TrackingCards: React.FC<TrackingCardsProps> = ({ alertas, compras }) => {
+  const { pedidos_atrasados, pedidos_prioritarios_pendentes } = alertas.alertas_criticos;
+
   const today = new Date();
 
   const getDaysDiff = (dateStr: string) => {
+    if (!dateStr) return 0;
     const dDate = new Date(dateStr);
     const diffTime = today.getTime() - dDate.getTime();
     return Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
   };
 
-  const delayedOrders = orders.filter((o) => {
-    const deliveryDate = new Date(o.deliveryDate);
-    return deliveryDate < today && !['Entregue', 'Recebido', 'Cancelado'].includes(o.status);
-  });
+  const getSupplier = (numero: string) => {
+    return compras.pedidos.find((p) => p.numero === numero)?.fornecedor || '-';
+  };
 
-  const priorityOrders = orders.filter(
-    (o) => ['Alta', 'Urgente'].includes(o.priority) && ['Aberto', 'Enviado'].includes(o.status)
-  );
-
-  const activeOrdersCount = orders.filter((o) => ['Aberto', 'Enviado'].includes(o.status)).length;
+  const activeOrdersCount = compras.pedidos.filter((o) =>
+    ['aberto', 'enviado', 'em rota'].includes(o.status.toLowerCase())
+  ).length;
 
   return (
     <div className="tracking-cards-grid">
@@ -34,7 +36,7 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ orders }) => {
         <h4 className="card-title">
           <Truck size={20} className="icon-alert" /> Histórico de entregas atrasadas
         </h4>
-        {delayedOrders.length > 0 ? (
+        {pedidos_atrasados.length > 0 ? (
           <div className="list-container">
             <div className="list-header">
               <span>Pedido</span>
@@ -42,11 +44,11 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ orders }) => {
               <span>Atraso</span>
             </div>
             <div className="list-body">
-              {delayedOrders.map((o) => (
-                <div key={o.id} className="list-row">
-                  <span>{o.orderNumber}</span>
-                  <span>{o.supplier}</span>
-                  <span>{getDaysDiff(o.deliveryDate)} dias</span>
+              {pedidos_atrasados.map((o) => (
+                <div key={o.numero_pedido} className="list-row">
+                  <span>{o.numero_pedido}</span>
+                  <span>{getSupplier(o.numero_pedido)}</span>
+                  <span>{o.dias_atraso} dias</span>
                 </div>
               ))}
             </div>
@@ -62,7 +64,7 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ orders }) => {
           <AlertCircle size={20} className="icon-critical" /> Pedidos de alta prioridade abertos ou
           em rota
         </h4>
-        {priorityOrders.length > 0 ? (
+        {pedidos_prioritarios_pendentes.length > 0 ? (
           <div className="list-container">
             <div className="list-header">
               <span>Pedido</span>
@@ -70,19 +72,22 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ orders }) => {
               <span>Dias desde a emissão</span>
             </div>
             <div className="list-body">
-              {priorityOrders.map((o) => {
-                const priorityClass = o.priority === 'Urgente' ? 'badge-urgent' : 'badge-high';
+              {pedidos_prioritarios_pendentes.map((o) => {
+                const isUrgent = o.prioridade?.toLowerCase() === 'urgente';
+                const priorityClass = isUrgent ? 'badge-urgent' : 'badge-high';
+                const isAberto = o.status?.toLowerCase() === 'aberto';
+
                 return (
-                  <div key={o.id} className="list-row">
+                  <div key={o.numero_pedido} className="list-row">
                     <span className={`priority-badge ${priorityClass}`}>
-                      {o.orderNumber} {o.priority}{' '}
-                      {o.priority === 'Urgente' && <AlertCircle size={12} />}
+                      {o.numero_pedido} {o.prioridade}
+                      {isUrgent && <AlertCircle size={12} />}
                     </span>
                     <span className="status-cell">
-                      {o.status === 'Aberto' ? <ShoppingCart size={16} /> : <Truck size={16} />}
-                      {o.status === 'Enviado' ? 'Em rota' : o.status}
+                      {isAberto ? <ShoppingCart size={16} /> : <Truck size={16} />}
+                      {o.status?.toLowerCase() === 'enviado' ? 'Em rota' : o.status}
                     </span>
-                    <span>{getDaysDiff(o.issueDate)}</span>
+                    <span>{getDaysDiff(o.data_pedido)}</span>
                   </div>
                 );
               })}

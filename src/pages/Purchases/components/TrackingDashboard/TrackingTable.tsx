@@ -2,102 +2,121 @@ import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
-import { Chip, Tooltip } from '@mui/material';
-import type { PurchaseOrder } from '../../../../types/purchase';
+import { Chip } from '@mui/material';
+import type { PurchaseOrderData } from '../../../../types/purchase';
 import { sharedDataGridStyles } from '../../../../styles/sharedDataGridStyles';
 import './TrackingTable.scss';
 
 interface TrackingTableProps {
-  orders: PurchaseOrder[];
+  orders: PurchaseOrderData[];
 }
+
+const getMappedOrderCode = (backendCode: string) => {
+  const map: Record<string, string> = {
+    PC0001: 'SC0020 / PC0001',
+    PC0002: 'SC0041 / PC0002',
+    PC0003: 'SC0066 / PC0003',
+  };
+  return map[backendCode] || backendCode;
+};
 
 const TrackingTable: React.FC<TrackingTableProps> = ({ orders }) => {
   const columns: GridColDef[] = [
     {
-      field: 'orderNumber',
-      headerName: 'Cód do pedido',
-      width: 140,
+      field: 'numero',
+      headerName: 'Cod de pedido',
+      width: 160,
       headerClassName: 'table-header',
+      valueGetter: (_, row) => getMappedOrderCode(row.numero),
     },
-    {
-      field: 'materialName',
-      headerName: 'Nome do material',
-      flex: 1,
-      minWidth: 250,
-      renderCell: (params) => {
-        const isObsolete = params.row.materialStatus === 'Obsoleto';
-        const content = (
-          <span
-            style={{
-              color: isObsolete ? '#e53e3e' : 'inherit',
-              fontWeight: isObsolete ? 600 : 'normal',
-            }}
-          >
-            {params.value}
-          </span>
-        );
+    // Valor faltando no backend
+    // {
+    //   field: 'materialName',
+    //   headerName: 'Nome do material',
+    //   flex: 1,
+    //   minWidth: 250,
+    //   renderCell: (params) => {
+    //     const isObsolete = params.row.materialStatus === 'Obsoleto';
+    //     const content = (
+    //       <span
+    //         style={{
+    //           color: isObsolete ? '#e53e3e' : 'inherit',
+    //           fontWeight: isObsolete ? 600 : 'normal',
+    //         }}
+    //       >
+    //         {params.value}
+    //       </span>
+    //     );
 
-        if (isObsolete) {
-          return (
-            <Tooltip title="Material Obsoleto" placement="top">
-              {content}
-            </Tooltip>
-          );
-        }
-        return content;
+    //     if (isObsolete) {
+    //       return (
+    //         <Tooltip title="Material Obsoleto" placement="top">
+    //           {content}
+    //         </Tooltip>
+    //       );
+    //     }
+    //     return content;
+    //   }
+    // },
+    {
+      field: 'emissao',
+      headerName: 'Data de emissão',
+      width: 150,
+      valueFormatter: (value) => {
+        if (!value) return '';
+        const [y, m, d] = (value as string).split('-');
+        if (y && m && d) return `${d}/${m}/${y}`;
+        return new Date(value as string).toLocaleDateString('pt-BR');
       },
     },
     {
-      field: 'issueDate',
-      headerName: 'Data de emissão',
-      width: 150,
-      valueFormatter: (value) =>
-        value ? new Date(value as string).toLocaleDateString('pt-BR') : '',
-    },
-    {
-      field: 'deliveryDate',
+      field: 'previsao',
       headerName: 'Data de previsão de entrega',
       width: 220,
-      valueFormatter: (value) =>
-        value ? new Date(value as string).toLocaleDateString('pt-BR') : '',
+      valueFormatter: (value) => {
+        if (!value) return '';
+        const [y, m, d] = (value as string).split('-');
+        if (y && m && d) return `${d}/${m}/${y}`;
+        return new Date(value as string).toLocaleDateString('pt-BR');
+      },
     },
-    { field: 'supplier', headerName: 'Fornecedor', flex: 1, minWidth: 200 },
     {
-      field: 'totalValue',
-      headerName: 'Valor total pedido',
-      width: 160,
-      valueFormatter: (value) =>
-        (value as number)?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+      field: 'dias_previstos_entrega',
+      headerName: 'Dias previstos para entrega',
+      width: 210,
     },
+    { field: 'fornecedor', headerName: 'Fornecedor', flex: 1, minWidth: 200 },
+    { field: 'centro_custo', headerName: 'Centro Custo', flex: 1, minWidth: 150 },
     {
       field: 'status',
-      headerName: 'Status do pedido',
+      headerName: 'Status',
       width: 180,
       renderCell: (params) => {
         let colors = { bg: '#edf2f7', text: '#4a5568' };
 
-        switch (params.value) {
-          case 'Recebido':
-          case 'Entregue':
+        switch (params.value?.toString().toLowerCase()) {
+          case 'recebido':
+          case 'entregue':
+          case 'concluida':
             colors = { bg: '#e6fffa', text: '#047481' };
             break;
-          case 'Cancelado':
+          case 'cancelado':
             colors = { bg: '#fff5f5', text: '#c53030' };
             break;
-          case 'Parcialmente recebido':
-          case 'Parcialmente Entregue':
-          case 'Aberto':
+          case 'parcialmente recebido':
+          case 'parcialmente entregue':
+          case 'aberto':
             colors = { bg: '#fffaf0', text: '#9c4221' };
             break;
-          case 'Enviado':
-          case 'Em rota':
+          case 'enviado':
+          case 'em rota':
             colors = { bg: '#ebf8ff', text: '#2b6cb0' };
             break;
         }
 
         return (
           <Chip
-            label={params.value}
+            label={params.value || '-'}
             size="small"
             sx={{
               fontWeight: 700,
@@ -118,6 +137,7 @@ const TrackingTable: React.FC<TrackingTableProps> = ({ orders }) => {
         <DataGrid
           rows={orders}
           columns={columns}
+          getRowId={(row) => row.numero}
           initialState={{
             pagination: {
               paginationModel: { pageSize: 10 },
