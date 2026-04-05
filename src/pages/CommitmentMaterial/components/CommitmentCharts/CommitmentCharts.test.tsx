@@ -18,8 +18,21 @@ const mockEmpenhoCategoria: EmpenhoCategoria[] = [
 ];
 
 const mockEmpenhoTempo: EmpenhoTempo[] = [
-  { data: '2024-11-03', total_custo: 18630.80, materiais: [] },
-  { data: '2024-11-04', total_custo: 23630.80, materiais: [] }
+  { 
+    data: '2024-11-03', 
+    total_custo: 18630.80, 
+    materiais: [
+      { codigo_material: 'MAT1', descricao: 'Resistor', custo_unitario: 50, quantidade: 2, total_custo: 100 },
+      { codigo_material: 'UNKNOWN', descricao: 'Desconhecido', custo_unitario: 10, quantidade: 1, total_custo: 10 }
+    ] 
+  },
+  { 
+    data: '2024-11-04', 
+    total_custo: 23630.80, 
+    materiais: [
+      { codigo_material: 'MAT2', descricao: 'Capacitor', custo_unitario: 100, quantidade: 2, total_custo: 200 }
+    ] 
+  }
 ];
 
 const mockEmpenhoMaterial = [
