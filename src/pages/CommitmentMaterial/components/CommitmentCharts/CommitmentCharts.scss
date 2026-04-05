@@ -1,9 +1,11 @@
+@import '../../../../styles/variables';
+
 .commitment-card {
-  background-color: #ffffff;
+  background-color: $bg-card;
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  border: 1px solid $border-default;
   margin-top: 20px;
 
   .card-header h2 {
@@ -14,8 +16,8 @@
 }
 
 .charts-display-wrapper {
-  display: flex; 
-  flex-direction: row; 
+  display: flex;
+  flex-direction: row;
   justify-content: space-around;
   align-items: center;
 

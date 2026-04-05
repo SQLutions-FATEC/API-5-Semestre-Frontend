@@ -1,3 +1,5 @@
+@import '../../../../styles/variables';
+
 .overview-metrics-wrapper {
   display: flex;
   flex-direction: column;
@@ -15,8 +17,8 @@
   }
 
   .metric-card {
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
+    background-color: $bg-card;
+    border: 1px solid $border-default;
     border-radius: 12px;
     padding: 1.25rem 1.5rem;
     display: flex;
@@ -45,34 +47,34 @@
         justify-content: center;
 
         &.bg-green {
-          background-color: #ecfdf5;
-          color: #10b981;
+          background-color: $color-success-bg;
+          color: $color-success-badge;
         }
         &.bg-blue {
-          background-color: #eff6ff;
-          color: #3b82f6;
+          background-color: $color-info-bg;
+          color: $color-info-text;
         }
         &.bg-orange {
-          background-color: #fff7ed;
-          color: #f59e0b;
+          background-color: $color-warning-bg;
+          color: $color-warning-text;
         }
         &.bg-purple {
-          background-color: #f5f3ff;
-          color: #8b5cf6;
+          background-color: $color-accent-bg;
+          color: $color-accent-text;
         }
       }
 
       .metric-title {
         font-size: 0.875rem;
         font-weight: 500;
-        color: #6b7280;
+        color: $text-secondary;
       }
     }
 
     .metric-value {
       font-size: 1.5rem;
       font-weight: 600;
-      color: #111827;
+      color: $text-primary;
       letter-spacing: -0.01em;
     }
   }

@@ -1,13 +1,13 @@
-// Variáveis de Tema
-$sidebar-bg: #111827; // gray-900
-$sidebar-hover: #1f2937; // gray-800
-$accent-blue: #2563eb; // blue-600
-$text-muted: #9ca3af; // gray-400
+@import '../../../styles/variables';
+
+$sidebar-bg: #111827;
+$sidebar-hover: #1f2937;
+$accent-blue: $primary;
 $transition-speed: 0.3s;
 
 .sidebar {
   background-color: $sidebar-bg;
-  color: white;
+  color: $text-white;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -59,14 +59,19 @@ $transition-speed: 0.3s;
     background-color: $sidebar-hover;
     border-radius: 9999px;
     padding: 0.25rem;
-    border: 1px solid #374151;
-    color: #d1d5db;
+    border: 1px solid $secondary-hover;
+    color: $border-default;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: $transition-default;
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: $shadow-focus;
+    }
 
     &:hover {
-      color: white;
-      background-color: #374151;
+      color: $text-white;
+      background-color: $secondary-hover;
     }
   }
 
@@ -90,12 +95,12 @@ $transition-speed: 0.3s;
 
     &.active {
       background-color: $accent-blue;
-      color: white;
+      color: $text-white;
     }
 
     &:not(.active):hover {
       background-color: $sidebar-hover;
-      color: white;
+      color: $text-white;
     }
 
     &.centered {
