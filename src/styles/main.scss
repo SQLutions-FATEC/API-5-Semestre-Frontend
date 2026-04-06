@@ -1,0 +1,15 @@
+@import 'variables';
+
+//adicionar aqui padrão global de estilos
+body {
+  margin: 0;
+  font-family: $main-font;
+  background-color: $bg-page;
+  color: $text-primary;
+}
+
+h1,
+h2 {
+  color: $primary;
+  font-family: $title-font;
+}

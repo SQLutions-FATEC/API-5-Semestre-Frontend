@@ -1,0 +1,228 @@
+@import '../../../../styles/variables';
+
+.hours-tracking-wrapper {
+  background-color: $bg-card;
+  border: 1px solid $border-default;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  font-family: 'Inter', sans-serif;
+  color: $text-primary;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .hours-header {
+    text-align: left;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #003a70;
+      /* match design dark blue */
+      margin: 0;
+    }
+  }
+
+  .charts-section {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    align-items: flex-start;
+
+    @media (max-width: 1024px) {
+      flex-direction: column;
+    }
+  }
+
+  .line-chart-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .chart-label {
+      align-self: flex-start;
+      margin-left: 20px;
+      color: $text-secondary;
+      font-size: 0.875rem;
+      margin-bottom: 8px;
+    }
+
+    .chart-wrapper {
+      width: 100%;
+      height: 300px;
+    }
+
+    .total-hours-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: #e6f0fa;
+      color: #003a70;
+      padding: 0.5rem 1.25rem;
+      border-radius: 20px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      margin-top: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+
+  .task-details-card {
+    width: 320px;
+    border: 1px solid $border-default;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    background-color: $bg-card;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .property-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      .prop-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: $text-secondary;
+        font-size: 0.875rem;
+
+        svg {
+          width: 16px;
+          height: 16px;
+          color: $text-primary;
+        }
+      }
+
+      .prop-value {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #003a70;
+        padding-left: 1.5rem;
+        /* Indent based on icon */
+      }
+
+      .prop-value-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .task-code {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.25rem;
+
+          .task-code-select-wrapper {
+            border: 1px solid #cbd5e0;
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            svg {
+              width: 16px;
+              height: 16px;
+              color: $text-secondary;
+              pointer-events: none;
+            }
+          }
+
+          .task-code-select {
+            appearance: none;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: $text-secondary;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding-right: 0;
+
+            &:focus {
+              outline: none;
+            }
+
+            &:disabled {
+              cursor: not-allowed;
+              opacity: 0.7;
+            }
+          }
+        }
+      }
+    }
+
+    .donut-chart-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+
+      .donut-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: $text-secondary;
+        font-size: 0.875rem;
+        align-self: flex-start;
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      .donut-wrapper {
+        width: 140px;
+        height: 140px;
+        position: relative;
+      }
+
+      .legend-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        width: 100%;
+
+        .legend-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: $text-primary;
+
+          .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+          }
+        }
+      }
+    }
+  }
+
+  .table-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid $border-default;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+}

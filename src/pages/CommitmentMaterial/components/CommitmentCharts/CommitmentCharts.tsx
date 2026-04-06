@@ -1,0 +1,190 @@
+import { useMemo, useState } from 'react';
+import {
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import type { EmpenhoCategoria, EmpenhoTempo } from '../../../../services/commitmentService';
+import './CommitmentCharts.scss';
+
+type Props = {
+  empenhoCategoria: EmpenhoCategoria[];
+  empenhoTempo: EmpenhoTempo[];
+  empenhoMaterial?: any[];
+  total: number;
+};
+
+// Cores baseadas no mockup para o gráfico de rosca
+const COLORS = [
+  '#0f4a8e',
+  '#facc15',
+  '#ea580c',
+  '#10b981',
+  '#8b5cf6',
+  '#ec4899',
+  '#06b6d4',
+  '#eab308',
+];
+
+export default function CommitmentCharts({
+  empenhoCategoria,
+  empenhoTempo,
+  empenhoMaterial,
+  total,
+}: Props) {
+  const [viewMode, setViewMode] = useState<'geral' | 'categoria'>('geral');
+
+  // Transforma os dados temporais para ter uma chave por categoria
+  const transformedTempo = useMemo(() => {
+    if (viewMode === 'geral') {
+      return empenhoTempo;
+    }
+
+    const materialCategoryMap: Record<string, string> = {};
+    if (empenhoMaterial) {
+      empenhoMaterial.forEach((m) => {
+        materialCategoryMap[m.codigo_material] = m.categoria;
+      });
+    }
+
+    return empenhoTempo.map((tempoP) => {
+      const newP: any = { data: tempoP.data };
+      tempoP.materiais?.forEach((m) => {
+        const cat = materialCategoryMap[m.codigo_material] || 'Sem Categoria';
+        if (!newP[cat]) {
+          newP[cat] = 0;
+        }
+        newP[cat] += m.total_custo;
+      });
+      return newP;
+    });
+  }, [empenhoTempo, viewMode, empenhoMaterial]);
+
+  const categories = useMemo(() => {
+    return empenhoCategoria.map((c) => c.categoria);
+  }, [empenhoCategoria]);
+
+  const pieData = viewMode === 'geral' ? empenhoCategoria : empenhoMaterial || [];
+  const pieNameKey = viewMode === 'geral' ? 'categoria' : 'descricao';
+
+  return (
+    <div className="commitment-card charts-container bg-white border border-gray-200 rounded-lg p-6 relative shadow-sm">
+      {/* Seletor Centralizado */}
+      <div className="flex justify-center mb-8 relative z-10">
+        <div className="flex items-center gap-2 bg-white border border-gray-300 rounded shadow-sm px-3 py-1">
+          <span className="text-sm text-gray-700">Empenho geral</span>
+          <select
+            className="bg-transparent border-none outline-none text-sm font-semibold cursor-pointer text-blue-600"
+            value={viewMode}
+            onChange={(e) => setViewMode(e.target.value as 'geral' | 'categoria')}
+          >
+            <option value="geral">Geral</option>
+            <option value="categoria">Categoria</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="charts-display-wrapper flex flex-wrap gap-8 items-center justify-between">
+        {/* Gráfico 1: Linhas (Custo empenhado) */}
+        <div className="chart-item flex-1 min-w-[300px]">
+          <p className="chart-label font-semibold mb-2 text-gray-700 ml-4">Custo empenhado</p>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={transformedTempo} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={true} />
+              <XAxis
+                dataKey="data"
+                tick={{ fontSize: 11 }}
+                angle={-35}
+                textAnchor="end"
+                height={60}
+              />
+              <YAxis tick={{ fontSize: 11 }} />
+              <Tooltip
+                formatter={(val: any) =>
+                  `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+                }
+              />
+              <Legend verticalAlign="bottom" height={36} iconType="rect" />
+
+              {viewMode === 'geral' ? (
+                <Line
+                  type="linear"
+                  dataKey="total_custo"
+                  stroke="#0f4a8e"
+                  strokeWidth={3}
+                  name="Total_gasto"
+                  dot={{ stroke: '#0f4a8e', strokeWidth: 2, fill: '#0f4a8e', r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              ) : (
+                categories.map((cat, index) => (
+                  <Line
+                    key={cat}
+                    type="linear"
+                    dataKey={cat}
+                    stroke={COLORS[index % COLORS.length]}
+                    strokeWidth={3}
+                    name={cat}
+                    dot={{
+                      stroke: COLORS[index % COLORS.length],
+                      strokeWidth: 2,
+                      fill: COLORS[index % COLORS.length],
+                      r: 4,
+                    }}
+                    activeDot={{ r: 6 }}
+                  />
+                ))
+              )}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Gráfico 2: Rosca (Custo por categoria / material) */}
+        <div className="chart-item flex-1 min-w-[300px]">
+          <p className="chart-label font-semibold mb-2 text-center text-gray-700">
+            {viewMode === 'geral' ? 'Custo por categoria' : 'Custo por material'}
+          </p>
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="total_custo"
+                nameKey={pieNameKey}
+                cx="50%"
+                cy="50%"
+                innerRadius={50}
+                outerRadius={80}
+              >
+                {pieData.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip
+                formatter={(val: any) =>
+                  `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+                }
+              />
+              <Legend verticalAlign="bottom" height={36} iconType="square" />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Badge de Gasto Total Inferior */}
+      <div className="flex justify-center mt-2 relative z-10">
+        <div className="bg-[#e0f2fe] text-[#0369a1] px-6 py-2 rounded-full text-sm font-bold flex items-center gap-2 border border-[#bae6fd]">
+          <span className="bg-white rounded-full w-5 h-5 flex items-center justify-center text-xs"></span>
+          Gasto total: {total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+        </div>
+      </div>
+    </div>
+  );
+}
