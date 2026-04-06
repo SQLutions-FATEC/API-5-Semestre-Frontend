@@ -1,10 +1,12 @@
+@import '../../styles/variables';
+
 $sidebar-expanded: 16rem;
 $sidebar-collapsed: 5rem;
 
 .layout-container {
   display: flex;
   height: 100dvh;
-  background-color: #f0f9ff;
+  background-color: $bg-page;
   overflow: hidden;
 
   .layout-content {

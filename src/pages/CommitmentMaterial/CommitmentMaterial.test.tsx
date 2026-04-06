@@ -4,23 +4,23 @@ import { commitmentService } from '../../services/commitmentService';
 import CommitmentMaterial from './CommitmentMaterial';
 
 vi.mock('../../components/ProjectLayout/ProjectLayout', () => ({
-  default: ({ children }: any) => <div data-testid="project-layout">{children(null)}</div>
+  default: ({ children }: any) => <div data-testid="project-layout">{children(null)}</div>,
 }));
 
 vi.mock('./components/CommitmentCharts/CommitmentCharts', () => ({
-  default: () => <div data-testid="charts">Charts Component</div>
+  default: () => <div data-testid="charts">Charts Component</div>,
 }));
 
 // Agora mockamos o Tab ao invés da lista de obsoletos
 vi.mock('./components/CommitmentTab/CommitmentTab', () => ({
-  default: () => <div data-testid="commitment-tab">Tab Component</div>
+  default: () => <div data-testid="commitment-tab">Tab Component</div>,
 }));
 
 describe('CommitmentMaterial Component', () => {
   const mockAlerts = {
     alertas_criticos: {
-      materiais_obsoletos: [{ codigo_material: 'MAT123', descricao: 'Cabo Teste' }]
-    }
+      materiais_obsoletos: [{ codigo_material: 'MAT123', descricao: 'Cabo Teste' }],
+    },
   };
 
   const mockAnalytics = {
@@ -28,7 +28,7 @@ describe('CommitmentMaterial Component', () => {
     empenho_por_categoria: [{ categoria: 'Cabos', total_custo: 1000 }],
     empenho_por_tempo: [{ data: '2024-01-01', total_custo: 1000 }],
     // Adicionado para o teste não quebrar no `.map`
-    empenho_por_material: [{ codigo_material: 'MAT123', descricao: 'Cabo Teste' }]
+    empenho_por_material: [{ codigo_material: 'MAT123', descricao: 'Cabo Teste' }],
   };
 
   beforeEach(() => {
@@ -36,8 +36,8 @@ describe('CommitmentMaterial Component', () => {
   });
 
   it('deve exibir a mensagem de carregamento ao montar o componente', () => {
-    vi.spyOn(commitmentService, 'getAlerts').mockReturnValue(new Promise(() => { }));
-    vi.spyOn(commitmentService, 'getAnalytics').mockReturnValue(new Promise(() => { }));
+    vi.spyOn(commitmentService, 'getAlerts').mockReturnValue(new Promise(() => {}));
+    vi.spyOn(commitmentService, 'getAnalytics').mockReturnValue(new Promise(() => {}));
 
     render(<CommitmentMaterial />);
 
@@ -46,7 +46,9 @@ describe('CommitmentMaterial Component', () => {
 
   it('deve carregar os dados da API e renderizar os gráficos e a tabela', async () => {
     const spyAlerts = vi.spyOn(commitmentService, 'getAlerts').mockResolvedValue(mockAlerts as any);
-    const spyAnalytics = vi.spyOn(commitmentService, 'getAnalytics').mockResolvedValue(mockAnalytics as any);
+    const spyAnalytics = vi
+      .spyOn(commitmentService, 'getAnalytics')
+      .mockResolvedValue(mockAnalytics as any);
 
     render(<CommitmentMaterial />);
 

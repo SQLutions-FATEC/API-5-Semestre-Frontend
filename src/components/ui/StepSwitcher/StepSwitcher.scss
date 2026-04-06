@@ -14,10 +14,10 @@
 
     .step-switcher-container {
       display: flex;
-      background: rgba(225, 239, 254, 0.4);
+      background: rgba(241, 245, 249, 0.4);
       padding: 4px;
       border-radius: 12px;
-      border: 1px solid #e1effe;
+      border: 1px solid $border-default;
       border-bottom: none;
       backdrop-filter: blur(8px);
 
@@ -28,29 +28,35 @@
         border-radius: 8px;
         font-size: 0.875rem;
         font-weight: 500;
-        color: #718096;
+        color: $text-secondary;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: $transition-default;
         font-family: $main-font;
 
         &:hover {
-          color: $primary-color;
+          color: $primary-hover;
+          background: $bg-hover;
+        }
+
+        &:focus-visible {
+          outline: none;
+          box-shadow: $shadow-focus;
         }
 
         &.active {
-          background: #ffffff;
-          color: $primary-color;
-          box-shadow: 0 4px 12px rgba(0, 123, 255, 0.12);
+          background: $bg-card;
+          color: $primary;
+          box-shadow: $shadow-md;
         }
       }
     }
   }
 
   .step-content-box {
-    background: #ffffff;
+    background: $bg-card;
     border-radius: 16px;
-    border: 1px solid #e1effe;
-    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.05);
+    border: 1px solid $border-default;
+    box-shadow: $shadow-sm;
     padding: 2rem;
     min-height: 400px;
     position: relative;

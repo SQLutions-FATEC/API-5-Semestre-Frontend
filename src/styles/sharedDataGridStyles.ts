@@ -2,7 +2,7 @@ export const sharedDataGridStyles = {
   border: 'none',
   '& .MuiDataGrid-columnHeaders': {
     backgroundColor: '#ffffff',
-    color: '#4a5568',
+    color: '#475569',
     fontWeight: 700,
     borderBottom: '2px solid #e2e8f0',
   },
@@ -16,7 +16,7 @@ export const sharedDataGridStyles = {
     backgroundColor: '#f8fafc',
   },
   '& .MuiDataGrid-row:hover': {
-    backgroundColor: '#edf2f7 !important',
+    backgroundColor: '#f1f5f9 !important',
   },
   '& .MuiDataGrid-cell': {
     display: 'flex',
@@ -24,6 +24,9 @@ export const sharedDataGridStyles = {
     paddingLeft: '24px !important',
   },
   '& .MuiDataGrid-cell:focus': {
+    outline: 'none',
+  },
+  '& .MuiDataGrid-cell:focus-within': {
     outline: 'none',
   },
 };

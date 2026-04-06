@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import ProjectLayout from "../../components/ProjectLayout/ProjectLayout";
-import type { EmpenhoCategoria, EmpenhoTempo } from "../../services/commitmentService";
-import { commitmentService } from "../../services/commitmentService";
+import { useEffect, useState } from 'react';
+import ProjectLayout from '../../components/ProjectLayout/ProjectLayout';
+import type { EmpenhoCategoria, EmpenhoTempo } from '../../services/commitmentService';
+import { commitmentService } from '../../services/commitmentService';
 import './CommitmentMaterial.scss';
-import CommitmentCharts from "./components/CommitmentCharts/CommitmentCharts";
-import CommitmentTab from "./components/CommitmentTab/CommitmentTab";
+import CommitmentCharts from './components/CommitmentCharts/CommitmentCharts';
+import CommitmentTab from './components/CommitmentTab/CommitmentTab';
 
 export default function CommitmentMaterial() {
   const [analyticsCategoria, setAnalyticsCategoria] = useState<EmpenhoCategoria[]>([]);
@@ -24,7 +24,7 @@ export default function CommitmentMaterial() {
         // Busca os dois endpoints em paralelo
         const [alertasData, empenhosData] = await Promise.all([
           commitmentService.getAlerts(idProjeto),
-          commitmentService.getAnalytics(idProjeto)
+          commitmentService.getAnalytics(idProjeto),
         ]);
 
         const listaObsoletos = alertasData.alertas_criticos.materiais_obsoletos;
@@ -39,13 +39,12 @@ export default function CommitmentMaterial() {
 
         const materiaisComStatus = empenhosData.empenho_por_material.map((mat: any) => ({
           ...mat,
-          isObsoleto: codigosObsoletos.includes(mat.codigo_material)
+          isObsoleto: codigosObsoletos.includes(mat.codigo_material),
         }));
 
         setMateriaisTabela(materiaisComStatus);
-
       } catch (error) {
-        console.error("Erro ao carregar os dados de integração:", error);
+        console.error('Erro ao carregar os dados de integração:', error);
       } finally {
         setLoading(false);
       }
@@ -58,7 +57,6 @@ export default function CommitmentMaterial() {
     <ProjectLayout pageClassName="commitment-page" contentClassName="commitment-content">
       {() => (
         <div className="mt-6">
-
           <div className="flex gap-2 mb-4">
             <button className="px-6 py-2 bg-blue-50 text-blue-800 border border-blue-200 font-semibold rounded-md shadow-sm">
               Materiais
@@ -75,7 +73,6 @@ export default function CommitmentMaterial() {
           ) : (
             // A classe flex-col garante que os itens fiquem um embaixo do outro
             <div className="flex flex-col gap-8 w-full">
-
               <div className="w-full">
                 <CommitmentCharts
                   empenhoCategoria={analyticsCategoria}
@@ -88,7 +85,6 @@ export default function CommitmentMaterial() {
               <div className="w-full">
                 <CommitmentTab data={materiaisTabela} />
               </div>
-
             </div>
           )}
         </div>

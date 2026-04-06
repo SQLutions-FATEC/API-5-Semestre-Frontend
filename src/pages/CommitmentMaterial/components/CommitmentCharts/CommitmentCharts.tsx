@@ -1,5 +1,17 @@
 import { useMemo, useState } from 'react';
-import { CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import {
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import type { EmpenhoCategoria, EmpenhoTempo } from '../../../../services/commitmentService';
 import './CommitmentCharts.scss';
 
@@ -11,9 +23,23 @@ type Props = {
 };
 
 // Cores baseadas no mockup para o gráfico de rosca
-const COLORS = ['#0f4a8e', '#facc15', '#ea580c', '#10b981', '#8b5cf6', '#ec4899', '#06b6d4', '#eab308'];
+const COLORS = [
+  '#0f4a8e',
+  '#facc15',
+  '#ea580c',
+  '#10b981',
+  '#8b5cf6',
+  '#ec4899',
+  '#06b6d4',
+  '#eab308',
+];
 
-export default function CommitmentCharts({ empenhoCategoria, empenhoTempo, empenhoMaterial, total }: Props) {
+export default function CommitmentCharts({
+  empenhoCategoria,
+  empenhoTempo,
+  empenhoMaterial,
+  total,
+}: Props) {
   const [viewMode, setViewMode] = useState<'geral' | 'categoria'>('geral');
 
   // Transforma os dados temporais para ter uma chave por categoria
@@ -24,14 +50,14 @@ export default function CommitmentCharts({ empenhoCategoria, empenhoTempo, empen
 
     const materialCategoryMap: Record<string, string> = {};
     if (empenhoMaterial) {
-      empenhoMaterial.forEach(m => {
+      empenhoMaterial.forEach((m) => {
         materialCategoryMap[m.codigo_material] = m.categoria;
       });
     }
 
-    return empenhoTempo.map(tempoP => {
+    return empenhoTempo.map((tempoP) => {
       const newP: any = { data: tempoP.data };
-      tempoP.materiais?.forEach(m => {
+      tempoP.materiais?.forEach((m) => {
         const cat = materialCategoryMap[m.codigo_material] || 'Sem Categoria';
         if (!newP[cat]) {
           newP[cat] = 0;
@@ -43,20 +69,19 @@ export default function CommitmentCharts({ empenhoCategoria, empenhoTempo, empen
   }, [empenhoTempo, viewMode, empenhoMaterial]);
 
   const categories = useMemo(() => {
-    return empenhoCategoria.map(c => c.categoria);
+    return empenhoCategoria.map((c) => c.categoria);
   }, [empenhoCategoria]);
 
-  const pieData = viewMode === 'geral' ? empenhoCategoria : (empenhoMaterial || []);
+  const pieData = viewMode === 'geral' ? empenhoCategoria : empenhoMaterial || [];
   const pieNameKey = viewMode === 'geral' ? 'categoria' : 'descricao';
 
   return (
     <div className="commitment-card charts-container bg-white border border-gray-200 rounded-lg p-6 relative shadow-sm">
-
       {/* Seletor Centralizado */}
       <div className="flex justify-center mb-8 relative z-10">
         <div className="flex items-center gap-2 bg-white border border-gray-300 rounded shadow-sm px-3 py-1">
           <span className="text-sm text-gray-700">Empenho geral</span>
-          <select 
+          <select
             className="bg-transparent border-none outline-none text-sm font-semibold cursor-pointer text-blue-600"
             value={viewMode}
             onChange={(e) => setViewMode(e.target.value as 'geral' | 'categoria')}
@@ -68,18 +93,27 @@ export default function CommitmentCharts({ empenhoCategoria, empenhoTempo, empen
       </div>
 
       <div className="charts-display-wrapper flex flex-wrap gap-8 items-center justify-between">
-
         {/* Gráfico 1: Linhas (Custo empenhado) */}
         <div className="chart-item flex-1 min-w-[300px]">
           <p className="chart-label font-semibold mb-2 text-gray-700 ml-4">Custo empenhado</p>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={transformedTempo} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={true} />
-              <XAxis dataKey="data" tick={{ fontSize: 11 }} angle={-35} textAnchor="end" height={60} />
+              <XAxis
+                dataKey="data"
+                tick={{ fontSize: 11 }}
+                angle={-35}
+                textAnchor="end"
+                height={60}
+              />
               <YAxis tick={{ fontSize: 11 }} />
-              <Tooltip formatter={(val: any) => `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
+              <Tooltip
+                formatter={(val: any) =>
+                  `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+                }
+              />
               <Legend verticalAlign="bottom" height={36} iconType="rect" />
-              
+
               {viewMode === 'geral' ? (
                 <Line
                   type="linear"
@@ -99,7 +133,12 @@ export default function CommitmentCharts({ empenhoCategoria, empenhoTempo, empen
                     stroke={COLORS[index % COLORS.length]}
                     strokeWidth={3}
                     name={cat}
-                    dot={{ stroke: COLORS[index % COLORS.length], strokeWidth: 2, fill: COLORS[index % COLORS.length], r: 4 }}
+                    dot={{
+                      stroke: COLORS[index % COLORS.length],
+                      strokeWidth: 2,
+                      fill: COLORS[index % COLORS.length],
+                      r: 4,
+                    }}
                     activeDot={{ r: 6 }}
                   />
                 ))
@@ -128,7 +167,11 @@ export default function CommitmentCharts({ empenhoCategoria, empenhoTempo, empen
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip formatter={(val: any) => `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} />
+              <Tooltip
+                formatter={(val: any) =>
+                  `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+                }
+              />
               <Legend verticalAlign="bottom" height={36} iconType="square" />
             </PieChart>
           </ResponsiveContainer>

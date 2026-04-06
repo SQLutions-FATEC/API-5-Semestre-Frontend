@@ -1,7 +1,9 @@
+@import '../../../styles/variables';
+
 .header {
   height: 4rem;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+  background-color: $bg-card;
+  border-bottom: 1px solid $border-default;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -44,7 +46,7 @@
       }
 
       &:focus {
-        border-color: #3b82f6;
+        border-color: $color-info-text;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
       }
     }
@@ -54,7 +56,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    color: #6b7280;
+    color: $text-secondary;
 
     .notification-btn {
       position: relative;
@@ -76,9 +78,9 @@
         right: 0.4rem;
         width: 0.5rem;
         height: 0.5rem;
-        background-color: #ef4444;
+        background-color: $color-danger-badge;
         border-radius: 9999px;
-        border: 2px solid #ffffff;
+        border: 2px solid $bg-card;
       }
     }
 
@@ -99,8 +101,8 @@
       transition: all 0.2s;
 
       &:hover {
-        background-color: #f9fafb;
-        border-color: #e5e7eb;
+        background-color: $bg-hover;
+        border-color: $border-default;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       }
 
