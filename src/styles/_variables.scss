@@ -1,0 +1,71 @@
+// ==========================================
+// VARIÁVEIS GLOBAIS DE ESTILO - SASS
+// ==========================================
+
+// 1. BRAND COLORS (Cores Principais do Projeto)
+$primary: #0ea5e9;
+$primary-light: #38bdf8;
+$primary-hover: #0284c7; // hover principal
+$primary-focus: rgba(14, 165, 233, 0.4); // focus ring
+
+$secondary: #64748b;
+$secondary-light: #94a3b8;
+$secondary-hover: #475569;
+
+// 2. BACKGROUNDS (Fundos) - Padrão Light Theme
+$bg-page: #f0f9ff; // Fundo principal das páginas
+$bg-card: #ffffff; // Fundo de cards, header e blocos
+$bg-subtle: #f1f5f9; // Fundo mais sutil para headers de tabelas/tabs
+$bg-hover: #f8fafc; // Fundo para efeitos de hover
+
+// 3. TEXT COLORS (Textos)
+$text-primary: #0f172a; // Texto base, títulos, destaque
+$text-secondary: #475569; // Subtítulos, labels
+$text-muted: #94a3b8; // Dicas ou textos secundários sem foco
+$text-white: #ffffff; // Texto em botões ou badges invertidos
+
+// 4. BORDERS (Bordas)
+$border-light: #f1f5f9; // Bordas muito leves e divisões de linha
+$border-default: #e2e8f0; // Bordas de cards, botões neutros
+$border-strong: #cbd5e1; // Bordas selecionadas ou hover neutro
+
+// 5. STATUS, TOKENS & ALERTS (Feedback Visual)
+// Success (Verde)
+$color-success-bg: #f0fdf4;
+$color-success-border: #dcfce7;
+$color-success-text: #166534;
+$color-success-badge: #22c55e;
+
+// Info (Azul)
+$color-info-bg: #eff6ff;
+$color-info-text: #3b82f6;
+$color-info-border: #90cdf4;
+
+// Warning (Laranja / Amarelo)
+$color-warning-bg: #fff7ed;
+$color-warning-border: #fefcbf;
+$color-warning-text: #f59e0b;
+$color-warning-dark: #744210;
+
+// Danger/Error (Vermelho)
+$color-danger-bg: #feb2b2;
+$color-danger-text: #742a2a;
+$color-danger-badge: #ef4444;
+
+// Purple / Accent (Roxo)
+$color-accent-bg: #f5f3ff;
+$color-accent-text: #8b5cf6;
+
+// 6. FONTS & TYPOGRAPHY (Fontes)
+$main-font: 'Inter', sans-serif;
+$title-font: 'Roboto', sans-serif;
+
+// 7. EFFECTS (Efeitos Globais)
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md:
+  0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-focus: 0 0 0 3px $primary-focus; // Box-shadow padronizado para focus
+
+// 8. TRANSITIONS
+$transition-default: all 0.2s ease-in-out;
