@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import ProjectLayout from '../../components/ProjectLayout/ProjectLayout';
+
 import type { EmpenhoCategoria, EmpenhoTempo } from '../../services/commitmentService';
 import { commitmentService } from '../../services/commitmentService';
 import './CommitmentMaterial.scss';
@@ -54,41 +54,29 @@ export default function CommitmentMaterial() {
   }, []);
 
   return (
-    <ProjectLayout pageClassName="commitment-page" contentClassName="commitment-content">
-      {() => (
-        <div className="mt-6">
-          <div className="flex gap-2 mb-4">
-            <button className="px-6 py-2 bg-blue-50 text-blue-800 border border-blue-200 font-semibold rounded-md shadow-sm">
-              Materiais
-            </button>
-            <button className="px-6 py-2 bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 rounded-md shadow-sm transition-colors">
-              Tarefas
-            </button>
+    <div className="commitment-content">
+      <div className="mt-6">
+        {loading ? (
+          <div className="flex justify-center items-center h-64 bg-white rounded-lg shadow-sm">
+            <p>Carregando painel analítico...</p>
           </div>
-
-          {loading ? (
-            <div className="flex justify-center items-center h-64 bg-white rounded-lg shadow-sm">
-              <p>Carregando painel analítico...</p>
+        ) : (
+          <div className="flex flex-col gap-8 w-full">
+            <div className="w-full">
+              <CommitmentCharts
+                empenhoCategoria={analyticsCategoria}
+                empenhoTempo={analyticsTempo}
+                empenhoMaterial={analyticsMaterial}
+                total={totalEmpenho}
+              />
             </div>
-          ) : (
-            // A classe flex-col garante que os itens fiquem um embaixo do outro
-            <div className="flex flex-col gap-8 w-full">
-              <div className="w-full">
-                <CommitmentCharts
-                  empenhoCategoria={analyticsCategoria}
-                  empenhoTempo={analyticsTempo}
-                  empenhoMaterial={analyticsMaterial}
-                  total={totalEmpenho}
-                />
-              </div>
 
-              <div className="w-full">
-                <CommitmentTab data={materiaisTabela} />
-              </div>
+            <div className="w-full">
+              <CommitmentTab data={materiaisTabela} />
             </div>
-          )}
-        </div>
-      )}
-    </ProjectLayout>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
