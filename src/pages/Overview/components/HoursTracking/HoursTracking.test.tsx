@@ -87,12 +87,12 @@ describe('HoursTracking Component', () => {
 
     const taskDetailsCard = await screen.findByTestId('task-details-card');
     expect(taskDetailsCard).toBeDefined();
-    expect(screen.getByText('Prototipação da placa')).toBeDefined();
+    expect(await screen.findByText('Prototipação da placa')).toBeDefined();
 
     // Use within() para evitar duplicatas de texto
-    const { getByText } = within(taskDetailsCard);
-    expect(getByText('João Pedro Alves')).toBeDefined();
-    expect(getByText('Concluída')).toBeDefined();
+    const { findByText } = within(taskDetailsCard);
+    expect(await findByText('João Pedro Alves')).toBeDefined();
+    expect(await findByText('Concluída')).toBeDefined();
   });
 
   it('should format tooltip tooltip correctly (coverage for formatter)', () => {
