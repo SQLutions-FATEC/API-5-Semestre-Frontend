@@ -13,7 +13,15 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'json', 'html'],
-      exclude: ['node_modules/**', 'dist/**', '**/*.d.ts', '**/*.cjs'],
+      exclude: [
+        'node_modules/**',
+        'dist/**',
+        '**/*.d.ts',
+        '**/*.cjs',
+        '**/*.scss',
+        '**/*.css',
+        'src/main.tsx',
+      ],
     },
   },
   css: {

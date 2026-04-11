@@ -1,7 +1,6 @@
 import { CircleDollarSign, Clock, Timer, Boxes } from 'lucide-react';
 import './OverviewMetrics.scss';
-
-import type { Financeiro } from '../../../../services/projectService';
+import type { Financeiro } from '../../../../types/project';
 
 interface OverviewMetricsProps {
   readonly financeiro?: Financeiro;
@@ -54,8 +53,8 @@ export default function OverviewMetrics({ financeiro }: OverviewMetricsProps) {
   return (
     <div className="overview-metrics-wrapper">
       <div className="metrics-grid grid-4">
-        {financialMetrics.map((m, idx) => (
-          <div key={`fin-${idx}`} className="metric-card">
+        {financialMetrics.map((m) => (
+          <div key={m.title} className="metric-card">
             <div className="metric-header">
               <div className={`icon-container ${m.bgClass}`}>{m.icon}</div>
               <span className="metric-title">{m.title}</span>

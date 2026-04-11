@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
   CartesianGrid,
-  Cell,
   Legend,
   Line,
   LineChart,
@@ -16,10 +15,10 @@ import type { EmpenhoCategoria, EmpenhoTempo } from '../../../../services/commit
 import './CommitmentCharts.scss';
 
 type Props = {
-  empenhoCategoria: EmpenhoCategoria[];
-  empenhoTempo: EmpenhoTempo[];
-  empenhoMaterial?: any[];
-  total: number;
+  readonly empenhoCategoria: EmpenhoCategoria[];
+  readonly empenhoTempo: EmpenhoTempo[];
+  readonly empenhoMaterial?: any[];
+  readonly total: number;
 };
 
 // Cores baseadas no mockup para o gráfico de rosca
@@ -72,7 +71,11 @@ export default function CommitmentCharts({
     return empenhoCategoria.map((c) => c.categoria);
   }, [empenhoCategoria]);
 
-  const pieData = viewMode === 'geral' ? empenhoCategoria : empenhoMaterial || [];
+  const rawPieData = viewMode === 'geral' ? empenhoCategoria : empenhoMaterial || [];
+  const pieData = rawPieData.map((item, index) => ({
+    ...item,
+    fill: COLORS[index % COLORS.length]
+  }));
   const pieNameKey = viewMode === 'geral' ? 'categoria' : 'descricao';
 
   return (
@@ -162,11 +165,7 @@ export default function CommitmentCharts({
                 cy="50%"
                 innerRadius={50}
                 outerRadius={80}
-              >
-                {pieData.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
+              />
               <Tooltip
                 formatter={(val: any) =>
                   `R$ ${Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
