@@ -2,16 +2,16 @@ import { Calendar, PencilRuler, User, LayoutGrid, Clock, Info } from 'lucide-rea
 import './ProjectOverviewHeader.scss';
 
 interface ProjectOverviewHeaderProps {
-  programName?: string;
-  programCode?: string;
-  programManager?: string;
-  finishDate?: string;
-  projectName?: string;
-  projectCode?: string;
-  startDate?: string;
-  responsible?: string;
-  status?: string;
-  hasError?: boolean;
+  readonly programName?: string;
+  readonly programCode?: string;
+  readonly programManager?: string;
+  readonly finishDate?: string;
+  readonly projectName?: string;
+  readonly projectCode?: string;
+  readonly startDate?: string;
+  readonly responsible?: string;
+  readonly status?: string;
+  readonly hasError?: boolean;
 }
 
 export default function ProjectOverviewHeader({

@@ -1,10 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, HelpCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
 import './Sidebar.scss';
 
 interface SidebarProps {
-  isCollapsed: boolean;
-  onToggle: () => void;
+  readonly isCollapsed: boolean;
+  readonly onToggle: () => void;
 }
 
 export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {

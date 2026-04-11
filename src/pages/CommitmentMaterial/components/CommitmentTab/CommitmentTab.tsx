@@ -11,7 +11,7 @@ type MaterialTabela = {
 };
 
 type Props = {
-  data: MaterialTabela[];
+  readonly data: MaterialTabela[];
 };
 
 export default function CommitmentTab({ data }: Props) {

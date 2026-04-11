@@ -35,11 +35,11 @@ export default function CommitmentMaterial() {
         setTotalEmpenho(empenhosData.empenho_total);
 
         // Lógica de Cruzamento: verifica se o material empenhado está na lista de alertas
-        const codigosObsoletos = listaObsoletos.map((obs: any) => obs.codigo_material);
+        const codigosObsoletos = new Set(listaObsoletos.map((obs: any) => obs.codigo_material));
 
         const materiaisComStatus = empenhosData.empenho_por_material.map((mat: any) => ({
           ...mat,
-          isObsoleto: codigosObsoletos.includes(mat.codigo_material),
+          isObsoleto: codigosObsoletos.has(mat.codigo_material),
         }));
 
         setMateriaisTabela(materiaisComStatus);
