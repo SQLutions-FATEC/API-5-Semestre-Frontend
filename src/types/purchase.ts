@@ -21,7 +21,7 @@ export type PurchaseOrderData = {
   emissao: string;
   previsao: string;
   fornecedor: string;
-  centro_custo: string;
+  nome_material: string;
   status: string;
   dias_previstos_entrega: number;
 };
