@@ -29,6 +29,7 @@ const TrackingTable: React.FC<TrackingTableProps> = ({ orders }) => {
       headerClassName: 'table-header',
       valueGetter: (_, row) => getMappedOrderCode(row.numero),
     },
+    { field: 'nome_material', headerName: 'Nome Material', flex: 1, minWidth: 150 },
     // Valor faltando no backend
     // {
     //   field: 'materialName',
@@ -86,7 +87,6 @@ const TrackingTable: React.FC<TrackingTableProps> = ({ orders }) => {
       width: 210,
     },
     { field: 'fornecedor', headerName: 'Fornecedor', flex: 1, minWidth: 200 },
-    { field: 'centro_custo', headerName: 'Centro Custo', flex: 1, minWidth: 150 },
     {
       field: 'status',
       headerName: 'Status',
