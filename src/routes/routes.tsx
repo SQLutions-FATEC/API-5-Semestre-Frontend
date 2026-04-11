@@ -5,7 +5,6 @@ import OverviewScreen from '../pages/Overview/OverviewScreen';
 import PurchasesScreen from '../pages/Purchases/PurchasesScreen';
 import HelpScreen from '../pages/HelpScreen/HelpScreen';
 
-
 const AppRoutes = () => {
   return (
     <Routes>

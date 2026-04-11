@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { commitmentService } from '../../services/commitmentService';
 import CommitmentMaterial from './CommitmentMaterial';
 
-
 vi.mock('./components/CommitmentCharts/CommitmentCharts', () => ({
   default: () => <div data-testid="charts">Charts Component</div>,
 }));
@@ -55,7 +54,6 @@ describe('CommitmentMaterial Component', () => {
 
     expect(spyAlerts).toHaveBeenCalledWith('PRJ003');
     expect(spyAnalytics).toHaveBeenCalledWith('PRJ003');
-
 
     // Verifica os componentes filhos
     expect(screen.getByTestId('charts')).toBeDefined();

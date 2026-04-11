@@ -13,7 +13,11 @@ describe('commitmentService', () => {
     const mockData = {
       projeto: { codigo: 'PRJ001', nome: 'Projeto Teste' },
       data_referencia: '2023-10-01',
-      alertas_criticos: { pedidos_atrasados: [], pedidos_prioritarios_pendentes: [], materiais_obsoletos: [] },
+      alertas_criticos: {
+        pedidos_atrasados: [],
+        pedidos_prioritarios_pendentes: [],
+        materiais_obsoletos: [],
+      },
     };
     (api.get as any).mockResolvedValueOnce({ data: mockData });
     const result = await commitmentService.getAlerts('PRJ001');
