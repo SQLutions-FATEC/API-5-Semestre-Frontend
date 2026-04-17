@@ -2,6 +2,7 @@ export type Financeiro = {
   total_horas_trabalhadas: number;
   custo_total_materiais: number;
   custo_total_projeto: number;
+  horas_totais_estimadas: number;
 };
 
 export type Projeto = {
