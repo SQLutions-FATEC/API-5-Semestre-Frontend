@@ -1,6 +1,6 @@
-import { CircleDollarSign, Clock, Timer, Boxes } from 'lucide-react';
-import './OverviewMetrics.scss';
+import { Boxes, CircleDollarSign, Clock, Timer } from 'lucide-react';
 import type { Financeiro } from '../../../../types/project';
+import './OverviewMetrics.scss';
 
 interface OverviewMetricsProps {
   readonly financeiro?: Financeiro;
@@ -32,7 +32,7 @@ export default function OverviewMetrics({ financeiro }: OverviewMetricsProps) {
     },
     {
       title: 'Total de Horas Previstas',
-      value: formatHours(46),
+      value: financeiro ? formatHours(financeiro.horas_totais_estimadas) : '0h 00m',
       icon: <Timer size={24} />,
       bgClass: 'bg-blue',
     },
