@@ -1,20 +1,18 @@
 import { useEffect, useState } from 'react';
-
-import type { EmpenhoCategoria, EmpenhoTempo } from '../../services/commitmentService';
 import { commitmentService } from '../../services/commitmentService';
 import './CommitmentMaterial.scss';
 import CommitmentCharts from './components/CommitmentCharts/CommitmentCharts';
 import CommitmentTab from './components/CommitmentTab/CommitmentTab';
 
 export default function CommitmentMaterial() {
-  const [analyticsCategoria, setAnalyticsCategoria] = useState<EmpenhoCategoria[]>([]);
+  const [analyticsCategoria, setAnalyticsCategoria] = useState<any[]>([]);
   const [analyticsMaterial, setAnalyticsMaterial] = useState<any[]>([]);
-  const [analyticsTempo, setAnalyticsTempo] = useState<EmpenhoTempo[]>([]);
+  const [analyticsTempo, setAnalyticsTempo] = useState<any[]>([]);
   const [totalEmpenho, setTotalEmpenho] = useState(0);
   const [materiaisTabela, setMateriaisTabela] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Mantendo o ID fixo por enquanto, conforme a estrutura atual da sua rota
+// Mantendo o ID fixo por enquanto, conforme a estrutura atual da sua rota
   const idProjeto = 'PRJ003';
 
   useEffect(() => {
@@ -29,27 +27,26 @@ export default function CommitmentMaterial() {
 
         const listaObsoletos = alertasData.alertas_criticos.materiais_obsoletos;
 
-        setAnalyticsCategoria(empenhosData.empenho_por_categoria);
-        setAnalyticsMaterial(empenhosData.empenho_por_material);
-        setAnalyticsTempo(empenhosData.empenho_por_tempo);
-        setTotalEmpenho(empenhosData.empenho_total);
-
         // Lógica de Cruzamento: verifica se o material empenhado está na lista de alertas
         const codigosObsoletos = new Set(listaObsoletos.map((obs: any) => obs.codigo_material));
 
         const materiaisComStatus = empenhosData.empenho_por_material.map((mat: any) => ({
           ...mat,
+          fornecedor: mat.fornecedor || 'SIATT Corp', 
           isObsoleto: codigosObsoletos.has(mat.codigo_material),
         }));
 
+        setAnalyticsCategoria(empenhosData.empenho_por_categoria);
+        setAnalyticsMaterial(empenhosData.empenho_por_material);
+        setAnalyticsTempo(empenhosData.empenho_por_tempo);
+        setTotalEmpenho(empenhosData.empenho_total);
         setMateriaisTabela(materiaisComStatus);
       } catch (error) {
-        console.error('Erro ao carregar os dados de integração:', error);
+        console.error('Erro ao carregar dados:', error);
       } finally {
         setLoading(false);
       }
     }
-
     carregarDados();
   }, []);
 
@@ -62,18 +59,13 @@ export default function CommitmentMaterial() {
           </div>
         ) : (
           <div className="flex flex-col gap-8 w-full">
-            <div className="w-full">
-              <CommitmentCharts
-                empenhoCategoria={analyticsCategoria}
-                empenhoTempo={analyticsTempo}
-                empenhoMaterial={analyticsMaterial}
-                total={totalEmpenho}
-              />
-            </div>
-
-            <div className="w-full">
-              <CommitmentTab data={materiaisTabela} />
-            </div>
+            <CommitmentCharts
+              empenhoCategoria={analyticsCategoria}
+              empenhoTempo={analyticsTempo}
+              empenhoMaterial={analyticsMaterial}
+              total={totalEmpenho}
+            />
+            <CommitmentTab data={materiaisTabela} />
           </div>
         )}
       </div>
