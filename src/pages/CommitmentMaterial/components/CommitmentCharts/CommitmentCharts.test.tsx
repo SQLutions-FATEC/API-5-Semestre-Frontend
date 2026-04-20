@@ -31,33 +31,12 @@ const mockEmpenhoTempo: EmpenhoTempo[] = [
         quantidade: 2,
         total_custo: 100,
       },
-      {
-        codigo_material: 'UNKNOWN',
-        descricao: 'Desconhecido',
-        custo_unitario: 10,
-        quantidade: 1,
-        total_custo: 10,
-      },
-    ],
-  },
-  {
-    data: '2024-11-04',
-    total_custo: 23630.8,
-    materiais: [
-      {
-        codigo_material: 'MAT2',
-        descricao: 'Capacitor',
-        custo_unitario: 100,
-        quantidade: 2,
-        total_custo: 200,
-      },
     ],
   },
 ];
 
 const mockEmpenhoMaterial = [
   { codigo_material: 'MAT1', descricao: 'Resistor', categoria: 'Conector', total_custo: 100 },
-  { codigo_material: 'MAT2', descricao: 'Capacitor', categoria: 'Sensor', total_custo: 200 },
 ];
 
 describe('CommitmentCharts Component', () => {
@@ -70,8 +49,9 @@ describe('CommitmentCharts Component', () => {
       />
     );
 
-    expect(screen.getByText('Custo empenhado')).toBeDefined();
-    expect(screen.getByText('Custo por categoria')).toBeDefined();
+    // Títulos atualizados conforme o novo componente
+    expect(screen.getByText('Evolução do Gasto')).toBeDefined();
+    expect(screen.getByText('Custo por Categoria')).toBeDefined();
   });
 
   it('deve renderizar exatamente dois containers de gráficos (Linhas e Rosca)', () => {
@@ -87,7 +67,7 @@ describe('CommitmentCharts Component', () => {
     expect(containers).toHaveLength(2);
   });
 
-  it('deve renderizar a tag de gasto total formatada corretamente', () => {
+  it('deve renderizar o novo card de KPI com o gasto total formatado', () => {
     render(
       <CommitmentCharts
         empenhoCategoria={mockEmpenhoCategoria}
@@ -96,11 +76,15 @@ describe('CommitmentCharts Component', () => {
       />
     );
 
-    // Verifica se a string formatada aparece na tela (ex: R$ 18.630,80)
+    // Verifica o label do KPI
+    expect(screen.getByText('Gasto Total em Pedidos')).toBeDefined();
+    
+    // Verifica se a string formatada aparece na tela (R$ 18.630,80)
+    // Usamos regex para ignorar espaços em branco especiais do toLocaleString
     expect(screen.getByText(/18\.630,80/)).toBeDefined();
   });
 
-  it('deve alternar a visualização e mudar os títulos para o modo Categoria', () => {
+  it('deve alternar a visualização e mudar os títulos para o modo Material', () => {
     render(
       <CommitmentCharts
         empenhoCategoria={mockEmpenhoCategoria}
@@ -110,15 +94,29 @@ describe('CommitmentCharts Component', () => {
       />
     );
 
-    // Initial state check
-    expect(screen.getByText('Custo por categoria')).toBeDefined();
+    // Estado inicial: Geral
+    expect(screen.getByText('Custo por Categoria')).toBeDefined();
 
-    // Find the select element and change its value
+    // Encontra o select e muda para 'categoria' (que no seu componente representa "Material")
     const select = screen.getByRole('combobox');
     fireEvent.change(select, { target: { value: 'categoria' } });
 
-    // After change, the title should be "Custo por material"
-    expect(screen.getByText('Custo por material')).toBeDefined();
-    expect(screen.queryByText('Custo por categoria')).toBeNull();
+    // Após a mudança, o título do gráfico de pizza deve mudar
+    expect(screen.getByText('Distribuição por Material')).toBeDefined();
+    expect(screen.queryByText('Custo por Categoria')).toBeNull();
+  });
+
+  it('deve exibir o seletor com as opções corretas', () => {
+    render(
+      <CommitmentCharts
+        empenhoCategoria={mockEmpenhoCategoria}
+        empenhoTempo={mockEmpenhoTempo}
+        total={18630.8}
+      />
+    );
+
+    expect(screen.getByText('Empenho por:')).toBeDefined();
+    expect(screen.getByText('Geral')).toBeDefined();
+    expect(screen.getByText('Material')).toBeDefined();
   });
 });
