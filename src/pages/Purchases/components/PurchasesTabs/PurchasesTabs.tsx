@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import StepSwitcher from '../../../../components/ui/StepSwitcher/StepSwitcher';
+import RequestDashboardScreen from '../../../Requests/RequestDashboardScreen';
 import RequestsTab from '../RequestsTab/RequestsTab';
 import './PurchasesTabs.scss';
 
@@ -12,9 +13,7 @@ export default function PurchasesTabs() {
       <StepSwitcher options={tabs} activeOption={activeTab} onOptionChange={setActiveTab}>
         {activeTab === 'Solicitações' && (
           <div className="tab-content">
-            <h2 className="content-title">
-              <span className="placeholder-text">Gerenciamento de Solicitações (em breve)</span>
-            </h2>
+            <RequestDashboardScreen />
           </div>
         )}
         {activeTab === 'Pedidos' && (

@@ -1,0 +1,147 @@
+.kpi-section.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.kpi-card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 140px;
+
+    .kpi-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .icon-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+
+            &.bg-blue {
+                background-color: #ebf8ff;
+                color: #2b6cb0;
+            }
+
+            &.bg-orange {
+                background-color: #fffaf0;
+                color: #dd6b20;
+            }
+
+            &.bg-red {
+                background-color: #fff5f5;
+                color: #c53030;
+            }
+        }
+
+        .kpi-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+    }
+
+    .kpi-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-top: auto;
+    }
+
+    /* Listas com Scroll Embutido */
+    .scrollable-list {
+        max-height: 100px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding-right: 0.5rem;
+
+        &::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: #cbd5e0;
+            border-radius: 4px;
+        }
+
+        .empty-text {
+            color: #a0aec0;
+            font-size: 0.875rem;
+            font-style: italic;
+        }
+
+        .conversion-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            padding: 0.5rem;
+            background-color: #f7fafc;
+            border-radius: 6px;
+
+            .req-id {
+                font-weight: 600;
+                color: #4a5568;
+            }
+
+            .arrow-icon {
+                color: #a0aec0;
+            }
+
+            .order-id {
+                font-weight: 600;
+                color: #2b6cb0;
+            }
+        }
+
+        .urgent-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background-color: #fff5f5;
+            border-radius: 6px;
+            border-left: 3px solid #e53e3e;
+
+            .urgent-info {
+                display: flex;
+                flex-direction: column;
+
+                .req-id {
+                    font-size: 0.75rem;
+                    font-weight: 700;
+                    color: #c53030;
+                }
+
+                .req-material {
+                    font-size: 0.875rem;
+                    color: #4a5568;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 150px;
+                }
+            }
+
+            .urgent-badge {
+                background-color: #e53e3e;
+                color: white;
+                font-size: 0.75rem;
+                font-weight: 700;
+                padding: 0.2rem 0.5rem;
+                border-radius: 12px;
+            }
+        }
+    }
+}
