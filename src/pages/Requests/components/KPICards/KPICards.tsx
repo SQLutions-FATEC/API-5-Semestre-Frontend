@@ -45,7 +45,7 @@ export function KpiCards({ requests }: KpiCardsProps) {
             <div className="kpi-card alert-card">
                 <div className="kpi-header">
                     <div className="icon-container bg-red"><AlertTriangle size={24} /></div>
-                    <span className="kpi-title">Urgentes / Alta Prioridade</span>
+                    <span className="kpi-title">Críticas / Alta Prioridade</span>
                 </div>
                 <div className="kpi-content scrollable-list">
                     {urgentRequests.map(req => (
