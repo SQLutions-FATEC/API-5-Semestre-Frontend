@@ -3,67 +3,28 @@
   flex-direction: column;
   gap: 1.5rem;
 
-  .charts-header {
-    display: flex;
-    justify-content: flex-end;
-
-    .total-expense-card {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      background: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 50px;
-      box-shadow: 0 4px 15px rgba(0, 69, 135, 0.1);
-      border: 1px solid #e0e7ff;
-
-      .total-icon {
-        background: #eef2ff;
-        color: #004587;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        font-weight: bold;
-      }
-
-      .total-content {
-        display: flex;
-        flex-direction: column;
-        
-        .total-label {
-          font-size: 0.75rem;
-          color: #64748b;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-
-        .total-value {
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: #004587;
-        }
-      }
-    }
-  }
-
   .charts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
 
     .chart-card {
       background: white;
       padding: 1.5rem;
       border-radius: 16px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-      border: 1px solid #f1f5f9;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      border: 1px solid #e2e8f0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
 
       .chart-title {
-        margin: 0 0 1.5rem 0;
-        color: #334155;
+        margin: 0 0 1.25rem 0;
+        color: #1e293b;
         font-size: 1.1rem;
         font-weight: 600;
         text-align: center;
@@ -71,20 +32,54 @@
 
       .chart-wrapper {
         width: 100%;
-        height: 300px;
+        height: 250px;
+      }
+
+      &.distribution-card {
+        padding-top: 1rem;
+
+        .total-pill-wrapper {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 1.5rem;
+
+          .total-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: white;
+            border: 1.5px solid #dbeafe;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.15);
+            
+            .pill-icon {
+              background: #f1f5f9;
+              color: #0f172a;
+              width: 24px;
+              height: 24px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 50%;
+              font-weight: bold;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+
+            .pill-text {
+              color: #1e3a8a;
+              font-size: 0.9rem;
+              font-weight: 600;
+            }
+          }
+        }
       }
 
       .legend-text {
-        font-size: 0.85rem;
-        color: #475569;
+        font-size: 0.75rem;
+        color: #64748b;
         font-weight: 500;
       }
     }
-  }
-}
-
-@media (max-width: 768px) {
-  .expenses-charts-container .charts-grid {
-    grid-template-columns: 1fr;
   }
 }

@@ -44,6 +44,9 @@ export default function ExpensesTable({ pedidos }: Props) {
 
   const emptyRows = Math.max(0, (1 + page) * rowsPerPage - pedidos.length);
 
+  // Mocked dates for the table
+  const mockDates = ['12/04/2026', '15/04/2026', '18/04/2026', '20/04/2026', '22/04/2026'];
+
   return (
     <div className="expenses-table-container">
       <div className="table-header-box">
@@ -57,6 +60,7 @@ export default function ExpensesTable({ pedidos }: Props) {
               <TableCell className="header-cell with-separator">Nome Material</TableCell>
               <TableCell className="header-cell with-separator">Fornecedor</TableCell>
               <TableCell className="header-cell with-separator">Valor Total</TableCell>
+              <TableCell className="header-cell with-separator">Data do Pedido</TableCell>
               <TableCell className="header-cell align-center">Status</TableCell>
             </TableRow>
           </TableHead>
@@ -76,6 +80,9 @@ export default function ExpensesTable({ pedidos }: Props) {
                         currency: 'BRL',
                       })}
                     </TableCell>
+                    <TableCell className="body-cell">
+                      {mockDates[index % mockDates.length]}
+                    </TableCell>
                     <TableCell className="body-cell align-center">
                       <span
                         className="status-chip"
@@ -92,7 +99,7 @@ export default function ExpensesTable({ pedidos }: Props) {
               })}
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={5} />
+                <TableCell colSpan={6} />
               </TableRow>
             )}
           </TableBody>

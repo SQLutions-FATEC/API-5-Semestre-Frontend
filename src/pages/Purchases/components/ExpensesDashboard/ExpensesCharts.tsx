@@ -13,6 +13,7 @@ import {
   Cell,
 } from 'recharts';
 import type { ExpenseEvolution, ExpenseDetail } from '../../../../types/expenses';
+import { DollarSign } from 'lucide-react';
 import './ExpensesCharts.scss';
 
 type Props = {
@@ -30,13 +31,17 @@ const COLORS = [
   '#00BCD4', // Cyan
 ];
 
+// Helper to format YYYY-MM to MM/YYYY
+const formatMonthYear = (dateStr: string) => {
+  if (!dateStr || !dateStr.includes('-')) return dateStr;
+  const [year, month] = dateStr.split('-');
+  return `${month}/${year}`;
+};
+
 export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
-  // Calculate cost per material for the donut chart
   const materialData = useMemo(() => {
     const counts: Record<string, number> = {};
     pedidos.forEach((p) => {
-      // We only sum costs for non-cancelled orders or all? 
-      // The image shows "Diodo Retificador" etc. Usually, it's total committed/spent.
       if (p.status !== 'CANCELADO') {
         counts[p.material_nome] = (counts[p.material_nome] || 0) + p.valor_total_pedido;
       }
@@ -47,74 +52,83 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
       .sort((a, b) => b.value - a.value);
   }, [pedidos]);
 
+  const formattedEvolution = useMemo(() => {
+    return evolution.map((item) => ({
+      ...item,
+      displayDate: formatMonthYear(item.data),
+    }));
+  }, [evolution]);
+
   return (
     <div className="expenses-charts-container">
-      <div className="charts-header">
-        <div className="total-expense-card">
-          <div className="total-icon">
-            <span className="currency-symbol">$</span>
-          </div>
-          <div className="total-content">
-            <span className="total-label">Gasto total:</span>
-            <span className="total-value">
-              {total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-            </span>
-          </div>
-        </div>
-      </div>
-
       <div className="charts-grid">
         {/* Line Chart: Evolution */}
         <div className="chart-card">
           <h4 className="chart-title">Evolução do Gasto</h4>
           <div className="chart-wrapper">
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={evolution} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={formattedEvolution} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                <XAxis 
-                  dataKey="data" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#666', fontSize: 12 }}
-                  label={{ value: 'Data', position: 'insideBottom', offset: -10 }}
+                <XAxis
+                  dataKey="displayDate"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: '#666', fontSize: 11 }}
                 />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#666', fontSize: 12 }}
-                  label={{ value: 'Custo', angle: -90, position: 'insideLeft' }}
-                />
-                <Tooltip 
-                  formatter={(value: number) => 
-                    value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: '#666', fontSize: 11 }}
+                  tickFormatter={(value) =>
+                    `R$ ${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`
                   }
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="total_gasto" 
-                  stroke="#004587" 
-                  strokeWidth={3} 
-                  dot={{ r: 6, fill: '#004587', strokeWidth: 2, stroke: '#fff' }}
-                  activeDot={{ r: 8 }}
+                <Tooltip
+                  labelFormatter={(label) => `Período: ${label}`}
+                  formatter={(value: number) => [
+                    value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+                    'Total Gasto',
+                  ]}
+                />
+                <Legend verticalAlign="top" height={36} />
+                <Line
+                  type="monotone"
+                  dataKey="total_gasto"
+                  name="Gasto Mensal"
+                  stroke="#004587"
+                  strokeWidth={3}
+                  dot={{ r: 4, fill: '#004587' }}
+                  activeDot={{ r: 6 }}
                 />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Donut Chart: Cost per Material */}
-        <div className="chart-card">
+        {/* Donut Chart: Cost per Material with Integrated Total Pill */}
+        <div className="chart-card distribution-card">
+          <div className="total-pill-wrapper">
+            <div className="total-pill">
+              <div className="pill-icon">
+                <DollarSign size={14} />
+              </div>
+              <span className="pill-text">
+                Gasto total: {total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+              </span>
+            </div>
+          </div>
+          
           <h4 className="chart-title">Custo por Material</h4>
+          
           <div className="chart-wrapper">
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
                   data={materialData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={70}
-                  outerRadius={100}
+                  innerRadius={60}
+                  outerRadius={80}
                   paddingAngle={5}
                   dataKey="value"
                 >
@@ -122,16 +136,17 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip 
-                  formatter={(value: number) => 
+                <Tooltip
+                  formatter={(value: number) =>
                     value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                   }
                 />
-                <Legend 
-                  layout="vertical" 
-                  align="right" 
-                  verticalAlign="middle" 
+                <Legend
+                  layout="horizontal"
+                  align="center"
+                  verticalAlign="bottom"
                   iconType="circle"
+                  wrapperStyle={{ paddingTop: '20px' }}
                   formatter={(value) => <span className="legend-text">{value}</span>}
                 />
               </PieChart>
