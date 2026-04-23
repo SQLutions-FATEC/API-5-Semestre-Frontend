@@ -9,21 +9,8 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      onClick(project.codigo);
-    }
-  };
-
   return (
-    <div
-      className="project-card"
-      onClick={() => onClick(project.codigo)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-    >
+    <button className="project-card" onClick={() => onClick(project.codigo)} type="button">
       <div className={`status-indicator status-${project.status.toLowerCase()}`} />
       <div className="project-card-content">
         <h3 className="project-title">{project.nome}</h3>
@@ -39,7 +26,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick }) => {
           {project.status}
         </span>
       </div>
-    </div>
+    </button>
   );
 };
 

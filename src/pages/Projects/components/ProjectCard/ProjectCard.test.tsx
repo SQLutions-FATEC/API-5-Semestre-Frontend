@@ -19,14 +19,12 @@ describe('ProjectCard Component', () => {
     expect(screen.getByText('Ativo')).toBeInTheDocument();
   });
 
-  it('deve chamar a função onClick passando o código do projeto ao ser clicado', () => {
+  it('deve chamar a função onClick ao ser clicado', () => {
     const handleClick = vi.fn();
     render(<ProjectCard project={mockProject} onClick={handleClick} />);
 
-    const cardElement = screen.getByText('Projeto de Teste').closest('.project-card');
-    if (cardElement) {
-      fireEvent.click(cardElement);
-    }
+    const buttonElement = screen.getByRole('button');
+    fireEvent.click(buttonElement);
 
     expect(handleClick).toHaveBeenCalledWith('PRJ-123');
     expect(handleClick).toHaveBeenCalledTimes(1);
