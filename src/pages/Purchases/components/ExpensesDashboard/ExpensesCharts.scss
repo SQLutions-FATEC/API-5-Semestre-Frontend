@@ -44,7 +44,7 @@
           align-items: center;
           justify-content: center;
           gap: 1rem;
-          color: #004587; // Mesma cor que histórico
+          color: #004587;
           font-size: 1rem;
           text-align: center;
           width: 100%;
@@ -78,7 +78,7 @@
             border: 1.5px solid #dbeafe;
             border-radius: 50px;
             box-shadow: 0 4px 10px rgba(59, 130, 246, 0.15);
-            
+
             .pill-icon {
               background: #f1f5f9;
               color: #0f172a;
@@ -89,7 +89,7 @@
               justify-content: center;
               border-radius: 50%;
               font-weight: bold;
-              box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             }
 
             .pill-text {

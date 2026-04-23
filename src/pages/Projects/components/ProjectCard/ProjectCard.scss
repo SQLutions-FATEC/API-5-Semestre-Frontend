@@ -18,9 +18,15 @@
 
   .status-indicator {
     width: 6px;
-    &.status-ativo { background: $color-success-badge; }
-    &.status-atrasado { background: $color-danger-badge; }
-    &.status-suspenso { background: $color-warning-text; }
+    &.status-ativo {
+      background: $color-success-badge;
+    }
+    &.status-atrasado {
+      background: $color-danger-badge;
+    }
+    &.status-suspenso {
+      background: $color-warning-text;
+    }
   }
 
   .project-card-content {

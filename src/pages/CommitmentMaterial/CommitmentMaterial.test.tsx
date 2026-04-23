@@ -10,9 +10,7 @@ vi.mock('./components/CommitmentCharts/CommitmentCharts', () => ({
 
 vi.mock('./components/CommitmentTab/CommitmentTab', () => ({
   default: ({ data }: any) => (
-    <div data-testid="commitment-tab">
-      Tab Component - Itens: {data?.length}
-    </div>
+    <div data-testid="commitment-tab">Tab Component - Itens: {data?.length}</div>
   ),
 }));
 
@@ -31,8 +29,13 @@ describe('CommitmentMaterial Component', () => {
     empenho_por_tempo: [{ data: '2024-01-01', total_custo: 1000 }],
     // Estrutura essencial para o .map do componente não quebrar
     empenho_por_material: [
-      { codigo_material: 'MAT123', descricao: 'Cabo Teste', total_custo: 1000, fornecedor: 'Fornecedor A' },
-      { codigo_material: 'MAT456', descricao: 'Outro Material', total_custo: 500 }
+      {
+        codigo_material: 'MAT123',
+        descricao: 'Cabo Teste',
+        total_custo: 1000,
+        fornecedor: 'Fornecedor A',
+      },
+      { codigo_material: 'MAT456', descricao: 'Outro Material', total_custo: 500 },
     ],
   };
 
@@ -52,7 +55,9 @@ describe('CommitmentMaterial Component', () => {
 
   it('deve carregar os dados da API e renderizar os gráficos e a tabela', async () => {
     const spyAlerts = vi.spyOn(commitmentService, 'getAlerts').mockResolvedValue(mockAlerts as any);
-    const spyAnalytics = vi.spyOn(commitmentService, 'getAnalytics').mockResolvedValue(mockAnalytics as any);
+    const spyAnalytics = vi
+      .spyOn(commitmentService, 'getAnalytics')
+      .mockResolvedValue(mockAnalytics as any);
 
     render(<CommitmentMaterial />);
 
@@ -68,7 +73,7 @@ describe('CommitmentMaterial Component', () => {
     // Verifica se os componentes filhos foram renderizados
     expect(screen.getByTestId('charts')).toBeDefined();
     expect(screen.getByTestId('commitment-tab')).toBeDefined();
-    
+
     // Verifica se os dados chegaram à tabela (2 itens no mockAnalytics)
     expect(screen.getByText(/Itens: 2/)).toBeDefined();
   });
@@ -76,7 +81,7 @@ describe('CommitmentMaterial Component', () => {
   it('deve remover o loading e exibir os componentes mesmo se a API retornar erro', async () => {
     // Silencia o console.error para não poluir o terminal de testes
     vi.spyOn(console, 'error').mockImplementation(() => {});
-    
+
     vi.spyOn(commitmentService, 'getAlerts').mockRejectedValue(new Error('Erro na API'));
     vi.spyOn(commitmentService, 'getAnalytics').mockRejectedValue(new Error('Erro na API'));
 

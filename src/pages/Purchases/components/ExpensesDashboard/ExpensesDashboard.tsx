@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { projectService } from '../../../../services/projectService';
-import type { ExpensesDetailsResponse, ExpensesEvolutionResponse } from '../../../../types/expenses';
+import type {
+  ExpensesDetailsResponse,
+  ExpensesEvolutionResponse,
+} from '../../../../types/expenses';
 import { CircularProgress } from '@mui/material';
 import ExpensesCharts from './ExpensesCharts';
 import ExpensesTable from './ExpensesTable';

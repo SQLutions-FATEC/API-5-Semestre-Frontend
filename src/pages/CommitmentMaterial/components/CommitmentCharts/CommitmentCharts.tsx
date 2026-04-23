@@ -23,8 +23,14 @@ type Props = {
 
 // Cores baseadas no mockup para o gráfico de rosca
 const COLORS = [
-  '#0f4a8e', '#facc15', '#ea580c', '#10b981',
-  '#8b5cf6', '#ec4899', '#06b6d4', '#eab308',
+  '#0f4a8e',
+  '#facc15',
+  '#ea580c',
+  '#10b981',
+  '#8b5cf6',
+  '#ec4899',
+  '#06b6d4',
+  '#eab308',
 ];
 
 export default function CommitmentCharts({
@@ -66,15 +72,17 @@ export default function CommitmentCharts({
     ...item,
     fill: COLORS[index % COLORS.length],
   }));
-  
+
   const pieNameKey = viewMode === 'geral' ? 'categoria' : 'descricao';
 
   return (
     <div className="commitment-card charts-container bg-white border border-gray-200 rounded-lg p-6 relative shadow-sm">
-          {/* Seletor Centralizado */}
+      {/* Seletor Centralizado */}
       <div className="kpi-header flex justify-between items-start mb-6">
         <div className="kpi-card-highlight bg-blue-50 border border-blue-100 p-4 rounded-xl shadow-sm">
-          <p className="text-xs font-bold text-blue-500 uppercase tracking-wider mb-1">Gasto Total em Pedidos</p>
+          <p className="text-xs font-bold text-blue-500 uppercase tracking-wider mb-1">
+            Gasto Total em Pedidos
+          </p>
           <p className="text-2xl font-black text-blue-900">
             {total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
           </p>
@@ -95,28 +103,49 @@ export default function CommitmentCharts({
       </div>
 
       <div className="charts-display-wrapper flex flex-wrap gap-8 items-center justify-between">
-                {/* Gráfico 1: Linhas (Custo empenhado) */}
+        {/* Gráfico 1: Linhas (Custo empenhado) */}
         <div className="chart-item flex-1 min-w-[300px]">
           <p className="chart-label font-semibold mb-2 text-gray-700 ml-4">Evolução do Gasto</p>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={transformedTempo} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={true} />
-              <XAxis dataKey="data" tick={{ fontSize: 11 }} angle={-35} textAnchor="end" height={60} />
+              <XAxis
+                dataKey="data"
+                tick={{ fontSize: 11 }}
+                angle={-35}
+                textAnchor="end"
+                height={60}
+              />
               <YAxis tick={{ fontSize: 11 }} />
               <Tooltip formatter={(val: any) => `R$ ${Number(val).toLocaleString('pt-BR')}`} />
               <Legend verticalAlign="bottom" height={36} iconType="rect" />
 
               {viewMode === 'geral' ? (
-                <Line type="linear" dataKey="total_custo" stroke="#0f4a8e" strokeWidth={3} name="Total Gasto" dot={{ r: 4 }} />
+                <Line
+                  type="linear"
+                  dataKey="total_custo"
+                  stroke="#0f4a8e"
+                  strokeWidth={3}
+                  name="Total Gasto"
+                  dot={{ r: 4 }}
+                />
               ) : (
                 categories.map((cat, index) => (
-                  <Line key={cat} type="linear" dataKey={cat} stroke={COLORS[index % COLORS.length]} strokeWidth={3} name={cat} dot={{ r: 4 }} />
+                  <Line
+                    key={cat}
+                    type="linear"
+                    dataKey={cat}
+                    stroke={COLORS[index % COLORS.length]}
+                    strokeWidth={3}
+                    name={cat}
+                    dot={{ r: 4 }}
+                  />
                 ))
               )}
             </LineChart>
           </ResponsiveContainer>
         </div>
-        
+
         {/* Gráfico 2: Rosca (Custo por categoria / material) */}
         <div className="chart-item flex-1 min-w-[300px]">
           <p className="chart-label font-semibold mb-2 text-center text-gray-700">
@@ -128,8 +157,9 @@ export default function CommitmentCharts({
                 data={pieData}
                 dataKey="total_custo"
                 nameKey={pieNameKey}
-                cx="50%" cy="50%"
-                innerRadius={60} 
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
                 outerRadius={80}
               />
               <Tooltip formatter={(val: any) => `R$ ${Number(val).toLocaleString('pt-BR')}`} />
@@ -139,7 +169,7 @@ export default function CommitmentCharts({
         </div>
       </div>
 
-            {/* Badge de Gasto Total Inferior */}
+      {/* Badge de Gasto Total Inferior */}
     </div>
   );
 }

@@ -70,7 +70,15 @@ export default function ExpensesTable({ pedidos }: Props) {
             {!hasData ? (
               <TableRow>
                 <TableCell colSpan={6} align="center" sx={{ py: 8 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#94a3b8', gap: '8px' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      color: '#94a3b8',
+                      gap: '8px',
+                    }}
+                  >
                     <Inbox size={40} />
                     <span>Nenhum pedido encontrado para este projeto</span>
                   </div>
@@ -82,7 +90,10 @@ export default function ExpensesTable({ pedidos }: Props) {
                 .map((pedido, index) => {
                   const colors = getStatusColors(pedido.status);
                   return (
-                    <TableRow key={`${pedido.numero_pedido}-${index}`} className="table-row-striped">
+                    <TableRow
+                      key={`${pedido.numero_pedido}-${index}`}
+                      className="table-row-striped"
+                    >
                       <TableCell className="body-cell">{pedido.numero_pedido}</TableCell>
                       <TableCell className="body-cell">{pedido.material_nome}</TableCell>
                       <TableCell className="body-cell">{pedido.fornecedor_nome}</TableCell>

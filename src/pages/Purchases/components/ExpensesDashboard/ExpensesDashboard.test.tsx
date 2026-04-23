@@ -59,9 +59,7 @@ describe('ExpensesDashboard', () => {
         },
       ],
     };
-    const mockEvolution = [
-      { data: '2022-05', total_gasto: 500 },
-    ];
+    const mockEvolution = [{ data: '2022-05', total_gasto: 500 }];
 
     (projectService.getExpensesDetails as any).mockResolvedValue(mockDetails);
     (projectService.getExpensesEvolution as any).mockResolvedValue(mockEvolution);

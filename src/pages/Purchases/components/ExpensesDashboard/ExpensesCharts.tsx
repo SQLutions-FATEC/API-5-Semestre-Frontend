@@ -22,14 +22,7 @@ type Props = {
   pedidos: ExpenseDetail[];
 };
 
-const COLORS = [
-  '#004587',
-  '#FF5722',
-  '#FFC107',
-  '#4CAF50',
-  '#9C27B0',
-  '#00BCD4',
-];
+const COLORS = ['#004587', '#FF5722', '#FFC107', '#4CAF50', '#9C27B0', '#00BCD4'];
 
 const formatMonthYear = (dateStr: string) => {
   if (!dateStr || !dateStr.includes('-')) return dateStr;
@@ -70,7 +63,10 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
           <div className="chart-wrapper">
             {hasEvolution ? (
               <ResponsiveContainer width="100%" height={250}>
-                <LineChart data={formattedEvolution} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+                <LineChart
+                  data={formattedEvolution}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
                   <XAxis
                     dataKey="displayDate"
@@ -122,7 +118,7 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
                 <DollarSign size={14} />
               </div>
               <span className="pill-text">
-                {total > 0 
+                {total > 0
                   ? `Gasto total: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`
                   : 'Nenhum gasto registrado'}
               </span>

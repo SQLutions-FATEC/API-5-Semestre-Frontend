@@ -1,24 +1,24 @@
 .request-dashboard-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    padding: 1.5rem;
-    background-color: #f7fafc;
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1.5rem;
+  background-color: #f7fafc;
+  min-height: 100vh;
 
-    .dashboard-header {
-        h2 {
-            margin: 0;
-            color: #2d3748;
-            font-size: 1.75rem;
-            font-weight: 700;
-        }
-
-        .subtitle {
-            color: #718096;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            display: block;
-        }
+  .dashboard-header {
+    h2 {
+      margin: 0;
+      color: #2d3748;
+      font-size: 1.75rem;
+      font-weight: 700;
     }
+
+    .subtitle {
+      color: #718096;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: block;
+    }
+  }
 }

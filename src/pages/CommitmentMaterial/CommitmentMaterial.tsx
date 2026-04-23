@@ -12,7 +12,7 @@ export default function CommitmentMaterial() {
   const [materiaisTabela, setMateriaisTabela] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-// Mantendo o ID fixo por enquanto, conforme a estrutura atual da sua rota
+  // Mantendo o ID fixo por enquanto, conforme a estrutura atual da sua rota
   const idProjeto = 'PRJ003';
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function CommitmentMaterial() {
 
         const materiaisComStatus = empenhosData.empenho_por_material.map((mat: any) => ({
           ...mat,
-          fornecedor: mat.fornecedor || 'SIATT Corp', 
+          fornecedor: mat.fornecedor || 'SIATT Corp',
           isObsoleto: codigosObsoletos.has(mat.codigo_material),
         }));
 

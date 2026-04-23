@@ -10,7 +10,7 @@ const mockData = [
     categoria: 'Cat A',
     fornecedor: 'Fornecedor Alpha',
     quantidade_total: 2,
-    total_custo: 50.00,
+    total_custo: 50.0,
     isObsoleto: false,
   },
   {
@@ -19,7 +19,7 @@ const mockData = [
     categoria: 'Cat B',
     fornecedor: 'Fornecedor Beta',
     quantidade_total: 1,
-    total_custo: 200.00,
+    total_custo: 200.0,
     isObsoleto: true,
   },
 ];
@@ -27,7 +27,7 @@ const mockData = [
 describe('CommitmentTab Component', () => {
   it('deve renderizar os cabeçalhos corretos da tabela', () => {
     render(<CommitmentTab data={mockData} />);
-    
+
     expect(screen.getByText('Cód')).toBeDefined();
     expect(screen.getByText('Material')).toBeDefined();
     expect(screen.getByText('Fornecedor')).toBeDefined();
@@ -41,7 +41,7 @@ describe('CommitmentTab Component', () => {
     // Verifica Cód e Descrição
     expect(screen.getByText('MAT001')).toBeDefined();
     expect(screen.getByText('Item Ativo')).toBeDefined();
-    
+
     // Verifica Fornecedor (Nova coluna)
     expect(screen.getByText('Fornecedor Alpha')).toBeDefined();
     expect(screen.getByText('Fornecedor Beta')).toBeDefined();

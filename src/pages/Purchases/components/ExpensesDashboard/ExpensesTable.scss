@@ -38,7 +38,7 @@
     white-space: nowrap;
 
     &.with-separator::after {
-      content: "";
+      content: '';
       position: absolute;
       right: 0;
       top: 25%;
@@ -86,7 +86,7 @@
     color: #475569;
     font-size: 0.85rem;
 
-    .MuiTablePagination-selectLabel, 
+    .MuiTablePagination-selectLabel,
     .MuiTablePagination-displayedRows {
       font-size: 0.85rem;
     }

@@ -13,7 +13,7 @@ const mockFinanceiro = {
 describe('OverviewMetrics', () => {
   it('renders all metric cards with correct titles', () => {
     render(<OverviewMetrics financeiro={mockFinanceiro} />);
-    
+
     expect(screen.getByText('Total em Horas Trabalhadas')).toBeInTheDocument();
     expect(screen.getByText('Total de Horas Previstas')).toBeInTheDocument();
     expect(screen.getByText('Valor Empenhado')).toBeInTheDocument();
@@ -22,7 +22,7 @@ describe('OverviewMetrics', () => {
 
   it('formats hours correctly including edge cases', () => {
     const { rerender } = render(<OverviewMetrics financeiro={mockFinanceiro} />);
-    
+
     // 10.5 -> 10h 30m
     expect(screen.getByText('10h 30m')).toBeInTheDocument();
 
@@ -30,13 +30,15 @@ describe('OverviewMetrics', () => {
     expect(screen.getByText('21h 00m')).toBeInTheDocument();
 
     // Test NaN/undefined branch
-    rerender(<OverviewMetrics financeiro={{ ...mockFinanceiro, total_horas_trabalhadas: NaN } as any} />);
+    rerender(
+      <OverviewMetrics financeiro={{ ...mockFinanceiro, total_horas_trabalhadas: NaN } as any} />
+    );
     expect(screen.getAllByText('0h 00m').length).toBeGreaterThan(0);
   });
 
   it('formats currency correctly', () => {
     render(<OverviewMetrics financeiro={mockFinanceiro} />);
-    
+
     // Use regex to handle non-breaking spaces in currency format
     expect(screen.getByText(/R\$.*5\.000,00/)).toBeInTheDocument();
     expect(screen.getByText(/R\$.*12\.000,00/)).toBeInTheDocument();
@@ -44,7 +46,7 @@ describe('OverviewMetrics', () => {
 
   it('renders default values when financeiro is missing', () => {
     render(<OverviewMetrics />);
-    
+
     expect(screen.getAllByText('0h 00m').length).toBe(2);
     expect(screen.getAllByText('R$ 0,00').length).toBe(2);
   });

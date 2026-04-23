@@ -78,7 +78,7 @@ describe('CommitmentCharts Component', () => {
 
     // Verifica o label do KPI
     expect(screen.getByText('Gasto Total em Pedidos')).toBeDefined();
-    
+
     // Verifica se a string formatada aparece na tela (R$ 18.630,80)
     // Usamos regex para ignorar espaços em branco especiais do toLocaleString
     expect(screen.getByText(/18\.630,80/)).toBeDefined();

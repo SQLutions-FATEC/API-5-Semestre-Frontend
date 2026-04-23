@@ -5,7 +5,7 @@ type MaterialTabela = {
   codigo_material: string;
   descricao: string;
   categoria: string;
-  fornecedor: string; 
+  fornecedor: string;
   quantidade_total: number;
   total_custo: number;
   isObsoleto: boolean; // Flag que usaremos para pintar de vermelho

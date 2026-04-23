@@ -66,52 +66,43 @@ const mockPedidos = [
     fornecedor_nome: 'Forn 9',
     valor_total_pedido: 900,
     status: 'UNKNOWN_STATUS',
-  }
+  },
 ];
 
 describe('ExpensesTable', () => {
   it('covers all getStatusColors branches and formats currency correctly', async () => {
-    // Increase rows per page to see all items in the first page for testing colors
     render(<ExpensesTable pedidos={mockPedidos} />);
-    
-    // Open pagination to show more rows if necessary (default is 5, we have 9)
+
     const select = screen.getByRole('combobox');
     fireEvent.mouseDown(select);
     const listbox = await screen.findByRole('listbox');
     fireEvent.click(within(listbox).getByText('10'));
 
-    // Branch 1: CANCELADO / REJEITADA (#c53030)
     expect(screen.getByText('CANCELADO')).toHaveStyle('color: rgb(197, 48, 48)');
     expect(screen.getByText('REJEITADA')).toHaveStyle('color: rgb(197, 48, 48)');
 
-    // Branch 2: ENTREGUE / APROVADA / RECEBIDO (#047481)
     expect(screen.getByText('ENTREGUE')).toHaveStyle('color: rgb(4, 116, 129)');
     expect(screen.getByText('APROVADA')).toHaveStyle('color: rgb(4, 116, 129)');
     expect(screen.getByText('RECEBIDO')).toHaveStyle('color: rgb(4, 116, 129)');
 
-    // Branch 3: PARCIAL / PENDENTE / ABERTO (#9c4221)
     expect(screen.getByText('PARCIAL')).toHaveStyle('color: rgb(156, 66, 33)');
     expect(screen.getByText('PENDENTE')).toHaveStyle('color: rgb(156, 66, 33)');
     expect(screen.getByText('ABERTO')).toHaveStyle('color: rgb(156, 66, 33)');
 
-    // Default branch
     expect(screen.getByText('UNKNOWN_STATUS')).toHaveStyle('color: rgb(74, 85, 104)');
 
-    // Currency check
     expect(screen.getByText(/R\$.*100,00/)).toBeInTheDocument();
   });
 
   it('handles page navigation', () => {
     render(<ExpensesTable pedidos={mockPedidos} />);
-    
-    // Page 1: PC1-PC5
+
     expect(screen.getByText('PC1')).toBeInTheDocument();
     expect(screen.queryByText('PC6')).not.toBeInTheDocument();
 
     const nextButton = screen.getByTitle('Go to next page');
     fireEvent.click(nextButton);
 
-    // Page 2: PC6-PC9
     expect(screen.getByText('PC6')).toBeInTheDocument();
     expect(screen.queryByText('PC1')).not.toBeInTheDocument();
   });
