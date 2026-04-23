@@ -1,5 +1,5 @@
 import { api } from './api';
-import type { ProjectOverviewResponse } from '../types/project';
+import type { ProjectOverviewResponse, ProgramOption, ProjectListItem } from '../types/project';
 import type { PurchasesResponse } from '../types/purchase';
 import type { CriticalAlertsResponse } from '../types/alerts';
 
@@ -16,6 +16,16 @@ export const projectService = {
 
   async getCriticalAlerts(codigo_projeto: string): Promise<CriticalAlertsResponse> {
     const { data } = await api.get(`/projetos/criticos/${codigo_projeto}`);
+    return data;
+  },
+
+  async getPrograms(): Promise<ProgramOption[]> {
+    const { data } = await api.get('/programas/');
+    return data;
+  },
+
+  async getProjectsByProgram(programId: string): Promise<ProjectListItem[]> {
+    const { data } = await api.get(`/programas/${programId}/projetos/`);
     return data;
   },
 };
