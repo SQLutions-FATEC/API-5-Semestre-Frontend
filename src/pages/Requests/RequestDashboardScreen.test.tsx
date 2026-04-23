@@ -1,28 +1,24 @@
 import '@testing-library/jest-dom';
 import { render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { getSolicitacoes, getSolicitacoesAnalytics } from '../../services/requestService';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 import RequestDashboardScreen from './RequestDashboardScreen';
+import { getSolicitacoes, getSolicitacoesAnalytics } from '../../services/requestService';
 
 vi.mock('react-router-dom', () => ({
     useParams: () => ({ id: 'PRJ003' }),
 }));
 
-vi.mock('../../../../services/solicitacaoService', () => ({
-    getSolicitacoes: vi.fn(),
-    getSolicitacoesAnalytics: vi.fn(),
-}));
+vi.mock('../../services/requestService');
 
 describe('RequestDashboardScreen', () => {
-
+    
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
     it('renders the screen shell and child components correctly after loading', async () => {
-        // Configuramos a API falsa para devolver arrays vazios no teste base
-        (getSolicitacoes as any).mockResolvedValue({ solicitacoes: [] });
-        (getSolicitacoesAnalytics as any).mockResolvedValue({ estatisticas: { total_pendentes: 0, urgentes_criticas: [] } });
+        vi.mocked(getSolicitacoes).mockResolvedValue({ solicitacoes: [] });
+        vi.mocked(getSolicitacoesAnalytics).mockResolvedValue({ estatisticas: { total_pendentes: 0, urgentes_criticas: [] } });
 
         render(<RequestDashboardScreen />);
 
@@ -38,8 +34,8 @@ describe('RequestDashboardScreen', () => {
     });
 
     it('renders an error message when the API fails', async () => {
-        (getSolicitacoes as any).mockRejectedValue(new Error('Network Error'));
-        (getSolicitacoesAnalytics as any).mockRejectedValue(new Error('Network Error'));
+        vi.mocked(getSolicitacoes).mockRejectedValue(new Error('Network Error'));
+        vi.mocked(getSolicitacoesAnalytics).mockRejectedValue(new Error('Network Error'));
 
         render(<RequestDashboardScreen />);
 
