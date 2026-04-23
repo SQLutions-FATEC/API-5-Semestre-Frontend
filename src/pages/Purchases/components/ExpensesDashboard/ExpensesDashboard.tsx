@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { projectService } from '../../../../services/projectService';
 import type { ExpensesDetailsResponse, ExpensesEvolutionResponse } from '../../../../types/expenses';
-import { CircularProgress, Box, Typography } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import ExpensesCharts from './ExpensesCharts';
 import ExpensesTable from './ExpensesTable';
 import './ExpensesDashboard.scss';
 
 const ExpensesDashboard: React.FC = () => {
-  const { id = 'PRJ004' } = useParams<{ id: string }>();
+  const { id = 'PRJ003' } = useParams<{ id: string }>();
   const [details, setDetails] = useState<ExpensesDetailsResponse | null>(null);
   const [evolution, setEvolution] = useState<ExpensesEvolutionResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -31,7 +31,7 @@ const ExpensesDashboard: React.FC = () => {
         setEvolution(evolutionData);
       } catch (err: any) {
         console.error('Erro ao carregar dados de gastos:', err);
-        setError('Não foi possível carregar as informações de gastos.');
+        setError('Não existem dados de gastos cadastrados para este projeto.');
       } finally {
         setLoading(false);
       }
@@ -42,30 +42,28 @@ const ExpensesDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+      <div className="expenses-loading-container">
         <CircularProgress />
-      </Box>
+      </div>
     );
   }
 
-  // Se houver um erro real de rede ou API, mostramos a mensagem global
-  if (error) {
+  if (error || !details || !evolution) {
     return (
-      <Box sx={{ p: 4, textAlign: 'center' }}>
-        <Typography color="error">{error}</Typography>
-      </Box>
+      <div className="expenses-dashboard-empty">
+        <h3>{error || 'Não existem dados cadastrados para este projeto.'}</h3>
+      </div>
     );
   }
 
-  // Renderizamos o dashboard sempre que tivermos os objetos (mesmo que com listas vazias)
   return (
     <div className="expenses-dashboard">
       <ExpensesCharts
-        evolution={evolution || []}
-        total={details?.gasto_total_consolidado || 0}
-        pedidos={details?.pedidos || []}
+        evolution={evolution}
+        total={details.gasto_total_consolidado}
+        pedidos={details.pedidos}
       />
-      <ExpensesTable pedidos={details?.pedidos || []} />
+      <ExpensesTable pedidos={details.pedidos} />
     </div>
   );
 };

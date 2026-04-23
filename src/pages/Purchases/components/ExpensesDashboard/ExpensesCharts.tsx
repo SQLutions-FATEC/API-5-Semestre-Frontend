@@ -107,8 +107,8 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
               </ResponsiveContainer>
             ) : (
               <div className="empty-chart-message">
-                <Inbox size={32} />
-                <span>Nenhum dado de evolução encontrado</span>
+                <Inbox size={40} />
+                <span>Nenhum dado de evolução disponível</span>
               </div>
             )}
           </div>
@@ -117,12 +117,14 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
         {/* Donut Chart: Cost per Material with Integrated Total Pill */}
         <div className="chart-card distribution-card">
           <div className="total-pill-wrapper">
-            <div className="total-pill">
+            <div className={`total-pill ${total === 0 ? 'empty' : ''}`}>
               <div className="pill-icon">
                 <DollarSign size={14} />
               </div>
               <span className="pill-text">
-                Gasto total: {total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                {total > 0 
+                  ? `Gasto total: ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`
+                  : 'Nenhum gasto registrado'}
               </span>
             </div>
           </div>
@@ -163,8 +165,8 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
               </ResponsiveContainer>
             ) : (
               <div className="empty-chart-message">
-                <Inbox size={32} />
-                <span>Nenhum dado de materiais encontrado</span>
+                <Inbox size={40} />
+                <span>Nenhum dado de materiais disponível</span>
               </div>
             )}
           </div>

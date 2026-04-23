@@ -15,3 +15,28 @@
     }
   }
 }
+
+.expenses-loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  width: 100%;
+}
+
+.expenses-dashboard-empty {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+
+  h3 {
+    color: #004587; // Mesma cor que histórico
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0;
+  }
+}
