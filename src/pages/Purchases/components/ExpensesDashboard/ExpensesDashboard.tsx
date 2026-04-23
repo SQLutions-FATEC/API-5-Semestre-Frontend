@@ -8,7 +8,7 @@ import ExpensesTable from './ExpensesTable';
 import './ExpensesDashboard.scss';
 
 const ExpensesDashboard: React.FC = () => {
-  const { id = 'PRJ003' } = useParams<{ id: string }>();
+  const { id = 'PRJ004' } = useParams<{ id: string }>();
   const [details, setDetails] = useState<ExpensesDetailsResponse | null>(null);
   const [evolution, setEvolution] = useState<ExpensesEvolutionResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -48,22 +48,24 @@ const ExpensesDashboard: React.FC = () => {
     );
   }
 
-  if (error || !details || !evolution) {
+  // Se houver um erro real de rede ou API, mostramos a mensagem global
+  if (error) {
     return (
       <Box sx={{ p: 4, textAlign: 'center' }}>
-        <Typography color="error">{error || 'Dados indisponíveis'}</Typography>
+        <Typography color="error">{error}</Typography>
       </Box>
     );
   }
 
+  // Renderizamos o dashboard sempre que tivermos os objetos (mesmo que com listas vazias)
   return (
     <div className="expenses-dashboard">
       <ExpensesCharts
-        evolution={evolution}
-        total={details.gasto_total_consolidado}
-        pedidos={details.pedidos}
+        evolution={evolution || []}
+        total={details?.gasto_total_consolidado || 0}
+        pedidos={details?.pedidos || []}
       />
-      <ExpensesTable pedidos={details.pedidos} />
+      <ExpensesTable pedidos={details?.pedidos || []} />
     </div>
   );
 };

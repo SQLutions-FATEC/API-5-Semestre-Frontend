@@ -13,7 +13,7 @@ import {
   Cell,
 } from 'recharts';
 import type { ExpenseEvolution, ExpenseDetail } from '../../../../types/expenses';
-import { DollarSign } from 'lucide-react';
+import { DollarSign, Inbox } from 'lucide-react';
 import './ExpensesCharts.scss';
 
 type Props = {
@@ -23,15 +23,14 @@ type Props = {
 };
 
 const COLORS = [
-  '#004587', // Dark Blue
-  '#FF5722', // Orange
-  '#FFC107', // Amber
-  '#4CAF50', // Green
-  '#9C27B0', // Purple
-  '#00BCD4', // Cyan
+  '#004587',
+  '#FF5722',
+  '#FFC107',
+  '#4CAF50',
+  '#9C27B0',
+  '#00BCD4',
 ];
 
-// Helper to format YYYY-MM to MM/YYYY
 const formatMonthYear = (dateStr: string) => {
   if (!dateStr || !dateStr.includes('-')) return dateStr;
   const [year, month] = dateStr.split('-');
@@ -59,6 +58,9 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
     }));
   }, [evolution]);
 
+  const hasEvolution = formattedEvolution.length > 0;
+  const hasMaterials = materialData.length > 0;
+
   return (
     <div className="expenses-charts-container">
       <div className="charts-grid">
@@ -66,42 +68,49 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
         <div className="chart-card">
           <h4 className="chart-title">Evolução do Gasto</h4>
           <div className="chart-wrapper">
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={formattedEvolution} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                <XAxis
-                  dataKey="displayDate"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: '#666', fontSize: 11 }}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: '#666', fontSize: 11 }}
-                  tickFormatter={(value) =>
-                    `R$ ${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`
-                  }
-                />
-                <Tooltip
-                  labelFormatter={(label) => `Período: ${label}`}
-                  formatter={(value: number) => [
-                    value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
-                    'Total Gasto',
-                  ]}
-                />
-                <Legend verticalAlign="top" height={36} />
-                <Line
-                  type="monotone"
-                  dataKey="total_gasto"
-                  name="Gasto Mensal"
-                  stroke="#004587"
-                  strokeWidth={3}
-                  dot={{ r: 4, fill: '#004587' }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {hasEvolution ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={formattedEvolution} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
+                  <XAxis
+                    dataKey="displayDate"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#666', fontSize: 11 }}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#666', fontSize: 11 }}
+                    tickFormatter={(value) =>
+                      `R$ ${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`
+                    }
+                  />
+                  <Tooltip
+                    labelFormatter={(label) => `Período: ${label}`}
+                    formatter={(value: any) => [
+                      Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+                      'Total Gasto',
+                    ]}
+                  />
+                  <Legend verticalAlign="top" height={36} />
+                  <Line
+                    type="monotone"
+                    dataKey="total_gasto"
+                    name="Gasto Mensal"
+                    stroke="#004587"
+                    strokeWidth={3}
+                    dot={{ r: 4, fill: '#004587' }}
+                    activeDot={{ r: 6 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="empty-chart-message">
+                <Inbox size={32} />
+                <span>Nenhum dado de evolução encontrado</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -117,40 +126,47 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
               </span>
             </div>
           </div>
-          
+
           <h4 className="chart-title">Custo por Material</h4>
-          
+
           <div className="chart-wrapper">
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={materialData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {materialData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(value: number) =>
-                    value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-                  }
-                />
-                <Legend
-                  layout="horizontal"
-                  align="center"
-                  verticalAlign="bottom"
-                  iconType="circle"
-                  wrapperStyle={{ paddingTop: '20px' }}
-                  formatter={(value) => <span className="legend-text">{value}</span>}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+            {hasMaterials ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie
+                    data={materialData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {materialData.map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value: any) =>
+                      Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                    }
+                  />
+                  <Legend
+                    layout="horizontal"
+                    align="center"
+                    verticalAlign="bottom"
+                    iconType="circle"
+                    wrapperStyle={{ paddingTop: '20px' }}
+                    formatter={(value) => <span className="legend-text">{value}</span>}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="empty-chart-message">
+                <Inbox size={32} />
+                <span>Nenhum dado de materiais encontrado</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
