@@ -1,0 +1,54 @@
+@import '../../../../styles/variables';
+
+.project-card {
+  background: $bg-card;
+  border-radius: 12px;
+  border: 1px solid $border-default;
+  overflow: hidden;
+  display: flex;
+  transition: $transition-default;
+  cursor: pointer;
+  box-shadow: $shadow-sm;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-md;
+    border-color: $primary;
+  }
+
+  .status-indicator {
+    width: 6px;
+    &.status-ativo { background: $color-success-badge; }
+    &.status-atrasado { background: $color-danger-badge; }
+    &.status-suspenso { background: $color-warning-text; }
+  }
+
+  .project-card-content {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .project-title {
+      font-family: $title-font;
+      color: $text-primary;
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    .project-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      font-size: 0.85rem;
+      color: $text-secondary;
+
+      span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+    }
+  }
+}

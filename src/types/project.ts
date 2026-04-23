@@ -24,3 +24,15 @@ export type ProjectOverviewResponse = {
   financeiro: Financeiro;
   programa: Programa;
 };
+
+export type ProjectListItem = {
+  codigo: string;
+  nome: string;
+  responsavel: string;
+  status: 'Ativo' | 'Concluído' | 'Atrasado' | 'Suspenso'; //exemplo de status
+};
+
+export type ProgramOption = {
+  codigo: string;
+  nome: string;
+};

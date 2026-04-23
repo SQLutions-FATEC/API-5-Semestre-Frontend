@@ -74,7 +74,7 @@ export default function CommitmentCharts({
   const rawPieData = viewMode === 'geral' ? empenhoCategoria : empenhoMaterial || [];
   const pieData = rawPieData.map((item, index) => ({
     ...item,
-    fill: COLORS[index % COLORS.length]
+    fill: COLORS[index % COLORS.length],
   }));
   const pieNameKey = viewMode === 'geral' ? 'categoria' : 'descricao';
 
