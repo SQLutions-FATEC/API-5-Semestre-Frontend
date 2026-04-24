@@ -13,12 +13,12 @@ vi.mock('../../services/requestService');
 describe('RequestDashboardScreen', () => {
     
     beforeEach(() => {
-        vi.clearAllMocks();
+        vi.resetAllMocks(); 
     });
 
     it('renders the screen shell and child components correctly after loading', async () => {
-        vi.mocked(getSolicitacoes).mockResolvedValue({ solicitacoes: [] });
-        vi.mocked(getSolicitacoesAnalytics).mockResolvedValue({ estatisticas: { total_pendentes: 0, urgentes_criticas: [] } });
+        vi.mocked(getSolicitacoes).mockResolvedValueOnce({ solicitacoes: [] });
+        vi.mocked(getSolicitacoesAnalytics).mockResolvedValueOnce({ estatisticas: { total_pendentes: 0, urgentes_criticas: [] } });
 
         render(<RequestDashboardScreen />);
 
@@ -34,8 +34,8 @@ describe('RequestDashboardScreen', () => {
     });
 
     it('renders an error message when the API fails', async () => {
-        vi.mocked(getSolicitacoes).mockRejectedValue(new Error('Network Error'));
-        vi.mocked(getSolicitacoesAnalytics).mockRejectedValue(new Error('Network Error'));
+        vi.mocked(getSolicitacoes).mockRejectedValueOnce(new Error('Network Error'));
+        vi.mocked(getSolicitacoesAnalytics).mockRejectedValueOnce(new Error('Network Error'));
 
         render(<RequestDashboardScreen />);
 
