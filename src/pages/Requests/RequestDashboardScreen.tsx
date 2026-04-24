@@ -28,7 +28,7 @@ export default function RequestDashboardScreen() {
                 setSolicitacoes(listaData.solicitacoes || []);
                 setAnalytics(analyticsData.estatisticas || null);
             } catch (err) {
-                setError(true);
+                console.error(err);
             } finally {
                 setLoading(false);
             }

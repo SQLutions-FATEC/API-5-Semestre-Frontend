@@ -35,7 +35,7 @@ const columns: GridColDef[] = [
 ];
 
 interface RequestTableProps {
-    solicitacoes: Solicitacao[];
+    readonly solicitacoes: Solicitacao[];
 }
 
 export function RequestTable({ solicitacoes }: RequestTableProps) {

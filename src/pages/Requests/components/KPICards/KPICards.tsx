@@ -2,8 +2,8 @@ import { AlertTriangle, ArrowRight, Clock, FileText } from 'lucide-react';
 import type { RequestAnalytics, Solicitacao } from '../../../../types/requests';
 import './KPICards.scss';
 interface KpiCardsProps {
-    solicitacoes: Solicitacao[];
-    analytics: RequestAnalytics | null;
+    readonly solicitacoes: Solicitacao[];
+    readonly analytics: RequestAnalytics | null;
 }
 
 export function KpiCards({ solicitacoes, analytics }: KpiCardsProps) {
