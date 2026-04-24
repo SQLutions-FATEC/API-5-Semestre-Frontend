@@ -1,13 +1,14 @@
 import { Chip } from '@mui/material';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
-import type { RequestMock } from '../../../../types/requests';
+import type { Solicitacao } from '../../../../types/requests';
 import './RequestTable.scss';
 
 const formatCurrency = (value: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string | null) => {
+    if (!dateString) return '-';
     const [year, month, day] = dateString.split('-');
     return `${day}/${month}/${year}`;
 };
@@ -22,7 +23,7 @@ const statusColors: Record<string, { bg: string; text: string }> = {
 const columns: GridColDef[] = [
     { field: 'numero_solicitacao', headerName: 'Nº Solicitação', width: 140 },
     { field: 'nome_material', headerName: 'Nome do Material', flex: 1, minWidth: 200 },
-    { field: 'data_solicitacao', headerName: 'Data de Solicitação', width: 160, renderCell: (p) => formatDate(p.value as string) },
+    { field: 'data_solicitacao', headerName: 'Data de Solicitação', width: 160, renderCell: (p) => formatDate(p.value as string | null) },
     { field: 'valor_total_estimado', headerName: 'Valor Total', width: 160, renderCell: (p) => formatCurrency(Number(p.value)) },
     {
         field: 'status', headerName: 'Status', width: 140,
@@ -34,17 +35,18 @@ const columns: GridColDef[] = [
 ];
 
 interface RequestTableProps {
-    requests: RequestMock[];
+    readonly solicitacoes: Solicitacao[];
 }
 
-export function RequestTable({ requests }: RequestTableProps) {
+export function RequestTable({ solicitacoes }: RequestTableProps) {
     return (
         <div className="table-section">
             <h3>Todas as Solicitações</h3>
             <div style={{ width: '100%' }}>
                 <DataGrid
-                    rows={requests}
+                    rows={solicitacoes}
                     columns={columns}
+                    getRowId={(row) => row.numero_solicitacao}
                     autoHeight
                     initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
                     pageSizeOptions={[5, 10, 25]}

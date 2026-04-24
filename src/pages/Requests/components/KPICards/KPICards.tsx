@@ -1,16 +1,21 @@
 import { AlertTriangle, ArrowRight, Clock, FileText } from 'lucide-react';
-import type { RequestMock } from '../../../../types/requests';
+import type { RequestAnalytics, Solicitacao } from '../../../../types/requests';
 import './KPICards.scss';
 interface KpiCardsProps {
-    requests: RequestMock[];
+    readonly solicitacoes: Solicitacao[];
+    readonly analytics: RequestAnalytics | null;
 }
 
-export function KpiCards({ requests }: KpiCardsProps) {
-    const transformedRequests = requests.filter(req => req.numero_pedido !== null);
-    const pendingCount = requests.filter(req => req.status === 'Pendente').length;
-    const urgentRequests = requests
-        .filter(req => req.status === 'Pendente' && ['Alta', 'Urgente'].includes(req.prioridade))
-        .sort((a, b) => b.dias_desde_criacao - a.dias_desde_criacao);
+export function KpiCards({ solicitacoes, analytics }: KpiCardsProps) {
+    const transformedRequests = solicitacoes.filter(req => req.numero_pedido !== null);
+    const totalPendentes = analytics?.total_pendentes || 0;
+    const urgentRequests = (analytics?.urgentes_criticas || []).map(urgente => {
+        const materialVinculado = solicitacoes.find(s => s.numero_solicitacao === urgente.numero_solicitacao);
+        return {
+            ...urgente,
+            nome_material: materialVinculado?.nome_material || 'Material indisponível'
+        };
+    });
 
     return (
         <div className="kpi-section grid-3">
@@ -22,7 +27,7 @@ export function KpiCards({ requests }: KpiCardsProps) {
                 </div>
                 <div className="kpi-content scrollable-list">
                     {transformedRequests.map(req => (
-                        <div key={req.id} className="conversion-row">
+                        <div key={req.numero_solicitacao} className="conversion-row">
                             <span className="req-id">{req.numero_solicitacao}</span>
                             <ArrowRight size={14} className="arrow-icon" />
                             <span className="order-id">{req.numero_pedido}</span>
@@ -38,18 +43,18 @@ export function KpiCards({ requests }: KpiCardsProps) {
                     <div className="icon-container bg-orange"><Clock size={24} /></div>
                     <span className="kpi-title">Solicitações Pendentes</span>
                 </div>
-                <div className="kpi-value">{pendingCount}</div>
+                <div className="kpi-value">{totalPendentes}</div>
             </div>
 
             {/* Card 3 */}
             <div className="kpi-card alert-card">
                 <div className="kpi-header">
                     <div className="icon-container bg-red"><AlertTriangle size={24} /></div>
-                    <span className="kpi-title">Críticas / Alta Prioridade</span>
+                    <span className="kpi-title">Urgentes / Alta Prioridade</span>
                 </div>
                 <div className="kpi-content scrollable-list">
                     {urgentRequests.map(req => (
-                        <div key={req.id} className="urgent-row">
+                        <div key={req.numero_solicitacao} className="urgent-row">
                             <div className="urgent-info">
                                 <span className="req-id">{req.numero_solicitacao}</span>
                                 <span className="req-material">{req.nome_material}</span>

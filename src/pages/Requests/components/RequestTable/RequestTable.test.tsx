@@ -4,13 +4,13 @@ import { describe, expect, it } from 'vitest';
 import { RequestTable } from './RequestTable';
 
 describe('RequestTable', () => {
-    const mockRequests = [
-        { id: '1', numero_solicitacao: 'SOL-001', numero_pedido: 'PED-998', nome_material: 'Capacitor', data_solicitacao: '2026-04-10', valor_total_estimado: 966.80, status: 'Aprovada', prioridade: 'Média', dias_desde_criacao: 9 },
-        { id: '2', numero_solicitacao: 'SOL-002', numero_pedido: null, nome_material: 'Sensor', data_solicitacao: '2026-04-15', valor_total_estimado: 358.30, status: 'Pendente', prioridade: 'Crítica', dias_desde_criacao: 4 },
+    const mockSolicitacoes = [
+        { numero_solicitacao: 'SOL-001', numero_pedido: 'PED-998', nome_material: 'Capacitor', data_solicitacao: '2026-04-10', valor_total_estimado: 966.80, status: 'Aprovada' },
+        { numero_solicitacao: 'SOL-002', numero_pedido: null, nome_material: 'Sensor', data_solicitacao: '2026-04-15', valor_total_estimado: 358.30, status: 'Pendente' },
     ];
 
     it('renders correctly with data', () => {
-        render(<RequestTable requests={mockRequests as any} />);
+        render(<RequestTable solicitacoes={mockSolicitacoes as any} />);
 
         expect(screen.getByText('Todas as Solicitações')).toBeInTheDocument();
 
