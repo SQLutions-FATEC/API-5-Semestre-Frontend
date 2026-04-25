@@ -22,7 +22,20 @@ type Props = {
   pedidos: ExpenseDetail[];
 };
 
-const COLORS = ['#004587', '#FF5722', '#FFC107', '#4CAF50', '#9C27B0', '#00BCD4'];
+const COLORS = [
+  '#004587',
+  '#FF5722',
+  '#FFC107',
+  '#4CAF50',
+  '#9C27B0',
+  '#00BCD4',
+  '#484848',
+  '#CECECE',
+  '#0A775E',
+  '#001627',
+  '#00A8EA',
+  '#71E4D4',
+];
 
 const formatMonthYear = (dateStr: string) => {
   if (!dateStr || !dateStr.includes('-')) return dateStr;
@@ -127,38 +140,45 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
 
           <h4 className="chart-title">Custo por Material</h4>
 
-          <div className="chart-wrapper">
+          <div className="chart-wrapper distribution-wrapper">
             {hasMaterials ? (
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                    data={materialData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {materialData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value: any) =>
-                      Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-                    }
-                  />
-                  <Legend
-                    layout="horizontal"
-                    align="center"
-                    verticalAlign="bottom"
-                    iconType="circle"
-                    wrapperStyle={{ paddingTop: '20px' }}
-                    formatter={(value) => <span className="legend-text">{value}</span>}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+              <div className="centered-distribution-content">
+                <div className="pie-chart-box">
+                  <ResponsiveContainer width={220} height={220}>
+                    <PieChart>
+                      <Pie
+                        data={materialData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={65}
+                        outerRadius={90}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {materialData.map((_, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(value: any) =>
+                          Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        }
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="custom-legend">
+                  {materialData.map((item, index) => (
+                    <div key={item.name} className="legend-item">
+                      <div 
+                        className="legend-color" 
+                        style={{ backgroundColor: COLORS[index % COLORS.length] }} 
+                      />
+                      <span className="legend-text">{item.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             ) : (
               <div className="empty-chart-message">
                 <Inbox size={40} />
