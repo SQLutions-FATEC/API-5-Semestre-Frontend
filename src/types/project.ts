@@ -30,10 +30,18 @@ export type ProjectListItem = {
   codigo: string;
   nome: string;
   responsavel: string;
-  status: 'Ativo' | 'Concluído' | 'Atrasado' | 'Suspenso'; //exemplo de status
+  status: 'Ativo' | 'Concluído' | 'Atrasado' | 'Suspenso'; 
 };
 
 export type ProgramOption = {
   codigo: string;
   nome: string;
+};
+
+export type ProgramListItem = {
+  codigo: string;
+  nome: string;
+  gerente: string;       
+  gerente_tecnico: string; 
+  status: 'Ativo' | 'Concluído' | 'Atrasado' | 'Suspenso';
 };
