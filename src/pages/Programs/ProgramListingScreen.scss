@@ -1,0 +1,55 @@
+@import '../../styles/variables';
+
+.program-listing-container {
+  padding: 2rem;
+
+  .filter-bar {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    background: $bg-card;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid $border-default;
+    box-shadow: $shadow-sm;
+  }
+
+  .search-wrapper {
+    position: relative;
+    flex: 1;
+
+    &.full-width {
+      max-width: 600px; 
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $text-muted;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem 0.6rem 0.6rem 2.5rem;
+      border-radius: 6px;
+      border: 1px solid $border-strong;
+      font-family: $main-font;
+      background: $bg-card;
+
+      &:focus {
+        outline: none;
+        box-shadow: $shadow-focus;
+        border-color: $primary;
+      }
+    }
+  }
+
+  .programs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+}
