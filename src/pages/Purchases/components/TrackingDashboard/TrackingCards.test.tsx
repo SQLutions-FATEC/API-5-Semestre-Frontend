@@ -3,6 +3,8 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TrackingCards from './TrackingCards';
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import type { PurchasesResponse } from '../../../../types/purchase';
+import type { CriticalAlertsResponse } from '../../../../types/alerts';
 
 describe('TrackingCards', () => {
   const mockCompras = {
@@ -60,7 +62,12 @@ describe('TrackingCards', () => {
   });
 
   it('renders correctly with data', () => {
-    render(<TrackingCards compras={mockCompras as any} alertas={mockAlertas as any} />);
+    render(
+      <TrackingCards
+        compras={mockCompras as unknown as PurchasesResponse}
+        alertas={mockAlertas as unknown as CriticalAlertsResponse}
+      />
+    );
 
     // Check delayed orders
     expect(screen.getByText('123')).toBeInTheDocument();
@@ -80,7 +87,12 @@ describe('TrackingCards', () => {
     const emptyAlertas = {
       alertas_criticos: { pedidos_atrasados: [], pedidos_prioritarios_pendentes: [] },
     };
-    render(<TrackingCards compras={{ pedidos: [] } as any} alertas={emptyAlertas as any} />);
+    render(
+      <TrackingCards
+        compras={{ pedidos: [] } as unknown as PurchasesResponse}
+        alertas={emptyAlertas as unknown as CriticalAlertsResponse}
+      />
+    );
 
     const messages = screen.getAllByText('Nenhum item encontrado');
     expect(messages).toHaveLength(2);

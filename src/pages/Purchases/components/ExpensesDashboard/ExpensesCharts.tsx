@@ -97,7 +97,7 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
                   />
                   <Tooltip
                     labelFormatter={(label) => `Período: ${label}`}
-                    formatter={(value: any) => [
+                    formatter={(value) => [
                       Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
                       'Total Gasto',
                     ]}
@@ -160,8 +160,11 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
                         ))}
                       </Pie>
                       <Tooltip
-                        formatter={(value: any) =>
-                          Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        formatter={(value) =>
+                          Number(value).toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          })
                         }
                       />
                     </PieChart>
@@ -170,9 +173,9 @@ export default function ExpensesCharts({ evolution, total, pedidos }: Props) {
                 <div className="custom-legend">
                   {materialData.map((item, index) => (
                     <div key={item.name} className="legend-item">
-                      <div 
-                        className="legend-color" 
-                        style={{ backgroundColor: COLORS[index % COLORS.length] }} 
+                      <div
+                        className="legend-color"
+                        style={{ backgroundColor: COLORS[index % COLORS.length] }}
                       />
                       <span className="legend-text">{item.name}</span>
                     </div>

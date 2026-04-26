@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TrackingTable from './TrackingTable';
 import { describe, it, expect } from 'vitest';
+import type { PurchaseOrderData } from '../../../../types/purchase';
 
 describe('TrackingTable', () => {
   it('renders the table with correct mapping and status colors', () => {
@@ -63,7 +64,7 @@ describe('TrackingTable', () => {
       }, // testing null status
     ];
 
-    render(<TrackingTable orders={orders as any} />);
+    render(<TrackingTable orders={orders as PurchaseOrderData[]} />);
 
     // Test getMappedOrderCode
     expect(screen.getByText('SC0020 / PC0001')).toBeInTheDocument();

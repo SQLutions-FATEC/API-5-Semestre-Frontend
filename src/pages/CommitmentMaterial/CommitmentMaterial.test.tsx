@@ -8,8 +8,10 @@ vi.mock('./components/CommitmentCharts/CommitmentCharts', () => ({
   default: () => <div data-testid="charts">Charts Component</div>,
 }));
 
+import type { EmpenhoMaterial } from '../../types/commitment';
+
 vi.mock('./components/CommitmentTab/CommitmentTab', () => ({
-  default: ({ data }: any) => (
+  default: ({ data }: { data: EmpenhoMaterial[] }) => (
     <div data-testid="commitment-tab">Tab Component - Itens: {data?.length}</div>
   ),
 }));
@@ -18,12 +20,25 @@ describe('CommitmentMaterial Component', () => {
   const idProjeto = 'PRJ003';
 
   const mockAlerts = {
+    projeto: { codigo: 'PRJ003', nome: 'Projeto Teste' },
+    data_referencia: '2024-01-01',
     alertas_criticos: {
-      materiais_obsoletos: [{ codigo_material: 'MAT123', descricao: 'Cabo Teste' }],
+      pedidos_atrasados: [],
+      pedidos_prioritarios_pendentes: [],
+      materiais_obsoletos: [
+        {
+          codigo_material: 'MAT123',
+          descricao: 'Cabo Teste',
+          status: 'obsoleto',
+          vinculado_ao_projeto: true,
+          pedido_recente: false,
+        },
+      ],
     },
   };
 
   const mockAnalytics = {
+    projeto: { codigo: 'PRJ003', nome: 'Projeto Teste' },
     empenho_total: 1000,
     empenho_por_categoria: [{ categoria: 'Cabos', total_custo: 1000 }],
     empenho_por_tempo: [{ data: '2024-01-01', total_custo: 1000 }],
@@ -35,7 +50,12 @@ describe('CommitmentMaterial Component', () => {
         total_custo: 1000,
         fornecedor: 'Fornecedor A',
       },
-      { codigo_material: 'MAT456', descricao: 'Outro Material', total_custo: 500 },
+      {
+        codigo_material: 'MAT456',
+        descricao: 'Outro Material',
+        total_custo: 500,
+        fornecedor: 'Fornecedor B',
+      },
     ],
   };
 
@@ -54,10 +74,10 @@ describe('CommitmentMaterial Component', () => {
   });
 
   it('deve carregar os dados da API e renderizar os gráficos e a tabela', async () => {
-    const spyAlerts = vi.spyOn(commitmentService, 'getAlerts').mockResolvedValue(mockAlerts as any);
+    const spyAlerts = vi.spyOn(commitmentService, 'getAlerts').mockResolvedValue(mockAlerts);
     const spyAnalytics = vi
       .spyOn(commitmentService, 'getAnalytics')
-      .mockResolvedValue(mockAnalytics as any);
+      .mockResolvedValue(mockAnalytics);
 
     render(<CommitmentMaterial />);
 

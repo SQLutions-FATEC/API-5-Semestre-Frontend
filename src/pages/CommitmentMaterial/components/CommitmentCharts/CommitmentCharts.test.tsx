@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import type { EmpenhoCategoria, EmpenhoTempo } from '../../../../services/commitmentService';
+import type { EmpenhoCategoria, EmpenhoTempo } from '../../../../types/commitment';
 import CommitmentCharts from './CommitmentCharts';
 
 // Mock do Recharts para evitar problemas de renderização de SVG no JSDOM
@@ -8,7 +8,7 @@ vi.mock('recharts', async () => {
   const original = await vi.importActual('recharts');
   return {
     ...original,
-    ResponsiveContainer: ({ children }: any) => (
+    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
       <div data-testid="responsive-container">{children}</div>
     ),
   };
@@ -26,9 +26,6 @@ const mockEmpenhoTempo: EmpenhoTempo[] = [
     materiais: [
       {
         codigo_material: 'MAT1',
-        descricao: 'Resistor',
-        custo_unitario: 50,
-        quantidade: 2,
         total_custo: 100,
       },
     ],
@@ -36,7 +33,13 @@ const mockEmpenhoTempo: EmpenhoTempo[] = [
 ];
 
 const mockEmpenhoMaterial = [
-  { codigo_material: 'MAT1', descricao: 'Resistor', categoria: 'Conector', total_custo: 100 },
+  {
+    codigo_material: 'MAT1',
+    fornecedor: 'Fornecedor A',
+    descricao: 'Resistor',
+    categoria: 'Conector',
+    total_custo: 100,
+  },
 ];
 
 describe('CommitmentCharts Component', () => {

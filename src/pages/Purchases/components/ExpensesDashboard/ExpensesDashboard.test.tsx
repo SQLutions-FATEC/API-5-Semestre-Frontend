@@ -18,8 +18,8 @@ describe('ExpensesDashboard', () => {
   });
 
   it('renders loading state initially', () => {
-    (projectService.getExpensesDetails as any).mockImplementation(() => new Promise(() => {}));
-    (projectService.getExpensesEvolution as any).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(projectService.getExpensesDetails).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(projectService.getExpensesEvolution).mockImplementation(() => new Promise(() => {}));
 
     render(
       <MemoryRouter>
@@ -30,8 +30,8 @@ describe('ExpensesDashboard', () => {
   });
 
   it('renders error state on API failure', async () => {
-    (projectService.getExpensesDetails as any).mockRejectedValue(new Error('API error'));
-    (projectService.getExpensesEvolution as any).mockRejectedValue(new Error('API error'));
+    vi.mocked(projectService.getExpensesDetails).mockRejectedValue(new Error('API error'));
+    vi.mocked(projectService.getExpensesEvolution).mockRejectedValue(new Error('API error'));
 
     render(
       <MemoryRouter>
@@ -48,6 +48,7 @@ describe('ExpensesDashboard', () => {
 
   it('renders the dashboard components on successful data fetch', async () => {
     const mockDetails = {
+      projeto: { codigo: 'PRJ003', nome: 'Projeto Teste' },
       gasto_total_consolidado: 1000,
       pedidos: [
         {
@@ -61,8 +62,8 @@ describe('ExpensesDashboard', () => {
     };
     const mockEvolution = [{ data: '2022-05', total_gasto: 500 }];
 
-    (projectService.getExpensesDetails as any).mockResolvedValue(mockDetails);
-    (projectService.getExpensesEvolution as any).mockResolvedValue(mockEvolution);
+    vi.mocked(projectService.getExpensesDetails).mockResolvedValue(mockDetails);
+    vi.mocked(projectService.getExpensesEvolution).mockResolvedValue(mockEvolution);
 
     render(
       <MemoryRouter initialEntries={['/purchases/PRJ003']}>
@@ -80,8 +81,12 @@ describe('ExpensesDashboard', () => {
   });
 
   it('fetches correct id from url params', async () => {
-    (projectService.getExpensesDetails as any).mockResolvedValue({ pedidos: [] });
-    (projectService.getExpensesEvolution as any).mockResolvedValue([]);
+    vi.mocked(projectService.getExpensesDetails).mockResolvedValue({
+      projeto: { codigo: 'custom-id', nome: 'Teste' },
+      gasto_total_consolidado: 0,
+      pedidos: [],
+    });
+    vi.mocked(projectService.getExpensesEvolution).mockResolvedValue([]);
 
     render(
       <MemoryRouter initialEntries={['/purchases/custom-id']}>
@@ -97,8 +102,12 @@ describe('ExpensesDashboard', () => {
   });
 
   it('uses PRJ003 for id=1 special case', async () => {
-    (projectService.getExpensesDetails as any).mockResolvedValue({ pedidos: [] });
-    (projectService.getExpensesEvolution as any).mockResolvedValue([]);
+    vi.mocked(projectService.getExpensesDetails).mockResolvedValue({
+      projeto: { codigo: 'PRJ003', nome: 'Teste' },
+      gasto_total_consolidado: 0,
+      pedidos: [],
+    });
+    vi.mocked(projectService.getExpensesEvolution).mockResolvedValue([]);
 
     render(
       <MemoryRouter initialEntries={['/purchases/1']}>

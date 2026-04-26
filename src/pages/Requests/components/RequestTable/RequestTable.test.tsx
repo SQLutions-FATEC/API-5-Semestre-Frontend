@@ -12,8 +12,8 @@ describe('RequestTable', () => {
       nome_material: 'Capacitor',
       data_solicitacao: '2026-04-10',
       valor_total_estimado: 966.8,
-      status: 'Aprovada',
-      prioridade: 'Média',
+      status: 'Aprovada' as const,
+      prioridade: 'Média' as const,
       dias_desde_criacao: 9,
     },
     {
@@ -23,14 +23,14 @@ describe('RequestTable', () => {
       nome_material: 'Sensor',
       data_solicitacao: '2026-04-15',
       valor_total_estimado: 358.3,
-      status: 'Pendente',
-      prioridade: 'Crítica',
+      status: 'Pendente' as const,
+      prioridade: 'Crítica' as const,
       dias_desde_criacao: 4,
     },
   ];
 
   it('renders correctly with data', () => {
-    render(<RequestTable requests={mockRequests as any} />);
+    render(<RequestTable requests={mockRequests} />);
 
     expect(screen.getByText('Todas as Solicitações')).toBeInTheDocument();
 

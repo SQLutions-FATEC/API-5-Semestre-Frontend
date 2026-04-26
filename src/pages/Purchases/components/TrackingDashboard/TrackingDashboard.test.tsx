@@ -15,8 +15,8 @@ vi.mock('../../../../services/projectService', () => ({
 
 describe('TrackingDashboard', () => {
   it('renders loading state initially', () => {
-    (projectService.getPurchases as any).mockImplementation(() => new Promise(() => {}));
-    (projectService.getCriticalAlerts as any).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(projectService.getPurchases).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(projectService.getCriticalAlerts).mockImplementation(() => new Promise(() => {}));
 
     render(
       <MemoryRouter>
@@ -27,8 +27,8 @@ describe('TrackingDashboard', () => {
   });
 
   it('renders error state on API failure', async () => {
-    (projectService.getPurchases as any).mockRejectedValue(new Error('API error'));
-    (projectService.getCriticalAlerts as any).mockRejectedValue(new Error('API error'));
+    vi.mocked(projectService.getPurchases).mockRejectedValue(new Error('API error'));
+    vi.mocked(projectService.getCriticalAlerts).mockRejectedValue(new Error('API error'));
 
     render(
       <MemoryRouter>
@@ -44,13 +44,19 @@ describe('TrackingDashboard', () => {
   });
 
   it('renders the dashboard components on successful data fetch', async () => {
-    const mockCompras = { pedidos: [] };
+    const mockCompras = { projeto: 'PRJ003', tempo_medio_entrega_dias: 0, pedidos: [] };
     const mockAlertas = {
-      alertas_criticos: { pedidos_atrasados: [], pedidos_prioritarios_pendentes: [] },
+      projeto: { codigo: 'PRJ003', nome: 'Teste' },
+      data_referencia: '2024-01-01',
+      alertas_criticos: {
+        pedidos_atrasados: [],
+        pedidos_prioritarios_pendentes: [],
+        materiais_obsoletos: [],
+      },
     };
 
-    (projectService.getPurchases as any).mockResolvedValue(mockCompras);
-    (projectService.getCriticalAlerts as any).mockResolvedValue(mockAlertas);
+    vi.mocked(projectService.getPurchases).mockResolvedValue(mockCompras);
+    vi.mocked(projectService.getCriticalAlerts).mockResolvedValue(mockAlertas);
 
     render(
       <MemoryRouter initialEntries={['/purchases/1']}>
@@ -68,13 +74,19 @@ describe('TrackingDashboard', () => {
   });
 
   it('fetches correct id from url params', async () => {
-    const mockCompras = { pedidos: [] };
+    const mockCompras = { projeto: 'foobar', tempo_medio_entrega_dias: 0, pedidos: [] };
     const mockAlertas = {
-      alertas_criticos: { pedidos_atrasados: [], pedidos_prioritarios_pendentes: [] },
+      projeto: { codigo: 'foobar', nome: 'Teste' },
+      data_referencia: '2024-01-01',
+      alertas_criticos: {
+        pedidos_atrasados: [],
+        pedidos_prioritarios_pendentes: [],
+        materiais_obsoletos: [],
+      },
     };
 
-    (projectService.getPurchases as any).mockResolvedValue(mockCompras);
-    (projectService.getCriticalAlerts as any).mockResolvedValue(mockAlertas);
+    vi.mocked(projectService.getPurchases).mockResolvedValue(mockCompras);
+    vi.mocked(projectService.getCriticalAlerts).mockResolvedValue(mockAlertas);
 
     render(
       <MemoryRouter initialEntries={['/purchases/foobar']}>
@@ -90,13 +102,19 @@ describe('TrackingDashboard', () => {
   });
 
   it('uses PRJ003 as default ID if no ID is provided in route', async () => {
-    const mockCompras = { pedidos: [] };
+    const mockCompras = { projeto: 'PRJ003', tempo_medio_entrega_dias: 0, pedidos: [] };
     const mockAlertas = {
-      alertas_criticos: { pedidos_atrasados: [], pedidos_prioritarios_pendentes: [] },
+      projeto: { codigo: 'PRJ003', nome: 'Teste' },
+      data_referencia: '2024-01-01',
+      alertas_criticos: {
+        pedidos_atrasados: [],
+        pedidos_prioritarios_pendentes: [],
+        materiais_obsoletos: [],
+      },
     };
 
-    (projectService.getPurchases as any).mockResolvedValue(mockCompras);
-    (projectService.getCriticalAlerts as any).mockResolvedValue(mockAlertas);
+    vi.mocked(projectService.getPurchases).mockResolvedValue(mockCompras);
+    vi.mocked(projectService.getCriticalAlerts).mockResolvedValue(mockAlertas);
 
     render(
       <MemoryRouter initialEntries={['/purchases']}>

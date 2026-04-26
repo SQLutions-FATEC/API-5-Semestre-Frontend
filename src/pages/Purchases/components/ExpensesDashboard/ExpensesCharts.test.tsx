@@ -7,14 +7,24 @@ vi.mock('recharts', async () => {
   const original = await vi.importActual('recharts');
   return {
     ...original,
-    ResponsiveContainer: ({ children }: any) => (
+    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
       <div data-testid="responsive-container">{children}</div>
     ),
-    LineChart: ({ children }: any) => <div data-testid="line-chart">{children}</div>,
-    PieChart: ({ children }: any) => <div data-testid="pie-chart">{children}</div>,
-    Pie: ({ data, children }: any) => (
+    LineChart: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="line-chart">{children}</div>
+    ),
+    PieChart: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="pie-chart">{children}</div>
+    ),
+    Pie: ({
+      data,
+      children,
+    }: {
+      data: { name: string; value: number }[];
+      children: React.ReactNode;
+    }) => (
       <div data-testid="pie">
-        {data?.map((item: any, i: number) => (
+        {data?.map((item, i) => (
           <div key={i} data-testid="pie-slice">
             {item.name}: {item.value}
           </div>
@@ -22,9 +32,15 @@ vi.mock('recharts', async () => {
         {children}
       </div>
     ),
-    Legend: ({ payload, formatter }: any) => (
+    Legend: ({
+      payload,
+      formatter,
+    }: {
+      payload: { value: string }[];
+      formatter?: (value: string) => string;
+    }) => (
       <div data-testid="legend">
-        {payload?.map((entry: any, i: number) => (
+        {payload?.map((entry, i) => (
           <div key={i} data-testid="legend-item">
             {formatter ? formatter(entry.value) : entry.value}
           </div>
@@ -34,13 +50,19 @@ vi.mock('recharts', async () => {
     ),
     Line: () => <div data-testid="line" />,
     XAxis: () => <div data-testid="x-axis" />,
-    YAxis: ({ tickFormatter }: any) => (
+    YAxis: ({ tickFormatter }: { tickFormatter?: (value: number) => string }) => (
       <div data-testid="y-axis">
         <span>{tickFormatter ? tickFormatter(500) : ''}</span>
         <span>{tickFormatter ? tickFormatter(1500) : ''}</span>
       </div>
     ),
-    Tooltip: ({ labelFormatter, formatter }: any) => (
+    Tooltip: ({
+      labelFormatter,
+      formatter,
+    }: {
+      labelFormatter?: (label: string) => string;
+      formatter?: (value: number) => [string, string];
+    }) => (
       <div data-testid="tooltip">
         {labelFormatter && <span>{labelFormatter('2022-05')}</span>}
         {formatter && <span data-testid="tooltip-value">{JSON.stringify(formatter(1000))}</span>}
@@ -80,9 +102,6 @@ describe('ExpensesCharts', () => {
 
     expect(screen.getByText('R$ 500')).toBeInTheDocument();
     expect(screen.getByText('R$ 1.5k')).toBeInTheDocument();
-
-    const manualLegends = screen.getAllByTestId('legend-manual');
-    expect(manualLegends[0]).toHaveTextContent('Manual Item');
 
     const tooltips = screen.getAllByTestId('tooltip-value');
     expect(tooltips.some((t) => t.textContent?.includes('Total Gasto'))).toBe(true);

@@ -32,7 +32,7 @@ const ExpensesDashboard: React.FC = () => {
 
         setDetails(detailsData);
         setEvolution(evolutionData);
-      } catch (err: any) {
+      } catch (err) {
         console.error('Erro ao carregar dados de gastos:', err);
         setError('Não existem dados de gastos cadastrados para este projeto.');
       } finally {

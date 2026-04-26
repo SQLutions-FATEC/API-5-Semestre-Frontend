@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import OverviewMetrics from './OverviewMetrics';
 import { describe, it, expect } from 'vitest';
+import type { Financeiro } from '../../../../types/project';
 
 const mockFinanceiro = {
   total_horas_trabalhadas: 10.5, // 10h 30m
@@ -31,7 +32,9 @@ describe('OverviewMetrics', () => {
 
     // Test NaN/undefined branch
     rerender(
-      <OverviewMetrics financeiro={{ ...mockFinanceiro, total_horas_trabalhadas: NaN } as any} />
+      <OverviewMetrics
+        financeiro={{ ...mockFinanceiro, total_horas_trabalhadas: NaN } as Financeiro}
+      />
     );
     expect(screen.getAllByText('0h 00m').length).toBeGreaterThan(0);
   });

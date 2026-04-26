@@ -11,13 +11,12 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { EmpenhoCategoria, EmpenhoTempo } from '../../../../services/commitmentService';
-import './CommitmentCharts.scss';
+import type { EmpenhoCategoria, EmpenhoMaterial, EmpenhoTempo } from '../../../../types/commitment';
 
 type Props = {
   readonly empenhoCategoria: EmpenhoCategoria[];
   readonly empenhoTempo: EmpenhoTempo[];
-  readonly empenhoMaterial?: any[];
+  readonly empenhoMaterial?: EmpenhoMaterial[];
   readonly total: number;
 };
 
@@ -48,16 +47,16 @@ export default function CommitmentCharts({
     const materialCategoryMap: Record<string, string> = {};
     if (empenhoMaterial) {
       empenhoMaterial.forEach((m) => {
-        materialCategoryMap[m.codigo_material] = m.categoria;
+        materialCategoryMap[m.codigo_material] = m.categoria || 'Sem Categoria';
       });
     }
 
     return empenhoTempo.map((tempoP) => {
-      const newP: any = { data: tempoP.data };
-      tempoP.materiais?.forEach((m) => {
+      const newP: Record<string, string | number> = { data: tempoP.data };
+      (tempoP.materiais as { codigo_material: string; total_custo: number }[])?.forEach((m) => {
         const cat = materialCategoryMap[m.codigo_material] || 'Sem Categoria';
         if (!newP[cat]) newP[cat] = 0;
-        newP[cat] += m.total_custo;
+        (newP[cat] as number) += m.total_custo;
       });
       return newP;
     });
@@ -107,7 +106,10 @@ export default function CommitmentCharts({
         <div className="chart-item flex-1 min-w-[300px]">
           <p className="chart-label font-semibold mb-2 text-gray-700 ml-4">Evolução do Gasto</p>
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={transformedTempo} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
+            <LineChart
+              data={transformedTempo as Record<string, unknown>[]}
+              margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
+            >
               <CartesianGrid strokeDasharray="3 3" vertical={true} />
               <XAxis
                 dataKey="data"
@@ -117,7 +119,7 @@ export default function CommitmentCharts({
                 height={60}
               />
               <YAxis tick={{ fontSize: 11 }} />
-              <Tooltip formatter={(val: any) => `R$ ${Number(val).toLocaleString('pt-BR')}`} />
+              <Tooltip formatter={(value) => [`R$ ${Number(value).toLocaleString('pt-BR')}`, '']} />
               <Legend verticalAlign="bottom" height={36} iconType="rect" />
 
               {viewMode === 'geral' ? (
@@ -156,13 +158,13 @@ export default function CommitmentCharts({
               <Pie
                 data={pieData}
                 dataKey="total_custo"
-                nameKey={pieNameKey}
+                nameKey={pieNameKey as string}
                 cx="50%"
                 cy="50%"
                 innerRadius={60}
                 outerRadius={80}
               />
-              <Tooltip formatter={(val: any) => `R$ ${Number(val).toLocaleString('pt-BR')}`} />
+              <Tooltip formatter={(value) => `R$ ${Number(value).toLocaleString('pt-BR')}`} />
               <Legend verticalAlign="bottom" height={36} iconType="square" />
             </PieChart>
           </ResponsiveContainer>

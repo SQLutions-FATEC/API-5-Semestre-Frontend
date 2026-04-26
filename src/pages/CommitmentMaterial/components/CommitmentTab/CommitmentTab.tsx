@@ -4,9 +4,9 @@ import './CommitmentTab.scss';
 type MaterialTabela = {
   codigo_material: string;
   descricao: string;
-  categoria: string;
+  categoria?: string;
   fornecedor: string;
-  quantidade_total: number;
+  quantidade_total?: number;
   total_custo: number;
   isObsoleto: boolean; // Flag que usaremos para pintar de vermelho
 };

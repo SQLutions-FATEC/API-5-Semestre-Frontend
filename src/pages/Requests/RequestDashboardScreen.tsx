@@ -67,7 +67,8 @@ export default function RequestDashboardScreen() {
 
   // Simula o carregamento da API
   useEffect(() => {
-    setRequests(mockData);
+    const timer = setTimeout(() => setRequests(mockData), 500);
+    return () => clearTimeout(timer);
   }, []);
 
   return (

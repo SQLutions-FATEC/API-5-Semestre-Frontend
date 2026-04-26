@@ -13,8 +13,8 @@ describe('KpiCards', () => {
       nome_material: 'Capacitor',
       data_solicitacao: '2026-04-10',
       valor_total_estimado: 966.8,
-      status: 'Aprovada',
-      prioridade: 'Média',
+      status: 'Aprovada' as const,
+      prioridade: 'Média' as const,
       dias_desde_criacao: 9,
     },
     {
@@ -24,8 +24,8 @@ describe('KpiCards', () => {
       nome_material: 'Sensor',
       data_solicitacao: '2026-04-15',
       valor_total_estimado: 358.3,
-      status: 'Pendente',
-      prioridade: 'Crítica',
+      status: 'Pendente' as const,
+      prioridade: 'Crítica' as const,
       dias_desde_criacao: 4,
     },
     {
@@ -35,14 +35,14 @@ describe('KpiCards', () => {
       nome_material: 'Microcontrolador',
       data_solicitacao: '2026-03-20',
       valor_total_estimado: 2500.0,
-      status: 'Pendente',
-      prioridade: 'Alta',
+      status: 'Pendente' as const,
+      prioridade: 'Alta' as const,
       dias_desde_criacao: 30,
     },
   ];
 
   it('renders correctly with data', () => {
-    render(<KpiCards requests={mockRequests as any} />);
+    render(<KpiCards requests={mockRequests} />);
 
     expect(screen.getByText('Convertidas em Pedido')).toBeInTheDocument();
     expect(screen.getByText('Solicitações Pendentes')).toBeInTheDocument();
