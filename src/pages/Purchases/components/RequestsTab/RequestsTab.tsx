@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import StepSwitcher from '../../../../components/ui/StepSwitcher/StepSwitcher';
 import TrackingDashboard from '../TrackingDashboard/TrackingDashboard';
+import ExpensesDashboard from '../ExpensesDashboard/ExpensesDashboard';
 import './RequestsTab.scss';
 
 export default function RequestsTab() {
@@ -22,9 +23,7 @@ export default function RequestsTab() {
           )}
           {activeSubTab === 'Gastos' && (
             <div className="sub-tab-content">
-              <h2 className="content-title">
-                <span className="placeholder-text">Gastos das Solicitações (em breve)</span>
-              </h2>
+              <ExpensesDashboard />
             </div>
           )}
         </StepSwitcher>

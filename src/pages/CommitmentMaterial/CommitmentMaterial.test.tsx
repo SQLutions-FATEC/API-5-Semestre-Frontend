@@ -8,11 +8,11 @@ vi.mock('./components/CommitmentCharts/CommitmentCharts', () => ({
   default: () => <div data-testid="charts">Charts Component</div>,
 }));
 
+import type { EmpenhoMaterial } from '../../types/commitment';
+
 vi.mock('./components/CommitmentTab/CommitmentTab', () => ({
-  default: ({ data }: any) => (
-    <div data-testid="commitment-tab">
-      Tab Component - Itens: {data?.length}
-    </div>
+  default: ({ data }: { data: EmpenhoMaterial[] }) => (
+    <div data-testid="commitment-tab">Tab Component - Itens: {data?.length}</div>
   ),
 }));
 
@@ -20,19 +20,42 @@ describe('CommitmentMaterial Component', () => {
   const idProjeto = 'PRJ003';
 
   const mockAlerts = {
+    projeto: { codigo: 'PRJ003', nome: 'Projeto Teste' },
+    data_referencia: '2024-01-01',
     alertas_criticos: {
-      materiais_obsoletos: [{ codigo_material: 'MAT123', descricao: 'Cabo Teste' }],
+      pedidos_atrasados: [],
+      pedidos_prioritarios_pendentes: [],
+      materiais_obsoletos: [
+        {
+          codigo_material: 'MAT123',
+          descricao: 'Cabo Teste',
+          status: 'obsoleto',
+          vinculado_ao_projeto: true,
+          pedido_recente: false,
+        },
+      ],
     },
   };
 
   const mockAnalytics = {
+    projeto: { codigo: 'PRJ003', nome: 'Projeto Teste' },
     empenho_total: 1000,
     empenho_por_categoria: [{ categoria: 'Cabos', total_custo: 1000 }],
     empenho_por_tempo: [{ data: '2024-01-01', total_custo: 1000 }],
     // Estrutura essencial para o .map do componente não quebrar
     empenho_por_material: [
-      { codigo_material: 'MAT123', descricao: 'Cabo Teste', total_custo: 1000, fornecedor: 'Fornecedor A' },
-      { codigo_material: 'MAT456', descricao: 'Outro Material', total_custo: 500 }
+      {
+        codigo_material: 'MAT123',
+        descricao: 'Cabo Teste',
+        total_custo: 1000,
+        fornecedor: 'Fornecedor A',
+      },
+      {
+        codigo_material: 'MAT456',
+        descricao: 'Outro Material',
+        total_custo: 500,
+        fornecedor: 'Fornecedor B',
+      },
     ],
   };
 
@@ -51,8 +74,10 @@ describe('CommitmentMaterial Component', () => {
   });
 
   it('deve carregar os dados da API e renderizar os gráficos e a tabela', async () => {
-    const spyAlerts = vi.spyOn(commitmentService, 'getAlerts').mockResolvedValue(mockAlerts as any);
-    const spyAnalytics = vi.spyOn(commitmentService, 'getAnalytics').mockResolvedValue(mockAnalytics as any);
+    const spyAlerts = vi.spyOn(commitmentService, 'getAlerts').mockResolvedValue(mockAlerts);
+    const spyAnalytics = vi
+      .spyOn(commitmentService, 'getAnalytics')
+      .mockResolvedValue(mockAnalytics);
 
     render(<CommitmentMaterial />);
 
@@ -68,7 +93,7 @@ describe('CommitmentMaterial Component', () => {
     // Verifica se os componentes filhos foram renderizados
     expect(screen.getByTestId('charts')).toBeDefined();
     expect(screen.getByTestId('commitment-tab')).toBeDefined();
-    
+
     // Verifica se os dados chegaram à tabela (2 itens no mockAnalytics)
     expect(screen.getByText(/Itens: 2/)).toBeDefined();
   });
@@ -76,7 +101,7 @@ describe('CommitmentMaterial Component', () => {
   it('deve remover o loading e exibir os componentes mesmo se a API retornar erro', async () => {
     // Silencia o console.error para não poluir o terminal de testes
     vi.spyOn(console, 'error').mockImplementation(() => {});
-    
+
     vi.spyOn(commitmentService, 'getAlerts').mockRejectedValue(new Error('Erro na API'));
     vi.spyOn(commitmentService, 'getAnalytics').mockRejectedValue(new Error('Erro na API'));
 

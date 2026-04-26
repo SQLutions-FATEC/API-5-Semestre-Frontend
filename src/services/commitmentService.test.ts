@@ -19,7 +19,7 @@ describe('commitmentService', () => {
         materiais_obsoletos: [],
       },
     };
-    (api.get as any).mockResolvedValueOnce({ data: mockData });
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
     const result = await commitmentService.getAlerts('PRJ001');
     expect(api.get).toHaveBeenCalledWith('/projetos/criticos/PRJ001');
     expect(result).toEqual(mockData);
@@ -33,7 +33,7 @@ describe('commitmentService', () => {
       empenho_por_material: [],
       empenho_por_tempo: [],
     };
-    (api.get as any).mockResolvedValueOnce({ data: mockData });
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
     const result = await commitmentService.getAnalytics('PRJ001');
     expect(api.get).toHaveBeenCalledWith('/projetos/PRJ001/empenhos/');
     expect(result).toEqual(mockData);

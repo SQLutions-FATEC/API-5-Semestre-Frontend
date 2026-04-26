@@ -11,7 +11,7 @@ vi.mock('./api', () => ({
 describe('projectService', () => {
   it('getOverview fetches data correctly', async () => {
     const mockData = { id: 'PRJ001' };
-    (api.get as any).mockResolvedValueOnce({ data: mockData });
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
     const result = await projectService.getOverview('PRJ001');
     expect(api.get).toHaveBeenCalledWith('/projetos/PRJ001/');
     expect(result).toEqual(mockData);
@@ -19,7 +19,7 @@ describe('projectService', () => {
 
   it('getPurchases fetches data correctly', async () => {
     const mockData = { pedidos: [] };
-    (api.get as any).mockResolvedValueOnce({ data: mockData });
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
     const result = await projectService.getPurchases('PRJ001');
     expect(api.get).toHaveBeenCalledWith('/projetos/PRJ001/compras/');
     expect(result).toEqual(mockData);
@@ -27,7 +27,7 @@ describe('projectService', () => {
 
   it('getCriticalAlerts fetches data correctly', async () => {
     const mockData = { alertas_criticos: {} };
-    (api.get as any).mockResolvedValueOnce({ data: mockData });
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
     const result = await projectService.getCriticalAlerts('PRJ001');
     expect(api.get).toHaveBeenCalledWith('/projetos/criticos/PRJ001');
     expect(result).toEqual(mockData);
@@ -35,7 +35,7 @@ describe('projectService', () => {
 
   it('deve chamar getPrograms e retornar a lista de programas', async () => {
     const mockPrograms = [{ codigo: 'P1', nome: 'Programa 1' }];
-    (api.get as never).mockResolvedValue({ data: mockPrograms });
+    vi.mocked(api.get).mockResolvedValue({ data: mockPrograms });
 
     const result = await projectService.getPrograms();
 
@@ -45,7 +45,7 @@ describe('projectService', () => {
 
   it('deve chamar getProjectsByProgram e retornar projetos filtrados', async () => {
     const mockProjects = [{ codigo: 'PRJ-1', nome: 'Projeto 1' }];
-    (api.get as never).mockResolvedValue({ data: mockProjects });
+    vi.mocked(api.get).mockResolvedValue({ data: mockProjects });
 
     const result = await projectService.getProjectsByProgram('P1');
 

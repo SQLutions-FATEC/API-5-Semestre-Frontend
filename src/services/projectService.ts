@@ -2,6 +2,7 @@ import { api } from './api';
 import type { ProjectOverviewResponse, ProgramOption, ProjectListItem } from '../types/project';
 import type { PurchasesResponse } from '../types/purchase';
 import type { CriticalAlertsResponse } from '../types/alerts';
+import type { ExpensesDetailsResponse, ExpensesEvolutionResponse } from '../types/expenses';
 
 export const projectService = {
   async getOverview(codigo_projeto: string): Promise<ProjectOverviewResponse> {
@@ -26,6 +27,16 @@ export const projectService = {
 
   async getProjectsByProgram(programId: string): Promise<ProjectListItem[]> {
     const { data } = await api.get(`/programas/${programId}/projetos/`);
+    return data;
+  },
+
+  async getExpensesDetails(codigo_projeto: string): Promise<ExpensesDetailsResponse> {
+    const { data } = await api.get(`/projetos/${codigo_projeto}/gastos/detalhes/`);
+    return data;
+  },
+
+  async getExpensesEvolution(codigo_projeto: string): Promise<ExpensesEvolutionResponse> {
+    const { data } = await api.get(`/projetos/${codigo_projeto}/gastos/evolucao/`);
     return data;
   },
 };

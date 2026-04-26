@@ -5,42 +5,43 @@ import RequestDashboardScreen from './RequestDashboardScreen';
 import { getSolicitacoes, getSolicitacoesAnalytics } from '../../services/requestService';
 
 vi.mock('react-router-dom', () => ({
-    useParams: () => ({ id: 'PRJ003' }),
+  useParams: () => ({ id: 'PRJ003' }),
 }));
 
 vi.mock('../../services/requestService');
 
 describe('RequestDashboardScreen', () => {
-    
-    beforeEach(() => {
-        vi.resetAllMocks(); 
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it('renders the screen shell and child components correctly after loading', async () => {
+    vi.mocked(getSolicitacoes).mockResolvedValueOnce({ solicitacoes: [] });
+    vi.mocked(getSolicitacoesAnalytics).mockResolvedValueOnce({
+      estatisticas: { total_pendentes: 0, urgentes_criticas: [] },
     });
 
-    it('renders the screen shell and child components correctly after loading', async () => {
-        vi.mocked(getSolicitacoes).mockResolvedValueOnce({ solicitacoes: [] });
-        vi.mocked(getSolicitacoesAnalytics).mockResolvedValueOnce({ estatisticas: { total_pendentes: 0, urgentes_criticas: [] } });
+    render(<RequestDashboardScreen />);
 
-        render(<RequestDashboardScreen />);
+    expect(screen.getByText('Carregando dados...')).toBeInTheDocument();
 
-        expect(screen.getByText('Carregando dados...')).toBeInTheDocument();
-
-        await waitFor(() => {
-            expect(screen.getByText('Dashboard de Solicitações')).toBeInTheDocument();
-        });
-
-        expect(screen.getByText('Acompanhamento e rastreio de materiais')).toBeInTheDocument();
-        expect(screen.getByText('Convertidas em Pedido')).toBeInTheDocument();
-        expect(screen.getByText('Todas as Solicitações')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Dashboard de Solicitações')).toBeInTheDocument();
     });
 
-    it('renders an error message when the API fails', async () => {
-        vi.mocked(getSolicitacoes).mockRejectedValueOnce(new Error('Network Error'));
-        vi.mocked(getSolicitacoesAnalytics).mockRejectedValueOnce(new Error('Network Error'));
+    expect(screen.getByText('Acompanhamento e rastreio de materiais')).toBeInTheDocument();
+    expect(screen.getByText('Convertidas em Pedido')).toBeInTheDocument();
+    expect(screen.getByText('Todas as Solicitações')).toBeInTheDocument();
+  });
 
-        render(<RequestDashboardScreen />);
+  it('renders an error message when the API fails', async () => {
+    vi.mocked(getSolicitacoes).mockRejectedValueOnce(new Error('Network Error'));
+    vi.mocked(getSolicitacoesAnalytics).mockRejectedValueOnce(new Error('Network Error'));
 
-        await waitFor(() => {
-            expect(screen.getByText('Erro ao carregar os dados.')).toBeInTheDocument();
-        });
+    render(<RequestDashboardScreen />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Erro ao carregar os dados.')).toBeInTheDocument();
     });
+  });
 });

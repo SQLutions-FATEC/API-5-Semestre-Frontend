@@ -30,7 +30,7 @@ const TrackingDashboard: React.FC = () => {
 
         setCompras(comprasData);
         setAlertas(alertasData);
-      } catch (err: any) {
+      } catch (err) {
         console.error('Erro ao carregar dados de acompanhamento:', err);
         setError('Não foi possível carregar as informações de acompanhamento.');
       } finally {

@@ -1,0 +1,94 @@
+.expenses-table-container {
+  width: 100%;
+  margin-top: 1rem;
+
+  .table-header-box {
+    padding: 1.25rem 1.5rem;
+    background: white;
+    border-radius: 12px 12px 0 0;
+    border: 1px solid #e2e8f0;
+    border-bottom: none;
+
+    .table-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+  }
+
+  .table-container-paper {
+    border-radius: 0 0 12px 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    background: white;
+  }
+
+  .MuiTable-root {
+    border-collapse: collapse;
+  }
+
+  .header-cell {
+    background-color: #ffffff;
+    color: #475569;
+    font-weight: 700 !important;
+    font-size: 0.85rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    position: relative;
+    white-space: nowrap;
+
+    &.with-separator::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 25%;
+      height: 50%;
+      width: 1px;
+      background-color: #e2e8f0;
+    }
+  }
+
+  .body-cell {
+    padding: 0.85rem 1.5rem;
+    font-size: 0.9rem;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .table-row-striped {
+    &:nth-of-type(even) {
+      background-color: #f8fafc;
+    }
+
+    &:hover {
+      background-color: #f1f5f9;
+    }
+  }
+
+  .align-center {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .status-chip {
+    padding: 4px 12px;
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    border-radius: 6px;
+    display: inline-block;
+  }
+
+  .MuiTablePagination-root {
+    border-top: 1px solid #e2e8f0;
+    color: #475569;
+    font-size: 0.85rem;
+
+    .MuiTablePagination-selectLabel,
+    .MuiTablePagination-displayedRows {
+      font-size: 0.85rem;
+    }
+  }
+}

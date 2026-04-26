@@ -20,7 +20,7 @@ describe('taskService', () => {
         total_horas_trabalhadas: 5,
       },
     ];
-    (api.get as any).mockResolvedValueOnce({ data: mockData });
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
 
     const result = await taskService.getTaskTracking('PRJ001');
 
@@ -45,7 +45,7 @@ describe('taskService', () => {
       ],
       evolucao_horas: { '2023-10-01': 5, '2023-10-02': null },
     };
-    (api.get as any).mockResolvedValueOnce({ data: mockData });
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
 
     const result = await taskService.getTaskTracking('PRJ001');
 
@@ -56,7 +56,7 @@ describe('taskService', () => {
 
   it('getTaskTracking should default values when undefined', async () => {
     const mockData = { data: [{ codigo: 'T3', titulo: 'T3', responsavel: 'Bob', status: 'WIP' }] };
-    (api.get as any).mockResolvedValueOnce({ data: mockData });
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
     const result = await taskService.getTaskTracking('PRJ001');
     expect(result.tarefas[0].estimativa_horas).toBe(0);
     expect(result.tarefas[0].total_horas_trabalhadas).toBe(0);
@@ -66,7 +66,7 @@ describe('taskService', () => {
     const mockData = {
       results: [{ codigo: 'T4', titulo: 'T4', responsavel: 'Alice', status: 'CLOSED' }],
     };
-    (api.get as any).mockResolvedValueOnce({ data: mockData });
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
 
     const result = await taskService.getTasks('PRJ001');
     expect(Array.isArray(result)).toBe(true);

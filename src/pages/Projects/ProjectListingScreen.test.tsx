@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import ProjectListingScreen from './ProjectListingScreen';
 import { projectService } from '../../services/projectService';
 import { vi } from 'vitest';
+import { userEvent } from '@testing-library/user-event';
 
 //mocka o service para não bater na API real durante o teste
 vi.mock('../../services/projectService', () => ({
@@ -18,15 +18,15 @@ const mockPrograms = [
 ];
 
 const mockProjects = [
-  { codigo: 'PRJ-01', nome: 'Alpha', responsavel: 'João', status: 'Ativo' },
-  { codigo: 'PRJ-02', nome: 'Beta', responsavel: 'Maria', status: 'Atrasado' },
+  { codigo: 'PRJ-01', nome: 'Alpha', responsavel: 'João', status: 'Ativo' as const },
+  { codigo: 'PRJ-02', nome: 'Beta', responsavel: 'Maria', status: 'Atrasado' as const },
 ];
 
 describe('ProjectListingScreen', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (projectService.getPrograms as any).mockResolvedValue(mockPrograms);
-    (projectService.getProjectsByProgram as any).mockResolvedValue(mockProjects);
+    vi.mocked(projectService.getPrograms).mockResolvedValue(mockPrograms);
+    vi.mocked(projectService.getProjectsByProgram).mockResolvedValue(mockProjects);
   });
 
   it('deve carregar os programas e o primeiro projeto ao renderizar', async () => {

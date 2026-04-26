@@ -4,15 +4,22 @@ import './CommitmentMaterial.scss';
 import CommitmentCharts from './components/CommitmentCharts/CommitmentCharts';
 import CommitmentTab from './components/CommitmentTab/CommitmentTab';
 
+import type {
+  EmpenhoCategoria,
+  EmpenhoMaterial,
+  EmpenhoTempo,
+  MaterialComStatus,
+} from '../../types/commitment';
+
 export default function CommitmentMaterial() {
-  const [analyticsCategoria, setAnalyticsCategoria] = useState<any[]>([]);
-  const [analyticsMaterial, setAnalyticsMaterial] = useState<any[]>([]);
-  const [analyticsTempo, setAnalyticsTempo] = useState<any[]>([]);
+  const [analyticsCategoria, setAnalyticsCategoria] = useState<EmpenhoCategoria[]>([]);
+  const [analyticsMaterial, setAnalyticsMaterial] = useState<EmpenhoMaterial[]>([]);
+  const [analyticsTempo, setAnalyticsTempo] = useState<EmpenhoTempo[]>([]);
   const [totalEmpenho, setTotalEmpenho] = useState(0);
-  const [materiaisTabela, setMateriaisTabela] = useState<any[]>([]);
+  const [materiaisTabela, setMateriaisTabela] = useState<MaterialComStatus[]>([]);
   const [loading, setLoading] = useState(true);
 
-// Mantendo o ID fixo por enquanto, conforme a estrutura atual da sua rota
+  // Mantendo o ID fixo por enquanto, conforme a estrutura atual da sua rota
   const idProjeto = 'PRJ003';
 
   useEffect(() => {
@@ -28,13 +35,15 @@ export default function CommitmentMaterial() {
         const listaObsoletos = alertasData.alertas_criticos.materiais_obsoletos;
 
         // Lógica de Cruzamento: verifica se o material empenhado está na lista de alertas
-        const codigosObsoletos = new Set(listaObsoletos.map((obs: any) => obs.codigo_material));
+        const codigosObsoletos = new Set(listaObsoletos.map((obs) => obs.codigo_material));
 
-        const materiaisComStatus = empenhosData.empenho_por_material.map((mat: any) => ({
-          ...mat,
-          fornecedor: mat.fornecedor || 'SIATT Corp', 
-          isObsoleto: codigosObsoletos.has(mat.codigo_material),
-        }));
+        const materiaisComStatus: MaterialComStatus[] = empenhosData.empenho_por_material.map(
+          (mat) => ({
+            ...mat,
+            fornecedor: mat.fornecedor || 'SIATT Corp',
+            isObsoleto: codigosObsoletos.has(mat.codigo_material),
+          })
+        );
 
         setAnalyticsCategoria(empenhosData.empenho_por_categoria);
         setAnalyticsMaterial(empenhosData.empenho_por_material);
