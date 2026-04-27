@@ -1,7 +1,7 @@
+import { AlertCircle, CheckCircle, ShoppingCart, Truck } from 'lucide-react';
 import React from 'react';
-import type { PurchasesResponse } from '../../../../types/purchase';
 import type { CriticalAlertsResponse } from '../../../../types/alerts';
-import { Truck, AlertCircle, ShoppingCart } from 'lucide-react';
+import type { PurchasesResponse } from '../../../../types/purchase';
 import './TrackingCards.scss';
 
 interface TrackingCardsProps {
@@ -10,7 +10,11 @@ interface TrackingCardsProps {
 }
 
 const TrackingCards: React.FC<TrackingCardsProps> = ({ alertas, compras }) => {
-  const { pedidos_atrasados, pedidos_prioritarios_pendentes } = alertas.alertas_criticos;
+  const {
+    pedidos_atrasados,
+    pedidos_prioritarios_pendentes,
+    solicitacoes_para_projetos = []
+  } = alertas.alertas_criticos;
 
   const today = new Date();
 
@@ -61,8 +65,7 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ alertas, compras }) => {
       {/* Card 2: Alta Prioridade */}
       <div className="tracking-card complex-list-card priority-card">
         <h4 className="card-title">
-          <AlertCircle size={20} className="icon-critical" /> Pedidos de alta prioridade abertos ou
-          em rota
+          <AlertCircle size={20} className="icon-critical" /> Pedidos de alta prioridade abertos ou em rota
         </h4>
         {pedidos_prioritarios_pendentes.length > 0 ? (
           <div className="list-container">
@@ -98,7 +101,32 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ alertas, compras }) => {
         )}
       </div>
 
-      {/* Card 3: Total */}
+      {/* Card 3: Últimas Solicitações Convertidas */}
+      <div className="tracking-card simple-list-card recent-card">
+        <h4 className="card-title">
+          <CheckCircle size={20} className="icon-success" style={{ color: '#047481' }} /> Últimas Aprovações
+        </h4>
+        {solicitacoes_para_projetos.length > 0 ? (
+          <div className="list-container">
+            <div className="list-header">
+              <span>Solicitação</span>
+              <span>Pedido Gerado</span>
+            </div>
+            <div className="list-body">
+              {solicitacoes_para_projetos.map((s) => (
+                <div key={s.numero_solicitacao} className="list-row">
+                  <span style={{ fontWeight: 600, color: '#4a5568' }}>{s.numero_solicitacao}</span>
+                  <span style={{ color: '#2b6cb0', fontWeight: 600 }}>{s.numero_pedido}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <p className="empty-message">Nenhuma solicitação recente aprovada</p>
+        )}
+      </div>
+
+      {/* Card 4: Total */}
       <div className="tracking-card summary-card total-card">
         <h4 className="summary-title">Pedidos Abertos ou em Rota</h4>
         <div className="big-number">{activeOrdersCount}</div>
