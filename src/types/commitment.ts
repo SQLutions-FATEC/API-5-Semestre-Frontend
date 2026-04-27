@@ -29,6 +29,13 @@ export type MaterialObsoleto = {
   pedido_recente: boolean;
 };
 
+export type SolicitacaoParaProjeto = {
+  numero_solicitacao: string;
+  numero_pedido: string;
+  data_solicitacao?: string;
+  data_pedido?: string;
+};
+
 export type AlertasResponse = {
   projeto: {
     codigo: string;
@@ -39,6 +46,7 @@ export type AlertasResponse = {
     pedidos_atrasados: unknown[];
     pedidos_prioritarios_pendentes: unknown[];
     materiais_obsoletos: MaterialObsoleto[];
+    solicitacoes_para_projetos: SolicitacaoParaProjeto[];
   };
 };
 
