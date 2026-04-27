@@ -20,7 +20,7 @@ const ProgramListingScreen: React.FC = () => {
       p.codigo.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  return (
+ return (
     <div className="program-listing-container">
       <div className="listing-controls">
         <PageHeader
@@ -42,11 +42,28 @@ const ProgramListingScreen: React.FC = () => {
         </div>
       </div>
 
-      <div className="programs-grid">
-        {filteredPrograms.map((prog) => (
-          <ProgramCard key={prog.codigo} program={prog} />
-        ))}
-      </div>
+      {filteredPrograms.length > 0 ? (
+        <div className="programs-grid">
+          {filteredPrograms.map((prog) => (
+            <ProgramCard key={prog.codigo} program={prog} />
+          ))}
+        </div>
+      ) : (
+        <div className="no-results-container">
+          <Search size={48} className="no-results-icon" />
+          <h3>Nenhum programa encontrado</h3>
+          <p>
+            Não encontramos resultados para "<strong>{searchTerm}</strong>". 
+            Verifique a ortografia ou tente outro termo.
+          </p>
+          <button 
+            className="clear-filter-button" 
+            onClick={() => setSearchTerm('')}
+          >
+            Limpar busca
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import ProgramListingScreen from './ProgramListingScreen';
 import { programService } from '../../services/programService';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 vi.mock('../../services/programService', () => ({
   programService: {
@@ -33,7 +33,7 @@ describe('ProgramListingScreen', () => {
     (programService.getAllPrograms as any).mockResolvedValue(mockPrograms);
   });
 
-  it('deve carregar e exibir a listagem de programas ao renderizar', async () => {
+  it('deve renderizar a página e carregar os programas corretamente', async () => {
     render(<ProgramListingScreen />);
 
     expect(screen.getByText('Programas')).toBeInTheDocument();
@@ -43,36 +43,45 @@ describe('ProgramListingScreen', () => {
       expect(screen.getByText('Modernização Aviônica')).toBeInTheDocument();
     });
 
-    expect(screen.getByText(/Carlos Eduardo/i)).toBeInTheDocument();
-    expect(screen.getByText(/Rafael Carvalho/i)).toBeInTheDocument();
+    expect(screen.getByText('MANSUP')).toBeInTheDocument();
+    expect(screen.getByText('AVION-X')).toBeInTheDocument();
   });
 
-  it('deve filtrar os programas através da barra de busca', async () => {
+  it('deve filtrar os programas por nome', async () => {
     render(<ProgramListingScreen />);
 
     await waitFor(() => {
       expect(screen.getByText('Manutenção e Suporte')).toBeInTheDocument();
     });
 
-    const searchInput = screen.getByPlaceholderText('Buscar programa por nome ou código...');
+    const searchInput = screen.getByPlaceholderText(/Buscar programa por nome ou código/i);
 
-    await userEvent.type(searchInput, 'AVION');
+    await userEvent.type(searchInput, 'Modernização');
 
     expect(screen.getByText('Modernização Aviônica')).toBeInTheDocument();
     expect(screen.queryByText('Manutenção e Suporte')).not.toBeInTheDocument();
   });
 
-  it('deve exibir mensagem caso nenhum programa seja encontrado no filtro', async () => {
+  it('deve exibir feedback visual (Empty State) quando nenhum programa for encontrado', async () => {
     render(<ProgramListingScreen />);
 
     await waitFor(() => {
       expect(screen.getByText('Manutenção e Suporte')).toBeInTheDocument();
     });
 
-    const searchInput = screen.getByPlaceholderText('Buscar programa por nome ou código...');
+    const searchInput = screen.getByPlaceholderText(/Buscar programa por nome ou código/i);
 
-    await userEvent.type(searchInput, 'Programa Inexistente');
+    await userEvent.type(searchInput, 'Programa Fantasma');
 
-    expect(screen.queryByText('Manutenção e Suporte')).not.toBeInTheDocument();
+    expect(screen.getByText('Nenhum programa encontrado')).toBeInTheDocument();
+    expect(screen.getByText(/Programa Fantasma/i)).toBeInTheDocument();
+
+    const clearButton = screen.getByRole('button', { name: /Limpar busca/i });
+    expect(clearButton).toBeInTheDocument();
+
+    await userEvent.click(clearButton);
+
+    expect(screen.getByText('Manutenção e Suporte')).toBeInTheDocument();
+    expect(searchInput).toHaveValue('');
   });
 });
