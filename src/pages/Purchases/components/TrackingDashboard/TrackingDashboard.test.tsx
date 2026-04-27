@@ -1,10 +1,9 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import TrackingDashboard from './TrackingDashboard';
+import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { describe, expect, it, vi } from 'vitest';
 import { projectService } from '../../../../services/projectService';
-import { vi, describe, it, expect } from 'vitest';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import TrackingDashboard from './TrackingDashboard';
 
 vi.mock('../../../../services/projectService', () => ({
   projectService: {
@@ -15,8 +14,8 @@ vi.mock('../../../../services/projectService', () => ({
 
 describe('TrackingDashboard', () => {
   it('renders loading state initially', () => {
-    vi.mocked(projectService.getPurchases).mockImplementation(() => new Promise(() => {}));
-    vi.mocked(projectService.getCriticalAlerts).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(projectService.getPurchases).mockImplementation(() => new Promise(() => { }));
+    vi.mocked(projectService.getCriticalAlerts).mockImplementation(() => new Promise(() => { }));
 
     render(
       <MemoryRouter>
@@ -52,6 +51,7 @@ describe('TrackingDashboard', () => {
         pedidos_atrasados: [],
         pedidos_prioritarios_pendentes: [],
         materiais_obsoletos: [],
+        solicitacoes_para_projetos: [],
       },
     };
 
@@ -82,6 +82,7 @@ describe('TrackingDashboard', () => {
         pedidos_atrasados: [],
         pedidos_prioritarios_pendentes: [],
         materiais_obsoletos: [],
+        solicitacoes_para_projetos: [],
       },
     };
 
@@ -110,6 +111,7 @@ describe('TrackingDashboard', () => {
         pedidos_atrasados: [],
         pedidos_prioritarios_pendentes: [],
         materiais_obsoletos: [],
+        solicitacoes_para_projetos: [],
       },
     };
 
