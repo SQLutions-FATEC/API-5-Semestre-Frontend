@@ -20,10 +20,11 @@ export type MaterialObsoleto = {
   pedido_recente: boolean;
 };
 
-export type SolicitacaoRecente = {
+export type SolicitacaoParaProjeto = {
   numero_solicitacao: string;
   numero_pedido: string;
-  data_pedido: string;
+  data_solicitacao?: string;
+  data_pedido?: string;
 };
 
 export type CriticalAlertsResponse = {
@@ -33,6 +34,6 @@ export type CriticalAlertsResponse = {
     pedidos_atrasados: PedidoAtrasado[];
     pedidos_prioritarios_pendentes: PedidoPrioritario[];
     materiais_obsoletos: MaterialObsoleto[];
-    solicitacoes_para_projetos: SolicitacaoRecente[];
+    solicitacoes_para_projetos: SolicitacaoParaProjeto[];
   };
 };
