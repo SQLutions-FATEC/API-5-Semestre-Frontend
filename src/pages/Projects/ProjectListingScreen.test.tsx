@@ -29,7 +29,9 @@ describe('ProjectListingScreen', () => {
     vi.mocked(projectService.getPrograms).mockResolvedValue(mockPrograms);
     vi.mocked(projectService.getProjectsByProgram).mockImplementation((_cod, q) => {
       if (!q) return Promise.resolve(mockProjects);
-      return Promise.resolve(mockProjects.filter(p => p.nome.includes(q) || p.codigo.includes(q)));
+      return Promise.resolve(
+        mockProjects.filter((p) => p.nome.includes(q) || p.codigo.includes(q))
+      );
     });
   });
 

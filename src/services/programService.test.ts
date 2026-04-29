@@ -16,24 +16,24 @@ describe('programService', () => {
   it('getAllPrograms deve buscar a lista detalhada de programas corretamente', async () => {
     const mockBackendResponse = {
       programas: [
-        { 
-          codigo_programa: 'MANSUP', 
+        {
+          codigo_programa: 'MANSUP',
           nome_programa: 'Programa de Manutenção',
           gerente: 'Carlos Eduardo',
           gerente_tecnico: 'Rafael Carvalho',
-          status: 'Ativo'
-        }
-      ]
+          status: 'Ativo',
+        },
+      ],
     };
 
     const expectedFrontendModel = [
-      { 
-        codigo: 'MANSUP', 
+      {
+        codigo: 'MANSUP',
         nome: 'Programa de Manutenção',
         gerente: 'Carlos Eduardo',
         gerente_tecnico: 'Rafael Carvalho',
-        status: 'Ativo'
-      }
+        status: 'Ativo',
+      },
     ];
 
     (api.get as any).mockResolvedValueOnce({ data: mockBackendResponse });

@@ -12,19 +12,19 @@ vi.mock('../../services/programService', () => ({
 }));
 
 const mockPrograms = [
-  { 
-    codigo: 'MANSUP', 
-    nome: 'Manutenção e Suporte', 
-    gerente: 'Carlos Eduardo', 
-    gerente_tecnico: 'Rafael Carvalho', 
-    status: 'Ativo' 
+  {
+    codigo: 'MANSUP',
+    nome: 'Manutenção e Suporte',
+    gerente: 'Carlos Eduardo',
+    gerente_tecnico: 'Rafael Carvalho',
+    status: 'Ativo',
   },
-  { 
-    codigo: 'AVION-X', 
-    nome: 'Modernização Aviônica', 
-    gerente: 'Ana Paula', 
-    gerente_tecnico: 'Bruno Oliveira', 
-    status: 'Atrasado' 
+  {
+    codigo: 'AVION-X',
+    nome: 'Modernização Aviônica',
+    gerente: 'Ana Paula',
+    gerente_tecnico: 'Bruno Oliveira',
+    status: 'Atrasado',
   },
 ];
 
@@ -33,7 +33,13 @@ describe('ProgramListingScreen', () => {
     vi.clearAllMocks();
     (programService.getAllPrograms as any).mockImplementation((q?: string) => {
       if (!q) return Promise.resolve(mockPrograms);
-      return Promise.resolve(mockPrograms.filter(p => p.nome.toLowerCase().includes(q.toLowerCase()) || p.codigo.toLowerCase().includes(q.toLowerCase())));
+      return Promise.resolve(
+        mockPrograms.filter(
+          (p) =>
+            p.nome.toLowerCase().includes(q.toLowerCase()) ||
+            p.codigo.toLowerCase().includes(q.toLowerCase())
+        )
+      );
     });
   });
 

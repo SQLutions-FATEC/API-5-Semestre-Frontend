@@ -329,7 +329,15 @@ export default function HoursTracking() {
   return (
     <div className="hours-tracking-wrapper">
       <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-        <h2 style={{ fontSize: '1.875rem', fontWeight: '700', color: '#1e293b', margin: 0, letterSpacing: '-0.025em' }}>
+        <h2
+          style={{
+            fontSize: '1.875rem',
+            fontWeight: '700',
+            color: '#1e293b',
+            margin: 0,
+            letterSpacing: '-0.025em',
+          }}
+        >
           Acompanhamento de horas
         </h2>
         <span style={{ color: '#64748b', fontSize: '1rem', fontWeight: '400' }}>
@@ -380,7 +388,9 @@ export default function HoursTracking() {
                 <span className="prop-label">
                   <User /> Responsável
                 </span>
-                <span className="prop-value">{capitalizeText(selectedTask?.responsavel || '')}</span>
+                <span className="prop-value">
+                  {capitalizeText(selectedTask?.responsavel || '')}
+                </span>
               </div>
 
               <div className="property-group">
@@ -456,7 +466,6 @@ export default function HoursTracking() {
 
           <div className="chart-wrapper">{renderChartContent()}</div>
         </div>
-
       </div>
 
       <hr className="section-divider" />

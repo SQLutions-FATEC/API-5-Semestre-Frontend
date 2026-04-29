@@ -30,7 +30,7 @@ export type ProjectListItem = {
   codigo: string;
   nome: string;
   responsavel: string;
-  status: 'Ativo' | 'Concluído' | 'Atrasado' | 'Suspenso'; 
+  status: 'Ativo' | 'Concluído' | 'Atrasado' | 'Suspenso';
 };
 
 export type ProgramOption = {
@@ -41,7 +41,7 @@ export type ProgramOption = {
 export type ProgramListItem = {
   codigo: string;
   nome: string;
-  gerente: string;       
-  gerente_tecnico: string; 
+  gerente: string;
+  gerente_tecnico: string;
   status: 'Ativo' | 'Concluído' | 'Atrasado' | 'Suspenso';
 };

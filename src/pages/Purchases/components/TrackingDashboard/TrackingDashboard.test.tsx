@@ -14,8 +14,8 @@ vi.mock('../../../../services/projectService', () => ({
 
 describe('TrackingDashboard', () => {
   it('renders loading state initially', () => {
-    vi.mocked(projectService.getPurchases).mockImplementation(() => new Promise(() => { }));
-    vi.mocked(projectService.getCriticalAlerts).mockImplementation(() => new Promise(() => { }));
+    vi.mocked(projectService.getPurchases).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(projectService.getCriticalAlerts).mockImplementation(() => new Promise(() => {}));
 
     render(
       <MemoryRouter initialEntries={['/purchases/PRJ1']}>
@@ -104,6 +104,4 @@ describe('TrackingDashboard', () => {
       expect(projectService.getPurchases).toHaveBeenCalledWith('foobar');
     });
   });
-
-
 });

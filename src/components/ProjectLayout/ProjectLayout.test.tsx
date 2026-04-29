@@ -29,7 +29,12 @@ describe('ProjectLayout', () => {
     const { getByText, queryByText } = render(
       <MemoryRouter initialEntries={['/projetos/PRJ1']}>
         <Routes>
-          <Route path="/projetos/:codigo_projeto" element={<ProjectLayout>{(data) => <div>Child: {data?.projeto?.nome}</div>}</ProjectLayout>} />
+          <Route
+            path="/projetos/:codigo_projeto"
+            element={
+              <ProjectLayout>{(data) => <div>Child: {data?.projeto?.nome}</div>}</ProjectLayout>
+            }
+          />
         </Routes>
       </MemoryRouter>
     );
@@ -49,11 +54,14 @@ describe('ProjectLayout', () => {
     const { queryByText, getByText } = render(
       <MemoryRouter initialEntries={['/projetos/PRJ1']}>
         <Routes>
-          <Route path="/projetos/:codigo_projeto" element={
-            <ProjectLayout>
-              {(data) => <div>Child Data is null: {data === null ? 'Yes' : 'No'}</div>}
-            </ProjectLayout>
-          } />
+          <Route
+            path="/projetos/:codigo_projeto"
+            element={
+              <ProjectLayout>
+                {(data) => <div>Child Data is null: {data === null ? 'Yes' : 'No'}</div>}
+              </ProjectLayout>
+            }
+          />
         </Routes>
       </MemoryRouter>
     );

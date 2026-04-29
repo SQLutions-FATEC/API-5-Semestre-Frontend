@@ -45,7 +45,9 @@ describe('projectService', () => {
   });
 
   it('deve chamar getProjectsByProgram e retornar projetos filtrados', async () => {
-    const mockProjects = [{ codigo_projeto: 'PRJ-1', nome_projeto: 'Projeto 1', responsavel: 'João', status: 'Ativo' }];
+    const mockProjects = [
+      { codigo_projeto: 'PRJ-1', nome_projeto: 'Projeto 1', responsavel: 'João', status: 'Ativo' },
+    ];
     const expected = [{ codigo: 'PRJ-1', nome: 'Projeto 1', responsavel: 'João', status: 'Ativo' }];
     vi.mocked(api.get).mockResolvedValue({ data: mockProjects });
 

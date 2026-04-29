@@ -37,7 +37,8 @@ const ProjectListingScreen: React.FC = () => {
   const fetchProjects = (programId: string, query: string) => {
     setIsLoading(true);
     setError(null);
-    projectService.getProjectsByProgram(programId, query)
+    projectService
+      .getProjectsByProgram(programId, query)
       .then(setProjects)
       .catch((err) => {
         console.error(err);
@@ -104,7 +105,9 @@ const ProjectListingScreen: React.FC = () => {
         <div style={{ textAlign: 'center', padding: '40px' }}>
           <h3>Erro</h3>
           <p>{error}</p>
-          <button className="clear-filter-button" onClick={handleClear}>Tentar novamente</button>
+          <button className="clear-filter-button" onClick={handleClear}>
+            Tentar novamente
+          </button>
         </div>
       ) : isLoading ? (
         <div style={{ textAlign: 'center', padding: '40px' }}>
@@ -127,7 +130,13 @@ const ProjectListingScreen: React.FC = () => {
           <p>
             Não encontramos resultados para a busca. Verifique a ortografia ou limpe os filtros.
           </p>
-          <button className="clear-filter-button" onClick={handleClear} style={{ marginTop: '16px' }}>Limpar busca</button>
+          <button
+            className="clear-filter-button"
+            onClick={handleClear}
+            style={{ marginTop: '16px' }}
+          >
+            Limpar busca
+          </button>
         </div>
       )}
     </div>

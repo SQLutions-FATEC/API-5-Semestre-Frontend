@@ -14,10 +14,21 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const codigo_projeto = match?.params?.codigo_projeto;
 
   // Only show links that require a project if we have a project context
-  const navItems = codigo_projeto && programa_cod ? [
-    { name: 'Visão Geral', path: `/programas/${programa_cod}/projetos/${codigo_projeto}`, icon: LayoutDashboard },
-    { name: 'Compras', path: `/programas/${programa_cod}/projetos/${codigo_projeto}/compras`, icon: ShoppingCart },
-  ] : [];
+  const navItems =
+    codigo_projeto && programa_cod
+      ? [
+          {
+            name: 'Visão Geral',
+            path: `/programas/${programa_cod}/projetos/${codigo_projeto}`,
+            icon: LayoutDashboard,
+          },
+          {
+            name: 'Compras',
+            path: `/programas/${programa_cod}/projetos/${codigo_projeto}/compras`,
+            icon: ShoppingCart,
+          },
+        ]
+      : [];
 
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : 'expanded'}`}>

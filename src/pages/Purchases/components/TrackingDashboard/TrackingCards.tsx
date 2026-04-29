@@ -13,7 +13,7 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ alertas, compras }) => {
   const {
     pedidos_atrasados = [],
     pedidos_prioritarios_pendentes = [],
-    solicitacoes_para_projetos = []
+    solicitacoes_para_projetos = [],
   } = alertas?.alertas_criticos || {};
 
   const today = new Date();
@@ -29,9 +29,10 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ alertas, compras }) => {
     return compras?.pedidos?.find((p) => p.numero === numero)?.fornecedor || '-';
   };
 
-  const activeOrdersCount = compras?.pedidos?.filter((o) =>
-    ['aberto', 'enviado', 'em rota'].includes(o.status.toLowerCase())
-  ).length || 0;
+  const activeOrdersCount =
+    compras?.pedidos?.filter((o) =>
+      ['aberto', 'enviado', 'em rota'].includes(o.status.toLowerCase())
+    ).length || 0;
 
   return (
     <div className="tracking-cards-grid">
@@ -65,7 +66,8 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ alertas, compras }) => {
       {/* Card 2: Alta Prioridade */}
       <div className="tracking-card complex-list-card priority-card">
         <h4 className="card-title">
-          <AlertCircle size={20} className="icon-critical" /> Pedidos de alta prioridade abertos ou em rota
+          <AlertCircle size={20} className="icon-critical" /> Pedidos de alta prioridade abertos ou
+          em rota
         </h4>
         {pedidos_prioritarios_pendentes.length > 0 ? (
           <div className="list-container">
@@ -117,10 +119,18 @@ const TrackingCards: React.FC<TrackingCardsProps> = ({ alertas, compras }) => {
             </div>
             <div className="list-body">
               {solicitacoes_para_projetos.map((item) => (
-                <div key={item.numero_solicitacao} className="list-row" style={{ gridTemplateColumns: '1fr auto 1fr', alignItems: 'center' }}>
-                  <span style={{ fontWeight: 600, color: '#4a5568' }}>{item.numero_solicitacao}</span>
+                <div
+                  key={item.numero_solicitacao}
+                  className="list-row"
+                  style={{ gridTemplateColumns: '1fr auto 1fr', alignItems: 'center' }}
+                >
+                  <span style={{ fontWeight: 600, color: '#4a5568' }}>
+                    {item.numero_solicitacao}
+                  </span>
                   <ArrowRight size={14} style={{ color: '#a0aec0' }} />
-                  <span style={{ color: '#2b6cb0', fontWeight: 600, textAlign: 'right' }}>{item.numero_pedido}</span>
+                  <span style={{ color: '#2b6cb0', fontWeight: 600, textAlign: 'right' }}>
+                    {item.numero_pedido}
+                  </span>
                 </div>
               ))}
             </div>

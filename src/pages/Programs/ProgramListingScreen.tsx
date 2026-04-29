@@ -15,7 +15,8 @@ const ProgramListingScreen: React.FC = () => {
   const fetchPrograms = (query?: string) => {
     setIsLoading(true);
     setError(null);
-    programService.getAllPrograms(query)
+    programService
+      .getAllPrograms(query)
       .then(setPrograms)
       .catch((err) => {
         console.error(err);
@@ -39,7 +40,7 @@ const ProgramListingScreen: React.FC = () => {
     fetchPrograms('');
   };
 
- return (
+  return (
     <div className="program-listing-container">
       <div className="listing-controls">
         <PageHeader
@@ -85,13 +86,10 @@ const ProgramListingScreen: React.FC = () => {
           <Search size={48} className="no-results-icon" />
           <h3>Nenhum programa encontrado</h3>
           <p>
-            Não encontramos resultados para "<strong>{searchTerm}</strong>". 
-            Verifique a ortografia ou tente outro termo.
+            Não encontramos resultados para "<strong>{searchTerm}</strong>". Verifique a ortografia
+            ou tente outro termo.
           </p>
-          <button 
-            className="clear-filter-button" 
-            onClick={handleClear}
-          >
+          <button className="clear-filter-button" onClick={handleClear}>
             Limpar busca
           </button>
         </div>

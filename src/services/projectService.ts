@@ -24,7 +24,7 @@ export const projectService = {
     const { data } = await api.get('/programas/busca/');
     return data.programas.map((p: any) => ({
       codigo: p.codigo_programa,
-      nome: p.nome_programa
+      nome: p.nome_programa,
     }));
   },
 
@@ -37,7 +37,7 @@ export const projectService = {
       codigo: p.codigo_projeto,
       nome: p.nome_projeto,
       responsavel: p.responsavel,
-      status: p.status
+      status: p.status,
     }));
   },
 

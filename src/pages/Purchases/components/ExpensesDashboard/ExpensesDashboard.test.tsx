@@ -104,6 +104,4 @@ describe('ExpensesDashboard', () => {
       expect(projectService.getExpensesDetails).toHaveBeenCalledWith('custom-id');
     });
   });
-
-
 });

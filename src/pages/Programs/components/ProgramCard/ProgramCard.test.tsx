@@ -35,7 +35,7 @@ describe('ProgramCard Component', () => {
         <ProgramCard program={mockProgram} />
       </MemoryRouter>
     );
-    
+
     const indicator = container.querySelector('.status-indicator');
     expect(indicator).toHaveClass('status-ativo');
 

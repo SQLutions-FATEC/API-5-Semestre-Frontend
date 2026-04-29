@@ -122,6 +122,4 @@ describe('HoursTracking Component', () => {
     expect(await screen.findByText('Nenhuma tarefa encontrada para este projeto.')).toBeDefined();
     expect(await screen.findByText('Sem dados para exibir')).toBeDefined();
   });
-
-
 });
