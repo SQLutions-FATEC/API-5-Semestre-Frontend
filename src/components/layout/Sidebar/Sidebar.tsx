@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight, Package } from 'lucide-react';
 import './Sidebar.scss';
 
 interface SidebarProps {
@@ -13,6 +13,7 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const navItems = [
     { name: 'Visão Geral', path: '/', icon: LayoutDashboard },
     { name: 'Compras', path: '/compras', icon: ShoppingCart },
+    { name: 'Estoque', path: '/estoque', icon: Package },
   ];
 
   return (
