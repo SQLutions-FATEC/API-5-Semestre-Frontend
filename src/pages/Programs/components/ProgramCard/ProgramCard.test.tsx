@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect } from 'vitest';
 import ProgramCard from './ProgramCard';
 import type { ProgramListItem } from '../../../../types/project';
@@ -13,7 +14,11 @@ const mockProgram: ProgramListItem = {
 
 describe('ProgramCard Component', () => {
   it('deve renderizar as informações do programa corretamente', () => {
-    render(<ProgramCard program={mockProgram} />);
+    render(
+      <MemoryRouter>
+        <ProgramCard program={mockProgram} />
+      </MemoryRouter>
+    );
 
     expect(screen.getByText('Programa de Manutenção e Suporte')).toBeInTheDocument();
     expect(screen.getByText('MANSUP-001')).toBeInTheDocument();
@@ -25,7 +30,11 @@ describe('ProgramCard Component', () => {
   });
 
   it('deve aplicar as classes de CSS corretas para o status', () => {
-    const { container } = render(<ProgramCard program={mockProgram} />);
+    const { container } = render(
+      <MemoryRouter>
+        <ProgramCard program={mockProgram} />
+      </MemoryRouter>
+    );
     
     const indicator = container.querySelector('.status-indicator');
     expect(indicator).toHaveClass('status-ativo');

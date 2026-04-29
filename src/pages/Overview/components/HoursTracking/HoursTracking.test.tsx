@@ -43,7 +43,7 @@ const renderComponent = () =>
   render(
     <MemoryRouter initialEntries={['/PRJ003']}>
       <Routes>
-        <Route path="/:id" element={<HoursTracking />} />
+        <Route path="/:codigo_projeto" element={<HoursTracking />} />
       </Routes>
     </MemoryRouter>
   );
@@ -52,7 +52,7 @@ const renderComponentWithRoute = (route: string) =>
   render(
     <MemoryRouter initialEntries={[route]}>
       <Routes>
-        <Route path="/:id" element={<HoursTracking />} />
+        <Route path="/:codigo_projeto" element={<HoursTracking />} />
       </Routes>
     </MemoryRouter>
   );
@@ -123,11 +123,5 @@ describe('HoursTracking Component', () => {
     expect(await screen.findByText('Sem dados para exibir')).toBeDefined();
   });
 
-  it('should map route id 1 to PRJ003 when fetching tasks', async () => {
-    renderComponentWithRoute('/1');
 
-    await screen.findByText('Acompanhamento de horas');
-
-    expect(taskService.getTaskTracking).toHaveBeenCalledWith('PRJ003');
-  });
 });

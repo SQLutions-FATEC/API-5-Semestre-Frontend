@@ -34,22 +34,24 @@ describe('projectService', () => {
   });
 
   it('deve chamar getPrograms e retornar a lista de programas', async () => {
-    const mockPrograms = [{ codigo: 'P1', nome: 'Programa 1' }];
+    const mockPrograms = { programas: [{ codigo_programa: 'P1', nome_programa: 'Programa 1' }] };
+    const expected = [{ codigo: 'P1', nome: 'Programa 1' }];
     vi.mocked(api.get).mockResolvedValue({ data: mockPrograms });
 
     const result = await projectService.getPrograms();
 
-    expect(api.get).toHaveBeenCalledWith('/programas/');
-    expect(result).toEqual(mockPrograms);
+    expect(api.get).toHaveBeenCalledWith('/programas/busca/');
+    expect(result).toEqual(expected);
   });
 
   it('deve chamar getProjectsByProgram e retornar projetos filtrados', async () => {
-    const mockProjects = [{ codigo: 'PRJ-1', nome: 'Projeto 1' }];
+    const mockProjects = [{ codigo_projeto: 'PRJ-1', nome_projeto: 'Projeto 1', responsavel: 'João', status: 'Ativo' }];
+    const expected = [{ codigo: 'PRJ-1', nome: 'Projeto 1', responsavel: 'João', status: 'Ativo' }];
     vi.mocked(api.get).mockResolvedValue({ data: mockProjects });
 
     const result = await projectService.getProjectsByProgram('P1');
 
-    expect(api.get).toHaveBeenCalledWith('/programas/P1/projetos/');
-    expect(result).toEqual(mockProjects);
+    expect(api.get).toHaveBeenCalledWith('/P1/projetos/busca/', { params: {} });
+    expect(result).toEqual(expected);
   });
 });

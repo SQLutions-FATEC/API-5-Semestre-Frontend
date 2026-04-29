@@ -1,8 +1,9 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import ProjectListingScreen from './ProjectListingScreen';
 import { projectService } from '../../services/projectService';
-import { vi } from 'vitest';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { userEvent } from '@testing-library/user-event';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 //mocka o service para não bater na API real durante o teste
 vi.mock('../../services/projectService', () => ({
@@ -26,11 +27,20 @@ describe('ProjectListingScreen', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(projectService.getPrograms).mockResolvedValue(mockPrograms);
-    vi.mocked(projectService.getProjectsByProgram).mockResolvedValue(mockProjects);
+    vi.mocked(projectService.getProjectsByProgram).mockImplementation((_cod, q) => {
+      if (!q) return Promise.resolve(mockProjects);
+      return Promise.resolve(mockProjects.filter(p => p.nome.includes(q) || p.codigo.includes(q)));
+    });
   });
 
   it('deve carregar os programas e o primeiro projeto ao renderizar', async () => {
-    render(<ProjectListingScreen />);
+    render(
+      <MemoryRouter initialEntries={['/programas/P1/projetos']}>
+        <Routes>
+          <Route path="/programas/:programa_cod/projetos" element={<ProjectListingScreen />} />
+        </Routes>
+      </MemoryRouter>
+    );
 
     //verifica se os programas foram carregados no select
     await waitFor(() => {
@@ -45,19 +55,27 @@ describe('ProjectListingScreen', () => {
   });
 
   it('deve filtrar os projetos pela barra de busca', async () => {
-    render(<ProjectListingScreen />);
+    render(
+      <MemoryRouter initialEntries={['/programas/P1/projetos']}>
+        <Routes>
+          <Route path="/programas/:programa_cod/projetos" element={<ProjectListingScreen />} />
+        </Routes>
+      </MemoryRouter>
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Alpha')).toBeInTheDocument();
     });
 
-    const searchInput = screen.getByPlaceholderText('Buscar projeto por nome ou código...');
+    const searchInput = screen.getByPlaceholderText(/Buscar projeto por nome ou código/i);
 
     //digita "Alpha" na busca
-    await userEvent.type(searchInput, 'Alpha');
+    await userEvent.type(searchInput, 'Alpha{enter}');
 
-    //Alpha deve continuar na tela, mas Beta deve sumir
-    expect(screen.getByText('Alpha')).toBeInTheDocument();
-    expect(screen.queryByText('Beta')).not.toBeInTheDocument();
+    await waitFor(() => {
+      //Alpha deve continuar na tela, mas Beta deve sumir
+      expect(screen.getByText('Alpha')).toBeInTheDocument();
+      expect(screen.queryByText('Beta')).not.toBeInTheDocument();
+    });
   });
 });
