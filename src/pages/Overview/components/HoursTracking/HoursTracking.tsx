@@ -133,8 +133,7 @@ const columns: GridColDef[] = [
 ];
 
 export default function HoursTracking() {
-  const { id = 'PRJ022' } = useParams<{ id: string }>();
-  const projectId = id === '1' ? 'PRJ003' : id;
+  const { codigo_projeto } = useParams<{ codigo_projeto: string }>();
   const [tasks, setTasks] = useState<tarefa[]>([]);
   const [evolutionHours, setEvolutionHours] = useState<EvolucaoHoras>({});
   const [selectedTaskCode, setSelectedTaskCode] = useState<string>('');
@@ -147,7 +146,8 @@ export default function HoursTracking() {
         setLoading(true);
         setError(false);
 
-        const response = await taskService.getTaskTracking(projectId);
+        if (!codigo_projeto) return;
+        const response = await taskService.getTaskTracking(codigo_projeto);
         setTasks(Array.isArray(response?.tarefas) ? response.tarefas : []);
         setEvolutionHours(response?.evolucao_horas ?? {});
       } catch (fetchError) {
@@ -161,7 +161,7 @@ export default function HoursTracking() {
     };
 
     fetchTasks();
-  }, [projectId]);
+  }, [codigo_projeto]);
 
   const tableData = useMemo(() => tasks, [tasks]);
 
@@ -333,7 +333,7 @@ export default function HoursTracking() {
           Acompanhamento de horas
         </h2>
         <span style={{ color: '#64748b', fontSize: '1rem', fontWeight: '400' }}>
-          Projeto {projectId}
+          Projeto {codigo_projeto}
         </span>
       </div>
 

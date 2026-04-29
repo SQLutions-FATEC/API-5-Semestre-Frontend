@@ -15,7 +15,7 @@ export default function ProjectLayout({
   pageClassName = 'overview-page',
   contentClassName = 'overview-content',
 }: ProjectLayoutProps) {
-  const { id = 'PRJ003' } = useParams<{ id: string }>();
+  const { codigo_projeto } = useParams<{ codigo_projeto: string }>();
   const [data, setData] = useState<ProjectOverviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -24,9 +24,11 @@ export default function ProjectLayout({
       try {
         setLoading(true);
 
-        const idToFetch = id === '1' ? 'PRJ003' : id;
+        if (!codigo_projeto) {
+          throw new Error('Código do projeto não encontrado na URL');
+        }
 
-        const response = await projectService.getOverview(idToFetch);
+        const response = await projectService.getOverview(codigo_projeto);
         setData(response);
       } catch (err) {
         console.error('Error fetching project overview:', err);
@@ -37,7 +39,7 @@ export default function ProjectLayout({
     };
 
     fetchOverview();
-  }, [id]);
+  }, [codigo_projeto]);
 
   return (
     <div className={pageClassName}>
