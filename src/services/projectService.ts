@@ -21,13 +21,24 @@ export const projectService = {
   },
 
   async getPrograms(): Promise<ProgramOption[]> {
-    const { data } = await api.get('/programas/');
-    return data;
+    const { data } = await api.get('/programas/busca/');
+    return data.programas.map((p: any) => ({
+      codigo: p.codigo_programa,
+      nome: p.nome_programa
+    }));
   },
 
-  async getProjectsByProgram(programId: string): Promise<ProjectListItem[]> {
-    const { data } = await api.get(`/programas/${programId}/projetos/`);
-    return data;
+  async getProjectsByProgram(programId: string, q?: string): Promise<ProjectListItem[]> {
+    const params = q ? { q } : {};
+    const { data } = await api.get(`/${programId}/projetos/busca/`, { params });
+    // Assuming backend returns an array of projects directly as per docs for the search endpoint
+    // Docs say endpoint is /api/<programa_cod>/projetos/busca/
+    return data.map((p: any) => ({
+      codigo: p.codigo_projeto,
+      nome: p.nome_projeto,
+      responsavel: p.responsavel,
+      status: p.status
+    }));
   },
 
   async getExpensesDetails(codigo_projeto: string): Promise<ExpensesDetailsResponse> {
