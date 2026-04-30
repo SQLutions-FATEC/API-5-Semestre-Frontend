@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { User, Users, Code } from 'lucide-react';
 import type { ProgramListItem } from '../../../../types/project';
 import './ProgramCard.scss';
@@ -9,13 +9,11 @@ interface ProgramCardProps {
 }
 
 const ProgramCard: React.FC<ProgramCardProps> = ({ program }) => {
-  const navigate = useNavigate();
-
   return (
-    <div
+    <Link
+      to={`/programas/${program.codigo}/projetos`}
       className="program-card"
-      onClick={() => navigate(`/programas/${program.codigo}/projetos`)}
-      style={{ cursor: 'pointer' }}
+      style={{ textDecoration: 'none', color: 'inherit' }}
     >
       <div className={`status-indicator status-${program.status.toLowerCase()}`} />
       <div className="program-card-content">
@@ -37,7 +35,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ program }) => {
           {program.status}
         </span>
       </div>
-    </div>
+    </Link>
   );
 };
 
