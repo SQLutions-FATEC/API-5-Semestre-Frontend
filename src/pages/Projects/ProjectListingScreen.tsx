@@ -123,6 +123,7 @@ const ProjectListingScreen: React.FC = () => {
           icon={<FolderKanban />}
           title="Meus Projetos"
           subtitle="Selecione um programa e gerencie seus projetos"
+          backTo="/programas"
         />
 
         <div className="filter-bar">

@@ -11,6 +11,32 @@
     -apple-system,
     sans-serif;
 
+  .header-top-navigation {
+    display: flex;
+    align-items: center;
+
+    .back-to-projects-button {
+      background: none;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-radius: 8px;
+      color: $text-secondary;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      margin-left: -0.75rem;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: $primary;
+      }
+    }
+  }
+
   /* --- Main Surface Card --- */
   .header-main-surface {
     background: $bg-card;

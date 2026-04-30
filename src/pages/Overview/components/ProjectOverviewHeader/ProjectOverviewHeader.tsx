@@ -1,4 +1,5 @@
-import { Calendar, PencilRuler, User, LayoutGrid, Clock, Info } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Calendar, PencilRuler, User, LayoutGrid, Clock, Info, ArrowLeft } from 'lucide-react';
 import './ProjectOverviewHeader.scss';
 
 interface ProjectOverviewHeaderProps {
@@ -26,6 +27,8 @@ export default function ProjectOverviewHeader({
   status = 'Em andamento',
   hasError = false,
 }: ProjectOverviewHeaderProps) {
+  const navigate = useNavigate();
+
   const calculateProgress = () => {
     if (hasError) return 0;
     const sDate = new Date(startDate);
@@ -77,6 +80,17 @@ export default function ProjectOverviewHeader({
 
   return (
     <div className="unified-project-header">
+      <div className="header-top-navigation">
+        <button 
+          className="back-to-projects-button" 
+          onClick={() => navigate(`/programas/${programCode}/projetos`)}
+          title="Voltar para a lista de projetos"
+        >
+          <ArrowLeft size={16} />
+          <span>Voltar para Projetos</span>
+        </button>
+      </div>
+
       <div className="header-main-surface">
         <div className="program-context-section">
           <div className="program-info">
