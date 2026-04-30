@@ -19,7 +19,12 @@ vi.mock('../services/projectService', () => ({
 vi.mock('../services/commitmentService', () => ({
   commitmentService: {
     getAlerts: vi.fn().mockResolvedValue({ alertas_criticos: { materiais_obsoletos: [] } }),
-    getAnalytics: vi.fn().mockResolvedValue({ empenho_por_categoria: [], empenho_por_material: [], empenho_por_tempo: [], empenho_total: 0 }),
+    getAnalytics: vi.fn().mockResolvedValue({
+      empenho_por_categoria: [],
+      empenho_por_material: [],
+      empenho_por_tempo: [],
+      empenho_total: 0,
+    }),
   },
 }));
 

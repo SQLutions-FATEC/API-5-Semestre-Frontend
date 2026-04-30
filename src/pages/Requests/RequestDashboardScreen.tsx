@@ -7,7 +7,7 @@ import { RequestTable } from './components/RequestTable/RequestTable';
 import './RequestDashboardScreen.scss';
 
 export default function RequestDashboardScreen() {
-  const { id = 'PRJ003' } = useParams<{ id: string }>();
+  const { codigo_projeto } = useParams<{ codigo_projeto: string }>();
 
   const [solicitacoes, setSolicitacoes] = useState<Solicitacao[]>([]);
   const [analytics, setAnalytics] = useState<RequestAnalytics | null>(null);
@@ -20,9 +20,10 @@ export default function RequestDashboardScreen() {
         setLoading(true);
         setError(false);
 
+        if (!codigo_projeto) return;
         const [listaData, analyticsData] = await Promise.all([
-          getSolicitacoes(id),
-          getSolicitacoesAnalytics(id),
+          getSolicitacoes(codigo_projeto),
+          getSolicitacoesAnalytics(codigo_projeto),
         ]);
 
         setSolicitacoes(listaData.solicitacoes || []);
@@ -36,7 +37,7 @@ export default function RequestDashboardScreen() {
     };
 
     fetchData();
-  }, [id]);
+  }, [codigo_projeto]);
 
   if (loading) return <div style={{ padding: '2rem' }}>Carregando dados...</div>;
   if (error)

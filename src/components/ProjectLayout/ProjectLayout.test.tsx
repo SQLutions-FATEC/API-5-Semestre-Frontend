@@ -1,6 +1,6 @@
 import { render, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import ProjectLayout from './ProjectLayout';
 import { projectService } from '../../services/projectService';
 
@@ -27,8 +27,15 @@ describe('ProjectLayout', () => {
     (projectService.getOverview as vi.Mock).mockResolvedValueOnce(mockData);
 
     const { getByText, queryByText } = render(
-      <MemoryRouter>
-        <ProjectLayout>{(data) => <div>Child: {data?.projeto?.nome}</div>}</ProjectLayout>
+      <MemoryRouter initialEntries={['/projetos/PRJ1']}>
+        <Routes>
+          <Route
+            path="/projetos/:codigo_projeto"
+            element={
+              <ProjectLayout>{(data) => <div>Child: {data?.projeto?.nome}</div>}</ProjectLayout>
+            }
+          />
+        </Routes>
       </MemoryRouter>
     );
 
@@ -45,10 +52,17 @@ describe('ProjectLayout', () => {
     (projectService.getOverview as vi.Mock).mockRejectedValueOnce(new Error('Network Error'));
 
     const { queryByText, getByText } = render(
-      <MemoryRouter>
-        <ProjectLayout>
-          {(data) => <div>Child Data is null: {data === null ? 'Yes' : 'No'}</div>}
-        </ProjectLayout>
+      <MemoryRouter initialEntries={['/projetos/PRJ1']}>
+        <Routes>
+          <Route
+            path="/projetos/:codigo_projeto"
+            element={
+              <ProjectLayout>
+                {(data) => <div>Child Data is null: {data === null ? 'Yes' : 'No'}</div>}
+              </ProjectLayout>
+            }
+          />
+        </Routes>
       </MemoryRouter>
     );
 

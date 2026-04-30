@@ -96,7 +96,7 @@ describe('TrackingCards', () => {
       alertas_criticos: {
         pedidos_atrasados: [],
         pedidos_prioritarios_pendentes: [],
-        solicitacoes_para_projetos: [] // Garantindo o array vazio
+        solicitacoes_para_projetos: [], // Garantindo o array vazio
       },
     };
     render(

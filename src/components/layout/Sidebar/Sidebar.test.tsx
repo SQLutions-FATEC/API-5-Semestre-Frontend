@@ -7,7 +7,7 @@ describe('Sidebar', () => {
   it('renders without crashing', () => {
     const { container } = render(
       <MemoryRouter>
-        <Sidebar />
+        <Sidebar isCollapsed={false} onToggle={() => {}} />
       </MemoryRouter>
     );
     expect(container).toBeTruthy();

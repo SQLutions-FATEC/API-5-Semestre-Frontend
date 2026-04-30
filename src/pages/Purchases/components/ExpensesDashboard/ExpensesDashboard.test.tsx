@@ -22,8 +22,10 @@ describe('ExpensesDashboard', () => {
     vi.mocked(projectService.getExpensesEvolution).mockImplementation(() => new Promise(() => {}));
 
     render(
-      <MemoryRouter>
-        <ExpensesDashboard />
+      <MemoryRouter initialEntries={['/purchases/PRJ1']}>
+        <Routes>
+          <Route path="/purchases/:codigo_projeto" element={<ExpensesDashboard />} />
+        </Routes>
       </MemoryRouter>
     );
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
@@ -34,8 +36,10 @@ describe('ExpensesDashboard', () => {
     vi.mocked(projectService.getExpensesEvolution).mockRejectedValue(new Error('API error'));
 
     render(
-      <MemoryRouter>
-        <ExpensesDashboard />
+      <MemoryRouter initialEntries={['/purchases/PRJ1']}>
+        <Routes>
+          <Route path="/purchases/:codigo_projeto" element={<ExpensesDashboard />} />
+        </Routes>
       </MemoryRouter>
     );
 
@@ -68,7 +72,7 @@ describe('ExpensesDashboard', () => {
     render(
       <MemoryRouter initialEntries={['/purchases/PRJ003']}>
         <Routes>
-          <Route path="/purchases/:id" element={<ExpensesDashboard />} />
+          <Route path="/purchases/:codigo_projeto" element={<ExpensesDashboard />} />
         </Routes>
       </MemoryRouter>
     );
@@ -91,34 +95,13 @@ describe('ExpensesDashboard', () => {
     render(
       <MemoryRouter initialEntries={['/purchases/custom-id']}>
         <Routes>
-          <Route path="/purchases/:id" element={<ExpensesDashboard />} />
+          <Route path="/purchases/:codigo_projeto" element={<ExpensesDashboard />} />
         </Routes>
       </MemoryRouter>
     );
 
     await waitFor(() => {
       expect(projectService.getExpensesDetails).toHaveBeenCalledWith('custom-id');
-    });
-  });
-
-  it('uses PRJ003 for id=1 special case', async () => {
-    vi.mocked(projectService.getExpensesDetails).mockResolvedValue({
-      projeto: { codigo: 'PRJ003', nome: 'Teste' },
-      gasto_total_consolidado: 0,
-      pedidos: [],
-    });
-    vi.mocked(projectService.getExpensesEvolution).mockResolvedValue([]);
-
-    render(
-      <MemoryRouter initialEntries={['/purchases/1']}>
-        <Routes>
-          <Route path="/purchases/:id" element={<ExpensesDashboard />} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(projectService.getExpensesDetails).toHaveBeenCalledWith('PRJ003');
     });
   });
 });

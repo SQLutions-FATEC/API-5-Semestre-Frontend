@@ -3,6 +3,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { commitmentService } from '../../services/commitmentService';
 import CommitmentMaterial from './CommitmentMaterial';
 
+vi.mock('react-router-dom', () => ({
+  useParams: () => ({ codigo_projeto: 'PRJ003' }),
+}));
+
 // Mock dos componentes filhos para isolar o teste do pai
 vi.mock('./components/CommitmentCharts/CommitmentCharts', () => ({
   default: () => <div data-testid="charts">Charts Component</div>,
@@ -66,8 +70,8 @@ describe('CommitmentMaterial Component', () => {
 
   it('deve exibir a mensagem de carregamento ao montar o componente', () => {
     // Definimos promises que nunca resolvem para testar o estado de loading
-    vi.spyOn(commitmentService, 'getAlerts').mockReturnValue(new Promise(() => { }));
-    vi.spyOn(commitmentService, 'getAnalytics').mockReturnValue(new Promise(() => { }));
+    vi.spyOn(commitmentService, 'getAlerts').mockReturnValue(new Promise(() => {}));
+    vi.spyOn(commitmentService, 'getAnalytics').mockReturnValue(new Promise(() => {}));
 
     render(<CommitmentMaterial />);
 
@@ -101,7 +105,7 @@ describe('CommitmentMaterial Component', () => {
 
   it('deve remover o loading e exibir os componentes mesmo se a API retornar erro', async () => {
     // Silencia o console.error para não poluir o terminal de testes
-    vi.spyOn(console, 'error').mockImplementation(() => { });
+    vi.spyOn(console, 'error').mockImplementation(() => {});
 
     vi.spyOn(commitmentService, 'getAlerts').mockRejectedValue(new Error('Erro na API'));
     vi.spyOn(commitmentService, 'getAnalytics').mockRejectedValue(new Error('Erro na API'));
