@@ -40,6 +40,52 @@ const ProgramListingScreen: React.FC = () => {
     fetchPrograms('');
   };
 
+  const renderContent = () => {
+    if (error) {
+      return (
+        <div className="no-results-container">
+          <h3>Erro</h3>
+          <p>{error}</p>
+          <button className="clear-filter-button" onClick={handleClear}>
+            Tentar novamente
+          </button>
+        </div>
+      );
+    }
+
+    if (isLoading) {
+      return (
+        <div className="no-results-container">
+          <p>Carregando...</p>
+        </div>
+      );
+    }
+
+    if (programs.length > 0) {
+      return (
+        <div className="programs-grid">
+          {programs.map((prog) => (
+            <ProgramCard key={prog.codigo} program={prog} />
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div className="no-results-container">
+        <Search size={48} className="no-results-icon" />
+        <h3>Nenhum programa encontrado</h3>
+        <p>
+          Não encontramos resultados para "<strong>{searchTerm}</strong>". Verifique a ortografia
+          ou tente outro termo.
+        </p>
+        <button className="clear-filter-button" onClick={handleClear}>
+          Limpar busca
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="program-listing-container">
       <div className="listing-controls">
@@ -63,37 +109,7 @@ const ProgramListingScreen: React.FC = () => {
         </div>
       </div>
 
-      {error ? (
-        <div className="no-results-container">
-          <h3>Erro</h3>
-          <p>{error}</p>
-          <button className="clear-filter-button" onClick={handleClear}>
-            Tentar novamente
-          </button>
-        </div>
-      ) : isLoading ? (
-        <div className="no-results-container">
-          <p>Carregando...</p>
-        </div>
-      ) : programs.length > 0 ? (
-        <div className="programs-grid">
-          {programs.map((prog) => (
-            <ProgramCard key={prog.codigo} program={prog} />
-          ))}
-        </div>
-      ) : (
-        <div className="no-results-container">
-          <Search size={48} className="no-results-icon" />
-          <h3>Nenhum programa encontrado</h3>
-          <p>
-            Não encontramos resultados para "<strong>{searchTerm}</strong>". Verifique a ortografia
-            ou tente outro termo.
-          </p>
-          <button className="clear-filter-button" onClick={handleClear}>
-            Limpar busca
-          </button>
-        </div>
-      )}
+      {renderContent()}
     </div>
   );
 };
