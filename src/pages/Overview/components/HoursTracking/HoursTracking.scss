@@ -302,6 +302,26 @@
         flex-direction: column;
         justify-content: center;
         gap: 0.75rem;
+        max-height: 22rem;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #cbd5e0;
+          border-radius: 3px;
+
+          &:hover {
+            background: #a0aec0;
+          }
+        }
 
         .legend-item {
           display: flex;
