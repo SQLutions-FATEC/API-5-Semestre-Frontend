@@ -63,6 +63,59 @@ const ProjectListingScreen: React.FC = () => {
     if (selectedProgram) fetchProjects(selectedProgram, '');
   };
 
+  const renderContent = () => {
+    if (error) {
+      return (
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <h3>Erro</h3>
+          <p>{error}</p>
+          <button className="clear-filter-button" onClick={handleClear}>
+            Tentar novamente
+          </button>
+        </div>
+      );
+    }
+
+    if (isLoading) {
+      return (
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <p>Carregando projetos...</p>
+        </div>
+      );
+    }
+
+    if (projects.length > 0) {
+      return (
+        <div className="projects-grid">
+          {projects.map((project) => (
+            <ProjectCard
+              key={project.codigo}
+              project={project}
+              onClick={(id) => navigate(`/programas/${selectedProgram}/projetos/${id}`)}
+            />
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ textAlign: 'center', padding: '40px' }}>
+        <Search size={48} style={{ opacity: 0.2, marginBottom: '16px' }} />
+        <h3>Nenhum projeto encontrado</h3>
+        <p>
+          Não encontramos resultados para a busca. Verifique a ortografia ou limpe os filtros.
+        </p>
+        <button
+          className="clear-filter-button"
+          onClick={handleClear}
+          style={{ marginTop: '16px' }}
+        >
+          Limpar busca
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="project-listing-container">
       <div className="listing-controls">
@@ -101,44 +154,7 @@ const ProjectListingScreen: React.FC = () => {
         </div>
       </div>
 
-      {error ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>
-          <h3>Erro</h3>
-          <p>{error}</p>
-          <button className="clear-filter-button" onClick={handleClear}>
-            Tentar novamente
-          </button>
-        </div>
-      ) : isLoading ? (
-        <div style={{ textAlign: 'center', padding: '40px' }}>
-          <p>Carregando projetos...</p>
-        </div>
-      ) : projects.length > 0 ? (
-        <div className="projects-grid">
-          {projects.map((project) => (
-            <ProjectCard
-              key={project.codigo}
-              project={project}
-              onClick={(id) => navigate(`/programas/${selectedProgram}/projetos/${id}`)}
-            />
-          ))}
-        </div>
-      ) : (
-        <div style={{ textAlign: 'center', padding: '40px' }}>
-          <Search size={48} style={{ opacity: 0.2, marginBottom: '16px' }} />
-          <h3>Nenhum projeto encontrado</h3>
-          <p>
-            Não encontramos resultados para a busca. Verifique a ortografia ou limpe os filtros.
-          </p>
-          <button
-            className="clear-filter-button"
-            onClick={handleClear}
-            style={{ marginTop: '16px' }}
-          >
-            Limpar busca
-          </button>
-        </div>
-      )}
+      {renderContent()}
     </div>
   );
 };
