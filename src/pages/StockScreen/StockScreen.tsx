@@ -43,7 +43,7 @@ export default function StockScreen({
   historico = [],
   totalPedidosEnvolvidos = 0,
   valorTotalEstoque = 'R$ 0,00',
-}: StockScreenProps) {
+}: Readonly<StockScreenProps>) {
   const [activeTab, setActiveTab] = useState('Materiais');
   const [chartType, setChartType] = useState('Quantidade');
   const [isTransitioning, setIsTransitioning] = useState(false);
