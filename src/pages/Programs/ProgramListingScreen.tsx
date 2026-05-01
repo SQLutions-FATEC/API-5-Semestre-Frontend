@@ -9,18 +9,84 @@ import './ProgramListingScreen.scss';
 const ProgramListingScreen: React.FC = () => {
   const [programs, setPrograms] = useState<ProgramListItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchPrograms = (query?: string) => {
+    setIsLoading(true);
+    setError(null);
+    programService
+      .getAllPrograms(query)
+      .then(setPrograms)
+      .catch((err) => {
+        console.error(err);
+        setError('Ocorreu um erro ao carregar os programas. Tente novamente mais tarde.');
+      })
+      .finally(() => setIsLoading(false));
+  };
 
   useEffect(() => {
-    programService.getAllPrograms().then(setPrograms);
+    fetchPrograms();
   }, []);
 
-  const filteredPrograms = programs.filter(
-    (p) =>
-      p.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.codigo.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      fetchPrograms(searchTerm);
+    }
+  };
 
- return (
+  const handleClear = () => {
+    setSearchTerm('');
+    fetchPrograms('');
+  };
+
+  const renderContent = () => {
+    if (error) {
+      return (
+        <div className="no-results-container">
+          <h3>Erro</h3>
+          <p>{error}</p>
+          <button className="clear-filter-button" onClick={handleClear}>
+            Tentar novamente
+          </button>
+        </div>
+      );
+    }
+
+    if (isLoading) {
+      return (
+        <div className="no-results-container">
+          <p>Carregando...</p>
+        </div>
+      );
+    }
+
+    if (programs.length > 0) {
+      return (
+        <div className="programs-grid">
+          {programs.map((prog) => (
+            <ProgramCard key={prog.codigo} program={prog} />
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div className="no-results-container">
+        <Search size={48} className="no-results-icon" />
+        <h3>Nenhum programa encontrado</h3>
+        <p>
+          Não encontramos resultados para "<strong>{searchTerm}</strong>". Verifique a ortografia
+          ou tente outro termo.
+        </p>
+        <button className="clear-filter-button" onClick={handleClear}>
+          Limpar busca
+        </button>
+      </div>
+    );
+  };
+
+  return (
     <div className="program-listing-container">
       <div className="listing-controls">
         <PageHeader
@@ -34,36 +100,16 @@ const ProgramListingScreen: React.FC = () => {
             <Search className="search-icon" size={18} />
             <input
               type="text"
-              placeholder="Buscar programa por nome ou código..."
+              placeholder="Buscar programa por nome ou código... (Pressione Enter)"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
           </div>
         </div>
       </div>
 
-      {filteredPrograms.length > 0 ? (
-        <div className="programs-grid">
-          {filteredPrograms.map((prog) => (
-            <ProgramCard key={prog.codigo} program={prog} />
-          ))}
-        </div>
-      ) : (
-        <div className="no-results-container">
-          <Search size={48} className="no-results-icon" />
-          <h3>Nenhum programa encontrado</h3>
-          <p>
-            Não encontramos resultados para "<strong>{searchTerm}</strong>". 
-            Verifique a ortografia ou tente outro termo.
-          </p>
-          <button 
-            className="clear-filter-button" 
-            onClick={() => setSearchTerm('')}
-          >
-            Limpar busca
-          </button>
-        </div>
-      )}
+      {renderContent()}
     </div>
   );
 };

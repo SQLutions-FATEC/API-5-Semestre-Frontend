@@ -11,7 +11,7 @@ import ExpensesTable from './ExpensesTable';
 import './ExpensesDashboard.scss';
 
 const ExpensesDashboard: React.FC = () => {
-  const { id = 'PRJ003' } = useParams<{ id: string }>();
+  const { codigo_projeto } = useParams<{ codigo_projeto: string }>();
   const [details, setDetails] = useState<ExpensesDetailsResponse | null>(null);
   const [evolution, setEvolution] = useState<ExpensesEvolutionResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -19,15 +19,14 @@ const ExpensesDashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const idToFetch = id === '1' ? 'PRJ003' : id;
-      if (!idToFetch) return;
+      if (!codigo_projeto) return;
       try {
         setLoading(true);
         setError(null);
 
         const [detailsData, evolutionData] = await Promise.all([
-          projectService.getExpensesDetails(idToFetch),
-          projectService.getExpensesEvolution(idToFetch),
+          projectService.getExpensesDetails(codigo_projeto),
+          projectService.getExpensesEvolution(codigo_projeto),
         ]);
 
         setDetails(detailsData);
@@ -41,7 +40,7 @@ const ExpensesDashboard: React.FC = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [codigo_projeto]);
 
   if (loading) {
     return (

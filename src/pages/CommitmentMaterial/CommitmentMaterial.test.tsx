@@ -3,6 +3,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { commitmentService } from '../../services/commitmentService';
 import CommitmentMaterial from './CommitmentMaterial';
 
+vi.mock('react-router-dom', () => ({
+  useParams: () => ({ codigo_projeto: 'PRJ003' }),
+}));
+
 // Mock dos componentes filhos para isolar o teste do pai
 vi.mock('./components/CommitmentCharts/CommitmentCharts', () => ({
   default: () => <div data-testid="charts">Charts Component</div>,
@@ -34,6 +38,7 @@ describe('CommitmentMaterial Component', () => {
           pedido_recente: false,
         },
       ],
+      solicitacoes_para_projetos: [],
     },
   };
 

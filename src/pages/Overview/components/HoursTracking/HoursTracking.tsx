@@ -133,8 +133,7 @@ const columns: GridColDef[] = [
 ];
 
 export default function HoursTracking() {
-  const { id = 'PRJ022' } = useParams<{ id: string }>();
-  const projectId = id === '1' ? 'PRJ003' : id;
+  const { codigo_projeto } = useParams<{ codigo_projeto: string }>();
   const [tasks, setTasks] = useState<tarefa[]>([]);
   const [evolutionHours, setEvolutionHours] = useState<EvolucaoHoras>({});
   const [selectedTaskCode, setSelectedTaskCode] = useState<string>('');
@@ -147,7 +146,8 @@ export default function HoursTracking() {
         setLoading(true);
         setError(false);
 
-        const response = await taskService.getTaskTracking(projectId);
+        if (!codigo_projeto) return;
+        const response = await taskService.getTaskTracking(codigo_projeto);
         setTasks(Array.isArray(response?.tarefas) ? response.tarefas : []);
         setEvolutionHours(response?.evolucao_horas ?? {});
       } catch (fetchError) {
@@ -161,7 +161,7 @@ export default function HoursTracking() {
     };
 
     fetchTasks();
-  }, [projectId]);
+  }, [codigo_projeto]);
 
   const tableData = useMemo(() => tasks, [tasks]);
 
@@ -329,11 +329,19 @@ export default function HoursTracking() {
   return (
     <div className="hours-tracking-wrapper">
       <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-        <h2 style={{ fontSize: '1.875rem', fontWeight: '700', color: '#1e293b', margin: 0, letterSpacing: '-0.025em' }}>
+        <h2
+          style={{
+            fontSize: '1.875rem',
+            fontWeight: '700',
+            color: '#1e293b',
+            margin: 0,
+            letterSpacing: '-0.025em',
+          }}
+        >
           Acompanhamento de horas
         </h2>
         <span style={{ color: '#64748b', fontSize: '1rem', fontWeight: '400' }}>
-          Projeto {projectId}
+          Projeto {codigo_projeto}
         </span>
       </div>
 
@@ -380,7 +388,9 @@ export default function HoursTracking() {
                 <span className="prop-label">
                   <User /> Responsável
                 </span>
-                <span className="prop-value">{capitalizeText(selectedTask?.responsavel || '')}</span>
+                <span className="prop-value">
+                  {capitalizeText(selectedTask?.responsavel || '')}
+                </span>
               </div>
 
               <div className="property-group">
@@ -456,7 +466,6 @@ export default function HoursTracking() {
 
           <div className="chart-wrapper">{renderChartContent()}</div>
         </div>
-
       </div>
 
       <hr className="section-divider" />

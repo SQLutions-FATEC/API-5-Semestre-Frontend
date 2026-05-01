@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import ProgramListingScreen from './ProgramListingScreen';
 import { programService } from '../../services/programService';
 
@@ -11,30 +12,43 @@ vi.mock('../../services/programService', () => ({
 }));
 
 const mockPrograms = [
-  { 
-    codigo: 'MANSUP', 
-    nome: 'Manutenção e Suporte', 
-    gerente: 'Carlos Eduardo', 
-    gerente_tecnico: 'Rafael Carvalho', 
-    status: 'Ativo' 
+  {
+    codigo: 'MANSUP',
+    nome: 'Manutenção e Suporte',
+    gerente: 'Carlos Eduardo',
+    gerente_tecnico: 'Rafael Carvalho',
+    status: 'Ativo',
   },
-  { 
-    codigo: 'AVION-X', 
-    nome: 'Modernização Aviônica', 
-    gerente: 'Ana Paula', 
-    gerente_tecnico: 'Bruno Oliveira', 
-    status: 'Atrasado' 
+  {
+    codigo: 'AVION-X',
+    nome: 'Modernização Aviônica',
+    gerente: 'Ana Paula',
+    gerente_tecnico: 'Bruno Oliveira',
+    status: 'Atrasado',
   },
 ];
 
 describe('ProgramListingScreen', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (programService.getAllPrograms as any).mockResolvedValue(mockPrograms);
+    (programService.getAllPrograms as any).mockImplementation((q?: string) => {
+      if (!q) return Promise.resolve(mockPrograms);
+      return Promise.resolve(
+        mockPrograms.filter(
+          (p) =>
+            p.nome.toLowerCase().includes(q.toLowerCase()) ||
+            p.codigo.toLowerCase().includes(q.toLowerCase())
+        )
+      );
+    });
   });
 
   it('deve renderizar a página e carregar os programas corretamente', async () => {
-    render(<ProgramListingScreen />);
+    render(
+      <MemoryRouter>
+        <ProgramListingScreen />
+      </MemoryRouter>
+    );
 
     expect(screen.getByText('Programas')).toBeInTheDocument();
 
@@ -48,7 +62,11 @@ describe('ProgramListingScreen', () => {
   });
 
   it('deve filtrar os programas por nome', async () => {
-    render(<ProgramListingScreen />);
+    render(
+      <MemoryRouter>
+        <ProgramListingScreen />
+      </MemoryRouter>
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Manutenção e Suporte')).toBeInTheDocument();
@@ -56,14 +74,18 @@ describe('ProgramListingScreen', () => {
 
     const searchInput = screen.getByPlaceholderText(/Buscar programa por nome ou código/i);
 
-    await userEvent.type(searchInput, 'Modernização');
+    await userEvent.type(searchInput, 'Modernização{enter}');
 
     expect(screen.getByText('Modernização Aviônica')).toBeInTheDocument();
     expect(screen.queryByText('Manutenção e Suporte')).not.toBeInTheDocument();
   });
 
   it('deve exibir feedback visual (Empty State) quando nenhum programa for encontrado', async () => {
-    render(<ProgramListingScreen />);
+    render(
+      <MemoryRouter>
+        <ProgramListingScreen />
+      </MemoryRouter>
+    );
 
     await waitFor(() => {
       expect(screen.getByText('Manutenção e Suporte')).toBeInTheDocument();
@@ -71,7 +93,7 @@ describe('ProgramListingScreen', () => {
 
     const searchInput = screen.getByPlaceholderText(/Buscar programa por nome ou código/i);
 
-    await userEvent.type(searchInput, 'Programa Fantasma');
+    await userEvent.type(searchInput, 'Programa Fantasma{enter}');
 
     expect(screen.getByText('Nenhum programa encontrado')).toBeInTheDocument();
     expect(screen.getByText(/Programa Fantasma/i)).toBeInTheDocument();

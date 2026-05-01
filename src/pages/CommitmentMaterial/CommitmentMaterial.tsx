@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { commitmentService } from '../../services/commitmentService';
 import './CommitmentMaterial.scss';
 import CommitmentCharts from './components/CommitmentCharts/CommitmentCharts';
@@ -19,17 +20,17 @@ export default function CommitmentMaterial() {
   const [materiaisTabela, setMateriaisTabela] = useState<MaterialComStatus[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Mantendo o ID fixo por enquanto, conforme a estrutura atual da sua rota
-  const idProjeto = 'PRJ003';
+  const { codigo_projeto } = useParams<{ codigo_projeto: string }>();
 
   useEffect(() => {
     async function carregarDados() {
       try {
         setLoading(true);
+        if (!codigo_projeto) return;
         // Busca os dois endpoints em paralelo
         const [alertasData, empenhosData] = await Promise.all([
-          commitmentService.getAlerts(idProjeto),
-          commitmentService.getAnalytics(idProjeto),
+          commitmentService.getAlerts(codigo_projeto),
+          commitmentService.getAnalytics(codigo_projeto),
         ]);
 
         const listaObsoletos = alertasData.alertas_criticos.materiais_obsoletos;
@@ -57,7 +58,7 @@ export default function CommitmentMaterial() {
       }
     }
     carregarDados();
-  }, []);
+  }, [codigo_projeto]);
 
   return (
     <div className="commitment-content">

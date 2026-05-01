@@ -1,6 +1,6 @@
-import { vi, describe, it, expect } from 'vitest';
-import { commitmentService } from './commitmentService';
+import { describe, expect, it, vi } from 'vitest';
 import { api } from './api';
+import { commitmentService } from './commitmentService';
 
 vi.mock('./api', () => ({
   api: {
@@ -17,6 +17,7 @@ describe('commitmentService', () => {
         pedidos_atrasados: [],
         pedidos_prioritarios_pendentes: [],
         materiais_obsoletos: [],
+        solicitacoes_para_projetos: [],
       },
     };
     vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });

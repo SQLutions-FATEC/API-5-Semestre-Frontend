@@ -5,7 +5,7 @@ import RequestDashboardScreen from './RequestDashboardScreen';
 import { getSolicitacoes, getSolicitacoesAnalytics } from '../../services/requestService';
 
 vi.mock('react-router-dom', () => ({
-  useParams: () => ({ id: 'PRJ003' }),
+  useParams: () => ({ codigo_projeto: 'PRJ003' }),
 }));
 
 vi.mock('../../services/requestService');

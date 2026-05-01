@@ -1,5 +1,9 @@
 import { Link, useLocation, useMatch } from 'react-router-dom';
+<<<<<<< 81-Project-Stock-Management-Dashboard
 import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight, Package } from 'lucide-react';
+=======
+import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
+>>>>>>> develop-2
 import './Sidebar.scss';
 
 interface SidebarProps {
@@ -27,11 +31,14 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
             path: `/programas/${programa_cod}/projetos/${codigo_projeto}/compras`,
             icon: ShoppingCart,
           },
+<<<<<<< 81-Project-Stock-Management-Dashboard
           {
             name: 'Estoque',
             path: `/programas/${programa_cod}/projetos/${codigo_projeto}/estoque`,
             icon: Package,
           },
+=======
+>>>>>>> develop-2
         ]
       : [];
 

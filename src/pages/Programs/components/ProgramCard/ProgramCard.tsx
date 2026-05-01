@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { User, Users, Code } from 'lucide-react';
 import type { ProgramListItem } from '../../../../types/project';
 import './ProgramCard.scss';
@@ -9,11 +10,15 @@ interface ProgramCardProps {
 
 const ProgramCard: React.FC<ProgramCardProps> = ({ program }) => {
   return (
-    <div className="program-card">
+    <Link
+      to={`/programas/${program.codigo}/projetos`}
+      className="program-card"
+      style={{ textDecoration: 'none', color: 'inherit' }}
+    >
       <div className={`status-indicator status-${program.status.toLowerCase()}`} />
       <div className="program-card-content">
         <h3 className="program-title">{program.nome}</h3>
-        
+
         <div className="program-info">
           <span>
             <Code size={14} /> {program.codigo}
@@ -30,7 +35,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ program }) => {
           {program.status}
         </span>
       </div>
-    </div>
+    </Link>
   );
 };
 
