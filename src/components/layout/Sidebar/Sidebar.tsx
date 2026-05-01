@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useMatch } from 'react-router-dom';
 import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight, Package } from 'lucide-react';
 import './Sidebar.scss';
 
@@ -9,12 +9,31 @@ interface SidebarProps {
 
 export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const location = useLocation();
+  const match = useMatch('/programas/:programa_cod/projetos/:codigo_projeto/*');
+  const programa_cod = match?.params?.programa_cod;
+  const codigo_projeto = match?.params?.codigo_projeto;
 
-  const navItems = [
-    { name: 'Visão Geral', path: '/', icon: LayoutDashboard },
-    { name: 'Compras', path: '/compras', icon: ShoppingCart },
-    { name: 'Estoque', path: '/estoque', icon: Package },
-  ];
+  // Only show links that require a project if we have a project context
+  const navItems =
+    codigo_projeto && programa_cod
+      ? [
+          {
+            name: 'Visão Geral',
+            path: `/programas/${programa_cod}/projetos/${codigo_projeto}`,
+            icon: LayoutDashboard,
+          },
+          {
+            name: 'Compras',
+            path: `/programas/${programa_cod}/projetos/${codigo_projeto}/compras`,
+            icon: ShoppingCart,
+          },
+          {
+            name: 'Estoque',
+            path: `/programas/${programa_cod}/projetos/${codigo_projeto}/estoque`,
+            icon: Package,
+          },
+        ]
+      : [];
 
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : 'expanded'}`}>
