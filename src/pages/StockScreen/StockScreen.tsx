@@ -5,20 +5,24 @@ import { ChevronDown, Package, AlertTriangle, ShoppingCart } from 'lucide-react'
 import './StockScreen.scss';
 
 interface Alerta {
+   id: string;
   texto: string;
 }
 
 interface MaterialEstoque {
+  id: string;
   nome: string;
   qtd: number;
   local: string;
 }
 
 interface PedidoAberto {
+  id: string;
   texto: string;
 }
 
 interface HistoricoEmpenho {
+  id: string;
   cod: string;
   nome: string;
   cat: string;
@@ -75,7 +79,7 @@ export default function StockScreen({
                     </div>
                   ) : (
                     alertas.map((alerta, i) => (
-                      <div key={i} className="alert-card" style={{ animationDelay: `${i * 0.1}s` }}>
+                      <div key={alerta.id} className="alert-card" style={{ animationDelay: `${i * 0.1}s` }}>
                         <div className="alert-dot" />
                         <p>{alerta.texto}</p>
                       </div>
@@ -114,7 +118,7 @@ export default function StockScreen({
                         </div>
                       ) : (
                         estoque.map((item, i) => (
-                          <div key={i} className="materials-row" style={{ animationDelay: `${i * 0.05}s` }}>
+                          <div key={item.id} className="materials-row" style={{ animationDelay: `${i * 0.05}s` }}>
                             <span className="material-name">{item.nome}</span>
                             <span className="material-qtd">{item.qtd}</span>
                             <span className="material-local">{item.local}</span>
@@ -132,7 +136,7 @@ export default function StockScreen({
                         </div>
                       ) : (
                         pedidosAbertos.map((pedido, i) => (
-                          <div key={i} className="order-warning-card" style={{ animationDelay: `${i * 0.1}s` }}>
+                          <div key={pedido.id} className="order-warning-card" style={{ animationDelay: `${i * 0.1}s` }}>
                             <div className="order-icon-wrapper">
                               <ShoppingCart size={16} />
                             </div>
@@ -227,7 +231,7 @@ export default function StockScreen({
                     </div>
                   ) : (
                     historico.map((item, i) => (
-                      <div key={i} className="history-row" style={{ animationDelay: `${i * 0.05}s` }}>
+                      <div key={item.id} className="history-row" style={{ animationDelay: `${i * 0.05}s` }}>
                         <span className="history-cod">{item.cod}</span>
                         <span className="history-nome">{item.nome}</span>
                         <span className="history-cat">{item.cat}</span>
