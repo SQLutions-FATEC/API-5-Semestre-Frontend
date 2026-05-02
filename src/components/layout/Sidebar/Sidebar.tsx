@@ -1,5 +1,5 @@
 import { Link, useLocation, useMatch } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight, Package } from 'lucide-react';
 import './Sidebar.scss';
 
 interface SidebarProps {
@@ -13,7 +13,6 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const programa_cod = match?.params?.programa_cod;
   const codigo_projeto = match?.params?.codigo_projeto;
 
-  // Only show links that require a project if we have a project context
   const navItems =
     codigo_projeto && programa_cod
       ? [
@@ -26,6 +25,11 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
             name: 'Compras',
             path: `/programas/${programa_cod}/projetos/${codigo_projeto}/compras`,
             icon: ShoppingCart,
+          },
+          {
+            name: 'Estoque',
+            path: `/programas/${programa_cod}/projetos/${codigo_projeto}/estoque`,
+            icon: Package,
           },
         ]
       : [];
