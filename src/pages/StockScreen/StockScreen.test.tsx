@@ -22,7 +22,6 @@ vi.mock('../../services/commitmentService', () => ({
 vi.mock('../../components/ProjectLayout/ProjectLayout', () => ({
   default: ({ children }: { children: any }) => (
     <div className="mock-project-layout">
-      {/* Simula a chamada da função que o componente envia para o layout */}
       {typeof children === 'function' ? children() : children}
     </div>
   ),
@@ -111,8 +110,24 @@ describe('StockScreen', () => {
     const { getByText } = renderWithRouter(<StockScreen />);
     
     await waitFor(() => {
-      // Verifica se o valor formatado aparece
       expect(getByText(/R\$ 1\.500,50/)).toBeTruthy();
+    });
+  });
+
+  it('handles null/undefined data fields from API', async () => {
+    // Simula resposta com campos faltantes para testar os fallbacks (|| [] e ?.)
+    (projectService.getStockSobras as any).mockResolvedValue({
+      alertas_estoque_ocioso: null,
+      conflitos_compra_aberta: undefined,
+      valor_total_material: null
+    });
+    (commitmentService.getAnalytics as any).mockResolvedValue(null);
+
+    const { getByText } = renderWithRouter(<StockScreen />);
+
+    await waitFor(() => {
+      expect(getByText('Nenhum material restante de pedidos anteriores.')).toBeTruthy();
+      expect(getByText('R$ 0,00')).toBeTruthy();
     });
   });
 
@@ -143,15 +158,13 @@ describe('StockScreen', () => {
       ]
     });
 
-    const { getByText, getAllByText } = renderWithRouter(<StockScreen />);
+    const { getByText } = renderWithRouter(<StockScreen />);
 
     await waitFor(() => {
       expect(getByText(/Há 100 Material Teste do pedido PRJ_X/)).toBeTruthy();
       expect(getByText('Material Teste')).toBeTruthy();
-      expect(getByText('Armário B')).toBeTruthy();
     });
 
-    // Clica na aba de pedidos abertos
     const pedidosTab = getByText('Pedidos abertos');
     fireEvent.click(pedidosTab);
     

@@ -56,4 +56,28 @@ describe('projectService', () => {
     expect(api.get).toHaveBeenCalledWith('/P1/projetos/busca/', { params: {} });
     expect(result).toEqual(expected);
   });
+
+  it('getExpensesDetails fetches data correctly', async () => {
+    const mockData = { total_gasto: 100 };
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
+    const result = await projectService.getExpensesDetails('PRJ001');
+    expect(api.get).toHaveBeenCalledWith('/projetos/PRJ001/gastos/detalhes/');
+    expect(result).toEqual(mockData);
+  });
+
+  it('getExpensesEvolution fetches data correctly', async () => {
+    const mockData = { meses: [] };
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
+    const result = await projectService.getExpensesEvolution('PRJ001');
+    expect(api.get).toHaveBeenCalledWith('/projetos/PRJ001/gastos/evolucao/');
+    expect(result).toEqual(mockData);
+  });
+
+  it('getStockSobras fetches data correctly', async () => {
+    const mockData = { alertas_estoque_ocioso: [] };
+    vi.mocked(api.get).mockResolvedValueOnce({ data: mockData });
+    const result = await projectService.getStockSobras('PRJ001');
+    expect(api.get).toHaveBeenCalledWith('/projetos/PRJ001/estoque/sobras/');
+    expect(result).toEqual(mockData);
+  });
 });
