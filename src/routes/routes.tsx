@@ -14,8 +14,10 @@ const AppRoutes = () => {
       <Route path="/" element={<Navigate to="/programas" replace />} />
       <Route element={<Layout />}>
         <Route path="programas" element={<ProgramListingScreen />} />
-        <Route path="compras" element={<PurchasesScreen />} />
-        <Route path="estoque" element={<StockScreen />} />
+        <Route path="programas/:programa_cod/projetos" element={<ProjectListingScreen />} />
+        <Route path="programas/:programa_cod/projetos/:codigo_projeto" element={<OverviewScreen />} />
+        <Route path="programas/:programa_cod/projetos/:codigo_projeto/compras" element={<PurchasesScreen />} />
+        <Route path="programas/:programa_cod/projetos/:codigo_projeto/estoque" element={<StockScreen />} />
         <Route path="help" element={<HelpScreen />} />
         <Route path="*" element={<NotFound />} />
       </Route>
