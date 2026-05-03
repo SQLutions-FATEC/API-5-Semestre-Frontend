@@ -3,6 +3,7 @@ import type { ProjectOverviewResponse, ProgramOption, ProjectListItem } from '..
 import type { PurchasesResponse } from '../types/purchase';
 import type { CriticalAlertsResponse } from '../types/alerts';
 import type { ExpensesDetailsResponse, ExpensesEvolutionResponse } from '../types/expenses';
+import type { StockSobrasResponse } from '../types/stock';
 
 export const projectService = {
   async getOverview(codigo_projeto: string): Promise<ProjectOverviewResponse> {
@@ -48,6 +49,11 @@ export const projectService = {
 
   async getExpensesEvolution(codigo_projeto: string): Promise<ExpensesEvolutionResponse> {
     const { data } = await api.get(`/projetos/${codigo_projeto}/gastos/evolucao/`);
+    return data;
+  },
+
+  async getStockSobras(codigo_projeto: string): Promise<StockSobrasResponse> {
+    const { data } = await api.get(`/projetos/${codigo_projeto}/estoque/sobras/`);
     return data;
   },
 };
