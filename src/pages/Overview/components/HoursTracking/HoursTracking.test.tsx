@@ -43,7 +43,7 @@ const renderComponent = () =>
   render(
     <MemoryRouter initialEntries={['/PRJ003']}>
       <Routes>
-        <Route path="/:id" element={<HoursTracking />} />
+        <Route path="/:codigo_projeto" element={<HoursTracking />} />
       </Routes>
     </MemoryRouter>
   );
@@ -52,7 +52,7 @@ const renderComponentWithRoute = (route: string) =>
   render(
     <MemoryRouter initialEntries={[route]}>
       <Routes>
-        <Route path="/:id" element={<HoursTracking />} />
+        <Route path="/:codigo_projeto" element={<HoursTracking />} />
       </Routes>
     </MemoryRouter>
   );
@@ -87,12 +87,12 @@ describe('HoursTracking Component', () => {
 
     const taskDetailsCard = await screen.findByTestId('task-details-card');
     expect(taskDetailsCard).toBeDefined();
-    expect(screen.getByText('Prototipação da placa')).toBeDefined();
+    expect(await screen.findByText('Prototipação da placa')).toBeDefined();
 
     // Use within() para evitar duplicatas de texto
-    const { getByText } = within(taskDetailsCard);
-    expect(getByText('João Pedro Alves')).toBeDefined();
-    expect(getByText('Concluída')).toBeDefined();
+    const { findByText } = within(taskDetailsCard);
+    expect(await findByText('João Pedro Alves')).toBeDefined();
+    expect(await findByText('Concluída')).toBeDefined();
   });
 
   it('should format tooltip tooltip correctly (coverage for formatter)', () => {
@@ -121,13 +121,5 @@ describe('HoursTracking Component', () => {
 
     expect(await screen.findByText('Nenhuma tarefa encontrada para este projeto.')).toBeDefined();
     expect(await screen.findByText('Sem dados para exibir')).toBeDefined();
-  });
-
-  it('should map route id 1 to PRJ003 when fetching tasks', async () => {
-    renderComponentWithRoute('/1');
-
-    await screen.findByText('Acompanhamento de horas');
-
-    expect(taskService.getTaskTracking).toHaveBeenCalledWith('PRJ003');
   });
 });

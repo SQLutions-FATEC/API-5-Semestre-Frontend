@@ -1,10 +1,9 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import TrackingDashboard from './TrackingDashboard';
+import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { describe, expect, it, vi } from 'vitest';
 import { projectService } from '../../../../services/projectService';
-import { vi, describe, it, expect } from 'vitest';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import TrackingDashboard from './TrackingDashboard';
 
 vi.mock('../../../../services/projectService', () => ({
   projectService: {
@@ -15,24 +14,28 @@ vi.mock('../../../../services/projectService', () => ({
 
 describe('TrackingDashboard', () => {
   it('renders loading state initially', () => {
-    (projectService.getPurchases as any).mockImplementation(() => new Promise(() => {}));
-    (projectService.getCriticalAlerts as any).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(projectService.getPurchases).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(projectService.getCriticalAlerts).mockImplementation(() => new Promise(() => {}));
 
     render(
-      <MemoryRouter>
-        <TrackingDashboard />
+      <MemoryRouter initialEntries={['/purchases/PRJ1']}>
+        <Routes>
+          <Route path="/purchases/:codigo_projeto" element={<TrackingDashboard />} />
+        </Routes>
       </MemoryRouter>
     );
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
   it('renders error state on API failure', async () => {
-    (projectService.getPurchases as any).mockRejectedValue(new Error('API error'));
-    (projectService.getCriticalAlerts as any).mockRejectedValue(new Error('API error'));
+    vi.mocked(projectService.getPurchases).mockRejectedValue(new Error('API error'));
+    vi.mocked(projectService.getCriticalAlerts).mockRejectedValue(new Error('API error'));
 
     render(
-      <MemoryRouter>
-        <TrackingDashboard />
+      <MemoryRouter initialEntries={['/purchases/PRJ1']}>
+        <Routes>
+          <Route path="/purchases/:codigo_projeto" element={<TrackingDashboard />} />
+        </Routes>
       </MemoryRouter>
     );
 
@@ -44,18 +47,25 @@ describe('TrackingDashboard', () => {
   });
 
   it('renders the dashboard components on successful data fetch', async () => {
-    const mockCompras = { pedidos: [] };
+    const mockCompras = { projeto: 'PRJ003', tempo_medio_entrega_dias: 0, pedidos: [] };
     const mockAlertas = {
-      alertas_criticos: { pedidos_atrasados: [], pedidos_prioritarios_pendentes: [] },
+      projeto: { codigo: 'PRJ003', nome: 'Teste' },
+      data_referencia: '2024-01-01',
+      alertas_criticos: {
+        pedidos_atrasados: [],
+        pedidos_prioritarios_pendentes: [],
+        materiais_obsoletos: [],
+        solicitacoes_para_projetos: [],
+      },
     };
 
-    (projectService.getPurchases as any).mockResolvedValue(mockCompras);
-    (projectService.getCriticalAlerts as any).mockResolvedValue(mockAlertas);
+    vi.mocked(projectService.getPurchases).mockResolvedValue(mockCompras);
+    vi.mocked(projectService.getCriticalAlerts).mockResolvedValue(mockAlertas);
 
     render(
       <MemoryRouter initialEntries={['/purchases/1']}>
         <Routes>
-          <Route path="/purchases/:id" element={<TrackingDashboard />} />
+          <Route path="/purchases/:codigo_projeto" element={<TrackingDashboard />} />
         </Routes>
       </MemoryRouter>
     );
@@ -63,51 +73,35 @@ describe('TrackingDashboard', () => {
     await waitFor(() => {
       expect(screen.getAllByText('Nenhum item encontrado')[0]).toBeInTheDocument();
     });
-    // For id=1, it fetches PRJ003
-    expect(projectService.getPurchases).toHaveBeenCalledWith('PRJ003');
+    expect(projectService.getPurchases).toHaveBeenCalledWith('1');
   });
 
   it('fetches correct id from url params', async () => {
-    const mockCompras = { pedidos: [] };
+    const mockCompras = { projeto: 'foobar', tempo_medio_entrega_dias: 0, pedidos: [] };
     const mockAlertas = {
-      alertas_criticos: { pedidos_atrasados: [], pedidos_prioritarios_pendentes: [] },
+      projeto: { codigo: 'foobar', nome: 'Teste' },
+      data_referencia: '2024-01-01',
+      alertas_criticos: {
+        pedidos_atrasados: [],
+        pedidos_prioritarios_pendentes: [],
+        materiais_obsoletos: [],
+        solicitacoes_para_projetos: [],
+      },
     };
 
-    (projectService.getPurchases as any).mockResolvedValue(mockCompras);
-    (projectService.getCriticalAlerts as any).mockResolvedValue(mockAlertas);
+    vi.mocked(projectService.getPurchases).mockResolvedValue(mockCompras);
+    vi.mocked(projectService.getCriticalAlerts).mockResolvedValue(mockAlertas);
 
     render(
       <MemoryRouter initialEntries={['/purchases/foobar']}>
         <Routes>
-          <Route path="/purchases/:id" element={<TrackingDashboard />} />
+          <Route path="/purchases/:codigo_projeto" element={<TrackingDashboard />} />
         </Routes>
       </MemoryRouter>
     );
 
     await waitFor(() => {
       expect(projectService.getPurchases).toHaveBeenCalledWith('foobar');
-    });
-  });
-
-  it('uses PRJ003 as default ID if no ID is provided in route', async () => {
-    const mockCompras = { pedidos: [] };
-    const mockAlertas = {
-      alertas_criticos: { pedidos_atrasados: [], pedidos_prioritarios_pendentes: [] },
-    };
-
-    (projectService.getPurchases as any).mockResolvedValue(mockCompras);
-    (projectService.getCriticalAlerts as any).mockResolvedValue(mockAlertas);
-
-    render(
-      <MemoryRouter initialEntries={['/purchases']}>
-        <Routes>
-          <Route path="/purchases" element={<TrackingDashboard />} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(projectService.getPurchases).toHaveBeenCalledWith('PRJ003');
     });
   });
 });

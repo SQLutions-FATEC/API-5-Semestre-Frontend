@@ -1,4 +1,4 @@
-import { Bell, Search, UserCircle } from 'lucide-react';
+import { Bell, UserCircle } from 'lucide-react';
 import './Header.scss';
 
 export default function Header() {

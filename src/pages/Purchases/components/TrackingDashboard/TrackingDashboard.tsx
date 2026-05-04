@@ -9,7 +9,7 @@ import TrackingTable from './TrackingTable';
 import './TrackingDashboard.scss';
 
 const TrackingDashboard: React.FC = () => {
-  const { id = 'PRJ003' } = useParams<{ id: string }>();
+  const { codigo_projeto } = useParams<{ codigo_projeto: string }>();
   const [compras, setCompras] = useState<PurchasesResponse | null>(null);
   const [alertas, setAlertas] = useState<CriticalAlertsResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -17,20 +17,19 @@ const TrackingDashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const idToFetch = id === '1' ? 'PRJ003' : id;
-      if (!idToFetch) return;
+      if (!codigo_projeto) return;
       try {
         setLoading(true);
         setError(null);
 
         const [comprasData, alertasData] = await Promise.all([
-          projectService.getPurchases(idToFetch),
-          projectService.getCriticalAlerts(idToFetch),
+          projectService.getPurchases(codigo_projeto),
+          projectService.getCriticalAlerts(codigo_projeto),
         ]);
 
         setCompras(comprasData);
         setAlertas(alertasData);
-      } catch (err: any) {
+      } catch (err) {
         console.error('Erro ao carregar dados de acompanhamento:', err);
         setError('Não foi possível carregar as informações de acompanhamento.');
       } finally {
@@ -39,7 +38,7 @@ const TrackingDashboard: React.FC = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [codigo_projeto]);
 
   if (loading) {
     return (

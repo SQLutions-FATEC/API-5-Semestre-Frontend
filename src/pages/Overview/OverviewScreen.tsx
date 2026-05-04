@@ -1,7 +1,7 @@
 import OverviewMetrics from './components/OverviewMetrics/OverviewMetrics';
 import ProjectLayout from '../../components/ProjectLayout/ProjectLayout';
 import './OverviewScreen.scss';
-import HoursTracking from './components/HoursTracking/HoursTracking';
+import OverviewTabs from './components/OverviewTabs/OverviewTabs';
 
 export default function Overview() {
   return (
@@ -9,7 +9,7 @@ export default function Overview() {
       {(data) => (
         <>
           <OverviewMetrics financeiro={data?.financeiro} />
-          <HoursTracking />
+          <OverviewTabs />
         </>
       )}
     </ProjectLayout>

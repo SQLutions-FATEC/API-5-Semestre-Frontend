@@ -20,6 +20,8 @@ import {
   Users,
   CalendarDays,
   PieChart as PieChartIcon,
+  TrendingUp,
+  ListTodo,
 } from 'lucide-react';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
@@ -63,6 +65,15 @@ const formatTotalHours = (value: number) => {
   const minutes = totalMinutes % 60;
 
   return hours + ' horas' + (minutes ? ' e ' + minutes + ' minutos' : '');
+};
+
+const capitalizeText = (text: string) => {
+  if (!text) return 'Sem dados';
+  return text
+    .toLowerCase()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 };
 
 const buildPieData = (tasks: tarefa[]): PieSlice[] => {
@@ -122,8 +133,7 @@ const columns: GridColDef[] = [
 ];
 
 export default function HoursTracking() {
-  const { id = 'PRJ022' } = useParams<{ id: string }>();
-  const projectId = id === '1' ? 'PRJ003' : id;
+  const { codigo_projeto } = useParams<{ codigo_projeto: string }>();
   const [tasks, setTasks] = useState<tarefa[]>([]);
   const [evolutionHours, setEvolutionHours] = useState<EvolucaoHoras>({});
   const [selectedTaskCode, setSelectedTaskCode] = useState<string>('');
@@ -136,7 +146,8 @@ export default function HoursTracking() {
         setLoading(true);
         setError(false);
 
-        const response = await taskService.getTaskTracking(projectId);
+        if (!codigo_projeto) return;
+        const response = await taskService.getTaskTracking(codigo_projeto);
         setTasks(Array.isArray(response?.tarefas) ? response.tarefas : []);
         setEvolutionHours(response?.evolucao_horas ?? {});
       } catch (fetchError) {
@@ -150,7 +161,7 @@ export default function HoursTracking() {
     };
 
     fetchTasks();
-  }, [projectId]);
+  }, [codigo_projeto]);
 
   const tableData = useMemo(() => tasks, [tasks]);
 
@@ -300,9 +311,9 @@ export default function HoursTracking() {
               data={pieData}
               cx="50%"
               cy="50%"
-              innerRadius={35}
-              outerRadius={65}
-              paddingAngle={0}
+              innerRadius={70}
+              outerRadius={120}
+              paddingAngle={1}
               dataKey="value"
               stroke="none"
             />
@@ -317,117 +328,153 @@ export default function HoursTracking() {
 
   return (
     <div className="hours-tracking-wrapper">
-      <div className="hours-header">
-        <h2>Acompanhamento de horas</h2>
-        <span style={{ color: '#718096', fontSize: '0.875rem' }}>Projeto {projectId}</span>
+      <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+        <h2
+          style={{
+            fontSize: '1.875rem',
+            fontWeight: '700',
+            color: '#1e293b',
+            margin: 0,
+            letterSpacing: '-0.025em',
+          }}
+        >
+          Acompanhamento de horas
+        </h2>
+        <span style={{ color: '#64748b', fontSize: '1rem', fontWeight: '400' }}>
+          Projeto {codigo_projeto}
+        </span>
       </div>
 
       <div className="charts-section">
-        <div className="line-chart-container">
-          <span className="chart-label">Evolução de horas trabalhadas</span>
-
-          <div className="chart-wrapper">{renderChartContent()}</div>
-
-          <div className="total-hours-badge">
-            <Clock />
-            <span>Horas trabalhadas totais: {formatTotalHours(totalHours)}</span>
-          </div>
-        </div>
-
         <div className="task-details-card" data-testid="task-details-card">
-          <div className="property-group">
-            <div className="prop-value-row">
-              <span className="prop-label" style={{ fontSize: '1.2rem', color: '#4a5568' }}>
-                <CheckSquare /> Tarefa
-              </span>
-              <div className="task-code">
-                <span style={{ fontSize: '0.75rem', color: '#718096' }}>Código da tarefa</span>
-                <div className="task-code-select-wrapper">
-                  <select
-                    className="task-code-select"
-                    value={selectedTaskCode}
-                    onChange={(event) => setSelectedTaskCode(event.target.value)}
-                    disabled={!tasks.length || loading}
-                  >
-                    {tasks.map((task) => (
-                      <option key={task.codigo} value={task.codigo}>
-                        {task.codigo}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown />
+          <div className="task-info-section">
+            <span className="chart-label section-absolute-title">
+              <CheckSquare /> Tarefa
+            </span>
+            <div className="task-info-grid">
+              <div className="property-group">
+                <span className="prop-label">
+                  <CheckSquare /> Código da tarefa
+                </span>
+                <div className="task-code" style={{ marginTop: '0.25rem' }}>
+                  <div className="task-code-select-wrapper">
+                    <select
+                      className="task-code-select"
+                      value={selectedTaskCode}
+                      onChange={(event) => setSelectedTaskCode(event.target.value)}
+                      disabled={!tasks.length || loading}
+                    >
+                      {tasks.map((task) => (
+                        <option key={task.codigo} value={task.codigo}>
+                          {task.codigo}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown />
+                  </div>
                 </div>
+              </div>
+
+              <div className="property-group">
+                <span className="prop-label">
+                  <AppWindow /> Título
+                </span>
+                <span className="prop-value" style={{ lineHeight: '1.3' }}>
+                  {selectedTask?.titulo || ''}
+                </span>
+              </div>
+
+              <div className="property-group">
+                <span className="prop-label">
+                  <User /> Responsável
+                </span>
+                <span className="prop-value">
+                  {capitalizeText(selectedTask?.responsavel || '')}
+                </span>
+              </div>
+
+              <div className="property-group">
+                <span className="prop-label">
+                  <Users /> Status
+                </span>
+                <span className="prop-value">{capitalizeText(selectedTask?.status || '')}</span>
+              </div>
+
+              <div className="property-group">
+                <span className="prop-label">
+                  <CalendarDays /> Horas trabalhadas
+                </span>
+                <span className="prop-value">
+                  {selectedTask ? formatHours(selectedTask.total_horas_trabalhadas) : 'Sem dados'}
+                </span>
+              </div>
+
+              <div className="property-group">
+                <span className="prop-label">
+                  <CalendarDays /> Estimativa de horas
+                </span>
+                <span className="prop-value">
+                  {selectedTask ? formatHours(selectedTask.estimativa_horas) : 'Sem dados'}
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="property-group">
-            <span className="prop-label">
-              <AppWindow /> Título
-            </span>
-            <span className="prop-value">{selectedTask?.titulo || 'Sem dados'}</span>
-          </div>
-
-          <div className="property-group">
-            <span className="prop-label">
-              <User /> Responsável
-            </span>
-            <span className="prop-value">{selectedTask?.responsavel || 'Sem dados'}</span>
-          </div>
-
-          <div className="property-group">
-            <span className="prop-label">
-              <Users /> Status
-            </span>
-            <span className="prop-value">{selectedTask?.status || 'Sem dados'}</span>
-          </div>
-
-          <div className="property-group">
-            <span className="prop-label">
-              <CalendarDays /> Horas trabalhadas
-            </span>
-            <span className="prop-value">
-              {selectedTask ? formatHours(selectedTask.total_horas_trabalhadas) : 'Sem dados'}
-            </span>
-          </div>
-
-          <div className="property-group">
-            <span className="prop-label">
-              <CalendarDays /> Estimativa de horas
-            </span>
-            <span className="prop-value">
-              {selectedTask ? formatHours(selectedTask.estimativa_horas) : 'Sem dados'}
-            </span>
-          </div>
+          <div className="vertical-divider"></div>
 
           <div className="donut-chart-section">
-            <span className="donut-label">
+            <span className="chart-label section-absolute-title">
               <PieChartIcon /> Horas trabalhadas
             </span>
-            <div className="donut-wrapper">{renderDonutContent()}</div>
+            <div className="donut-and-legend">
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div className="donut-wrapper">{renderDonutContent()}</div>
+              </div>
 
-            <div className="legend-container">
-              {pieData.length ? (
-                pieData.map((entry) => (
-                  <div key={entry.name} className="legend-item">
-                    <div className="legend-color" style={{ backgroundColor: entry.fill }} />
-                    <span>
-                      {entry.value.toString().replace('.', ',')}% {entry.name}
-                    </span>
-                  </div>
-                ))
-              ) : (
-                <span style={{ color: '#718096', fontSize: '0.875rem' }}>
-                  Sem dados para exibir
-                </span>
-              )}
+              <div className="legend-container">
+                {pieData.length ? (
+                  pieData.map((entry) => (
+                    <div key={entry.name} className="legend-item">
+                      <div className="legend-color" style={{ backgroundColor: entry.fill }} />
+                      <span>
+                        {entry.value.toString().replace('.', ',')}% {capitalizeText(entry.name)}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <span style={{ color: '#718096', fontSize: '0.875rem' }}>
+                    Sem dados para exibir
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
+
+        <hr className="section-divider" />
+
+        <div className="line-chart-container">
+          <div className="chart-header">
+            <span className="chart-label">
+              <TrendingUp /> Evolução de horas trabalhadas
+            </span>
+            <div className="total-hours-badge">
+              <Clock />
+              <span>Horas trabalhadas totais: {formatTotalHours(totalHours)}</span>
+            </div>
+          </div>
+
+          <div className="chart-wrapper">{renderChartContent()}</div>
+        </div>
       </div>
+
+      <hr className="section-divider" />
 
       <div className="table-section">
         <div style={{ width: '100%' }}>
+          <h3 className="table-title">
+            <ListTodo /> Detalhamento de tarefas
+          </h3>
           <DataGrid
             rows={tableData}
             columns={columns}

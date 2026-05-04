@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TrackingTable from './TrackingTable';
 import { describe, it, expect } from 'vitest';
+import type { PurchaseOrderData } from '../../../../types/purchase';
 
 describe('TrackingTable', () => {
   it('renders the table with correct mapping and status colors', () => {
@@ -13,7 +14,7 @@ describe('TrackingTable', () => {
         previsao: '2023-05-20',
         dias_previstos_entrega: 10,
         fornecedor: 'F1',
-        centro_custo: 'C1',
+        nome_material: 'C1',
         status: 'recebido',
       },
       {
@@ -22,7 +23,7 @@ describe('TrackingTable', () => {
         previsao: '2023/12/31',
         dias_previstos_entrega: 10,
         fornecedor: 'F2',
-        centro_custo: 'C2',
+        nome_material: 'C2',
         status: 'cancelado',
       },
       {
@@ -31,7 +32,7 @@ describe('TrackingTable', () => {
         previsao: null,
         dias_previstos_entrega: 10,
         fornecedor: 'F3',
-        centro_custo: 'C3',
+        nome_material: 'C3',
         status: 'aberto',
       },
       {
@@ -40,7 +41,7 @@ describe('TrackingTable', () => {
         previsao: '2023-05-20',
         dias_previstos_entrega: 10,
         fornecedor: 'F4',
-        centro_custo: 'C4',
+        nome_material: 'C4',
         status: 'em rota',
       },
       {
@@ -49,7 +50,7 @@ describe('TrackingTable', () => {
         previsao: '2023-05-20',
         dias_previstos_entrega: 10,
         fornecedor: 'F5',
-        centro_custo: 'C5',
+        nome_material: 'C5',
         status: 'Unknown',
       },
       {
@@ -58,12 +59,12 @@ describe('TrackingTable', () => {
         previsao: '2023-05-20',
         dias_previstos_entrega: 10,
         fornecedor: 'F6',
-        centro_custo: 'C6',
+        nome_material: 'C6',
         status: null,
       }, // testing null status
     ];
 
-    render(<TrackingTable orders={orders as any} />);
+    render(<TrackingTable orders={orders as PurchaseOrderData[]} />);
 
     // Test getMappedOrderCode
     expect(screen.getByText('SC0020 / PC0001')).toBeInTheDocument();
