@@ -7,7 +7,7 @@ describe('PageHeader', () => {
   it('renders without crashing', () => {
     const { container } = render(
       <MemoryRouter>
-        <PageHeader />
+        <PageHeader icon={<span>icon</span>} title="Title" subtitle="Subtitle" />
       </MemoryRouter>
     );
     expect(container).toBeTruthy();
