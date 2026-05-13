@@ -1,0 +1,143 @@
+@import '../../../../styles/variables';
+
+.tracking-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1.5rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+
+  .tracking-card {
+    background-color: $bg-card;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid $border-default;
+    display: flex;
+    flex-direction: column;
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: $text-secondary;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      margin-top: 0;
+
+      .icon-alert {
+        color: $text-secondary;
+      }
+      .icon-critical {
+        color: $color-danger-badge;
+      }
+    }
+
+    .empty-message {
+      color: $text-muted;
+      font-size: 0.875rem;
+      text-align: center;
+      font-style: italic;
+      margin: auto 0;
+    }
+
+    .list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .list-header,
+      .list-row {
+        display: grid;
+        align-items: center;
+        width: 100%;
+      }
+
+      .list-header {
+        font-size: 0.75rem;
+        color: $text-secondary;
+        text-transform: uppercase;
+        font-weight: 700;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid $border-default;
+      }
+
+      .list-row {
+        font-size: 0.875rem;
+        color: $text-primary;
+        padding: 0.25rem 0;
+      }
+    }
+  }
+
+  .delayed-card {
+    .list-header,
+    .list-row {
+      grid-template-columns: 1fr 1.5fr 1fr;
+    }
+  }
+
+  .priority-card {
+    .list-header,
+    .list-row {
+      grid-template-columns: 2fr 1.5fr 1.5fr;
+      text-align: center;
+    }
+
+    .list-header > span:first-child,
+    .list-row > span:first-child {
+      text-align: left;
+    }
+
+    .status-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+
+    .priority-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+
+      &.badge-urgent {
+        background-color: $color-danger-bg;
+        color: $color-danger-text;
+      }
+
+      &.badge-high {
+        background-color: $color-warning-border;
+        color: $color-warning-dark;
+      }
+    }
+  }
+
+  .total-card {
+    background-color: $color-info-bg;
+    border-color: $color-info-border;
+    text-align: center;
+    justify-content: center;
+
+    .summary-title {
+      font-size: 1.125rem;
+      color: $color-info-text;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+
+    .big-number {
+      font-size: 5rem;
+      font-weight: 300;
+      color: $color-info-text;
+      line-height: 1;
+    }
+  }
+}

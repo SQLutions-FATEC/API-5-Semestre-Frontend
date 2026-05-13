@@ -1,0 +1,17 @@
+@import '../../styles/variables';
+
+.overview-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background-color: $bg-page;
+  min-height: 100vh;
+
+  .overview-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
