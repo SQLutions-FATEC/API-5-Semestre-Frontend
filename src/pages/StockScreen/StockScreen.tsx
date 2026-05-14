@@ -370,7 +370,7 @@ export default function StockScreen(props: StockScreenProps) {
                       <p className="empty-hint">Os empenhos aparecerão aqui quando forem registrados.</p>
                     </div>
                   ) : (
-                    historico.map((item, i) => (
+                    historico.map((item) => (
                       <div key={item.id} className="history-row" style={{ animationDelay: `${item.id}s` }}>
                         <span className="history-cod">{item.cod}</span>
                         <span className="history-nome">{item.nome}</span>

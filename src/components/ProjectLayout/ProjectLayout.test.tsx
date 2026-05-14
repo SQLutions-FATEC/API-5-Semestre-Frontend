@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, type Mock } from 'vitest';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import ProjectLayout from './ProjectLayout';
 import { projectService } from '../../services/projectService';
@@ -24,7 +24,7 @@ describe('ProjectLayout', () => {
         status: 'ON_TRACK',
       },
     };
-    (projectService.getOverview as vi.Mock).mockResolvedValueOnce(mockData);
+    (projectService.getOverview as Mock).mockResolvedValueOnce(mockData);
 
     const { getByText, queryByText } = render(
       <MemoryRouter initialEntries={['/projetos/PRJ1']}>
@@ -49,7 +49,7 @@ describe('ProjectLayout', () => {
   });
 
   it('handles error fetching data gracefully', async () => {
-    (projectService.getOverview as vi.Mock).mockRejectedValueOnce(new Error('Network Error'));
+    (projectService.getOverview as Mock).mockRejectedValueOnce(new Error('Network Error'));
 
     const { queryByText, getByText } = render(
       <MemoryRouter initialEntries={['/projetos/PRJ1']}>

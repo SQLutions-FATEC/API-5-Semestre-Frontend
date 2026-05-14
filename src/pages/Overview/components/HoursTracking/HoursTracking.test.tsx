@@ -48,15 +48,6 @@ const renderComponent = () =>
     </MemoryRouter>
   );
 
-const renderComponentWithRoute = (route: string) =>
-  render(
-    <MemoryRouter initialEntries={[route]}>
-      <Routes>
-        <Route path="/:codigo_projeto" element={<HoursTracking />} />
-      </Routes>
-    </MemoryRouter>
-  );
-
 beforeEach(() => {
   vi.mocked(taskService.getTaskTracking).mockResolvedValue({
     tarefas: mockedTasks,
