@@ -54,9 +54,7 @@ export default function StockScreen(props: StockScreenProps) {
   const [estoque, setEstoque] = useState<MaterialEstoque[]>(props.estoque || []);
   const [pedidosAbertos, setPedidosAbertos] = useState<PedidoAberto[]>(props.pedidosAbertos || []);
   const [historico, setHistorico] = useState<HistoricoEmpenho[]>(props.historico || []);
-  const [totalPedidosEnvolvidos, setTotalPedidosEnvolvidos] = useState(
-    props.totalPedidosEnvolvidos || 0
-  );
+  const [totalPedidosEnvolvidos, setTotalPedidosEnvolvidos] = useState(props.totalPedidosEnvolvidos || 0);
   const [valorTotalEstoque, setValorTotalEstoque] = useState(props.valorTotalEstoque || 'R$ 0,00');
   const [numericValue, setNumericValue] = useState(0);
 
@@ -80,30 +78,29 @@ export default function StockScreen(props: StockScreenProps) {
       if (codigo_projeto === 'PRJ020') {
         data.alertas_estoque_ocioso = [
           {
-            codigo_material: 'MAT101',
-            descricao: 'Capacitor 100uF',
+            codigo_material: "MAT101",
+            descricao: "Capacitor 100uF",
             quantidade_solicitada_atual: 100,
             sobras_detectadas: [
               {
-                projeto_origem_codigo: 'PRJ001',
-                projeto_origem_nome: 'PROJETO ENCERRADO ALPHA',
+                projeto_origem_codigo: "PRJ001",
+                projeto_origem_nome: "PROJETO ENCERRADO ALPHA",
                 quantidade_disponivel: 150,
-                status_projeto_origem: 'CONCLUIDO',
-                localizacao_fisica: 'Almoxarifado Central',
-              },
+                status_projeto_origem: "CONCLUIDO",
+                localizacao_fisica: "Almoxarifado Central"
+              }
             ],
-            potencial_economia_estimada: 600.0,
-          },
+            potencial_economia_estimada: 600.0
+          }
         ];
         data.conflitos_compra_aberta = [
           {
-            material: 'LED SMD Branco 0805',
-            pedido_compra_atual: 'PC0062',
+            material: "LED SMD Branco 0805",
+            pedido_compra_atual: "PC0062",
             quantidade_no_pedido: 426,
-            alerta:
-              'Existe estoque disponível em outros projetos que supre esta necessidade sem nova compra.',
-            disponivel_outras_fontes: 2565,
-          },
+            alerta: "Existe estoque disponível em outros projetos que supre esta necessidade sem nova compra.",
+            disponivel_outras_fontes: 2565
+          }
         ];
         data.valor_total_material = 14000.0;
       }
@@ -125,7 +122,7 @@ export default function StockScreen(props: StockScreenProps) {
         alerta.sobras_detectadas.forEach((sobra, idx) => {
           mappedAlertas.push({
             id: `ocioso-${alerta.codigo_material}-${idx}`,
-            texto: `Há ${new Intl.NumberFormat('pt-BR').format(sobra.quantidade_disponivel)} ${alerta.descricao} do pedido ${sobra.projeto_origem_codigo} do projeto ${sobra.projeto_origem_nome} (${sobra.projeto_origem_codigo} | ${sobra.status_projeto_origem}) restantes após cobrir a demanda da solicitação`,
+            texto: `Há ${new Intl.NumberFormat('pt-BR').format(sobra.quantidade_disponivel)} ${alerta.descricao} do pedido ${sobra.projeto_origem_codigo} do projeto ${sobra.projeto_origem_nome} (${sobra.projeto_origem_codigo} | ${sobra.status_projeto_origem}) restantes após cobrir a demanda da solicitação`
           });
         });
       });
@@ -133,13 +130,12 @@ export default function StockScreen(props: StockScreenProps) {
       // Mapear Conflitos para Pedidos Abertos (Tab)
       const mappedPedidos: PedidoAberto[] = (data.conflitos_compra_aberta || []).map((c, i) => {
         // Tenta encontrar o projeto de origem buscando no array de estoque ocioso pelo material
-        const alertaRelacionado = ociosoList.find((a) => a.descricao === c.material);
-        const sourceProj =
-          alertaRelacionado?.sobras_detectadas[0]?.projeto_origem_codigo || 'outro pedido';
+        const alertaRelacionado = ociosoList.find(a => a.descricao === c.material);
+        const sourceProj = alertaRelacionado?.sobras_detectadas[0]?.projeto_origem_codigo || 'outro pedido';
 
         return {
           id: `pedido-${i}`,
-          texto: `O pedido (${c.pedido_compra_atual}) esta pedindo o material ${c.material} que possui sobras de outro pedido (${sourceProj})`,
+          texto: `O pedido (${c.pedido_compra_atual}) esta pedindo o material ${c.material} que possui sobras de outro pedido (${sourceProj})`
         };
       });
 
@@ -148,27 +144,26 @@ export default function StockScreen(props: StockScreenProps) {
         id: `ocioso-list-${i}`,
         nome: o.descricao,
         qtd: o.sobras_detectadas.reduce((acc, s) => acc + s.quantidade_disponivel, 0),
-        local: o.sobras_detectadas[0]?.localizacao_fisica || 'Almoxarifado',
+        local: o.sobras_detectadas[0]?.localizacao_fisica || 'Almoxarifado'
       }));
 
       // Mapear Histórico de Empenhos
-      const mappedHistorico: HistoricoEmpenho[] = (analyticsData.empenho_por_material || []).map(
-        (m, i) => ({
-          id: `empenho-${i}`,
-          cod: m.codigo_material,
-          nome: m.descricao,
-          cat: m.categoria || 'Geral',
-          qtd: m.quantidade_total || 0,
-          data: new Date().toLocaleDateString('pt-BR'),
-          status: 'Ativo',
-        })
-      );
+      const mappedHistorico: HistoricoEmpenho[] = (analyticsData.empenho_por_material || []).map((m, i) => ({
+        id: `empenho-${i}`,
+        cod: m.codigo_material,
+        nome: m.descricao,
+        cat: m.categoria || 'Geral',
+        qtd: m.quantidade_total || 0,
+        data: new Date().toLocaleDateString('pt-BR'),
+        status: 'Ativo'
+      }));
 
       setAlertas(mappedAlertas);
       setEstoque(mappedEstoque);
       setPedidosAbertos(mappedPedidos);
       setHistorico(mappedHistorico);
       setTotalPedidosEnvolvidos(data.conflitos_compra_aberta?.length || 0);
+
     } catch (err) {
       console.error('Erro ao buscar dados de estoque:', err);
     }
@@ -207,11 +202,7 @@ export default function StockScreen(props: StockScreenProps) {
                     </div>
                   ) : (
                     alertas.map((alerta, i) => (
-                      <div
-                        key={alerta.id}
-                        className="alert-card"
-                        style={{ animationDelay: `${i * 0.1}s` }}
-                      >
+                      <div key={alerta.id} className="alert-card" style={{ animationDelay: `${i * 0.1}s` }}>
                         <div className="alert-dot" />
                         <p>{alerta.texto}</p>
                       </div>
@@ -250,15 +241,9 @@ export default function StockScreen(props: StockScreenProps) {
                         </div>
                       ) : (
                         estoque.map((item, i) => (
-                          <div
-                            key={item.id}
-                            className="materials-row"
-                            style={{ animationDelay: `${i * 0.05}s` }}
-                          >
+                          <div key={item.id} className="materials-row" style={{ animationDelay: `${i * 0.05}s` }}>
                             <span className="material-name">{item.nome}</span>
-                            <span className="material-qtd">
-                              {new Intl.NumberFormat('pt-BR').format(item.qtd)}
-                            </span>
+                            <span className="material-qtd">{new Intl.NumberFormat('pt-BR').format(item.qtd)}</span>
                             <span className="material-local">{item.local}</span>
                           </div>
                         ))
@@ -276,11 +261,7 @@ export default function StockScreen(props: StockScreenProps) {
                         </div>
                       ) : (
                         pedidosAbertos.map((pedido, i) => (
-                          <div
-                            key={pedido.id}
-                            className="order-warning-card"
-                            style={{ animationDelay: `${i * 0.1}s` }}
-                          >
+                          <div key={pedido.id} className="order-warning-card" style={{ animationDelay: `${i * 0.1}s` }}>
                             <div className="order-icon-wrapper">
                               <ShoppingCart size={16} />
                             </div>
@@ -303,10 +284,7 @@ export default function StockScreen(props: StockScreenProps) {
                   aria-label="Alternar visualização do gráfico"
                 >
                   <span>{chartType}</span>
-                  <ChevronDown
-                    size={14}
-                    className={`chevron-icon ${isTransitioning ? 'rotating' : ''}`}
-                  />
+                  <ChevronDown size={14} className={`chevron-icon ${isTransitioning ? 'rotating' : ''}`} />
                 </button>
 
                 <div className="donut-container">
@@ -389,27 +367,17 @@ export default function StockScreen(props: StockScreenProps) {
                         <Package size={48} />
                       </div>
                       <p className="empty-title">Nenhum empenho encontrado</p>
-                      <p className="empty-hint">
-                        Os empenhos aparecerão aqui quando forem registrados.
-                      </p>
+                      <p className="empty-hint">Os empenhos aparecerão aqui quando forem registrados.</p>
                     </div>
                   ) : (
                     historico.map((item) => (
-                      <div
-                        key={item.id}
-                        className="history-row"
-                        style={{ animationDelay: `${item.id}s` }}
-                      >
+                      <div key={item.id} className="history-row" style={{ animationDelay: `${item.id}s` }}>
                         <span className="history-cod">{item.cod}</span>
                         <span className="history-nome">{item.nome}</span>
                         <span className="history-cat">{item.cat}</span>
-                        <span className="history-qtd">
-                          {new Intl.NumberFormat('pt-BR').format(item.qtd)}
-                        </span>
+                        <span className="history-qtd">{new Intl.NumberFormat('pt-BR').format(item.qtd)}</span>
                         <span className="history-data">{item.data}</span>
-                        <span className={`status-badge status-${item.status.toLowerCase()}`}>
-                          {item.status}
-                        </span>
+                        <span className={`status-badge status-${item.status.toLowerCase()}`}>{item.status}</span>
                       </div>
                     ))
                   )}
