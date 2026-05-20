@@ -138,7 +138,7 @@ describe('SupplierInfoModal', () => {
 
   it('calls onClose when backdrop is clicked', () => {
     renderModal();
-    fireEvent.click(screen.getByRole('dialog'));
+    fireEvent.click(screen.getByRole('presentation'));
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
@@ -217,3 +217,4 @@ describe('SupplierInfoModal', () => {
     expect(screen.queryByText('PC0002')).not.toBeInTheDocument();
   });
 });
+
