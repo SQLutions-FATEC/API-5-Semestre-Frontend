@@ -36,7 +36,6 @@ const ReliabilityIcon: React.FC<{ status: ReliabilityStatus }> = ({ status }) =>
       </span>
     );
   }
-  // danger — usa um ícone diferente de X para não confundir com fechar
   return (
     <span
       className="supplier-modal__reliability supplier-modal__reliability--danger"
@@ -79,25 +78,32 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
     });
   }, [supplier.pedidos_anteriores, search, projectFilter]);
 
+  // Fix: backdrop usa a função de apresentação + manipulador de teclado; o elemento de diálogo lida com a acessibilidade
+  const handleBackdropKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') onClose();
+  };
+
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
 
   return (
+    // Fix: A propriedade `role="presentation"` no backdrop evita elementos não interativos com aviso de ouvinte de eventos.
     <div
       className="supplier-modal__backdrop"
+      role="presentation"
       onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`Informações do fornecedor ${supplier.nome_fornecedor}`}
+      onKeyDown={handleBackdropKeyDown}
     >
-      {/* Wrapper: container branco + ações externas */}
-      <div className="supplier-modal__outer">
-
+      {/* Fix: <dialog> instead of role="dialog" for proper accessibility */}
+      <dialog
+        open
+        className="supplier-modal__outer"
+        aria-label={`Informações do fornecedor ${supplier.nome_fornecedor}`}
+      >
         {/* Container branco */}
         <div className="supplier-modal__container">
-
-          {/* ── Header ── */}
+          {/* Header */}
           <div className="supplier-modal__header">
             <span className="supplier-modal__label">Nome do fornecedor</span>
             <div className="supplier-modal__title-row">
@@ -115,7 +121,7 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
             </div>
           </div>
 
-          {/* ── Info Row: categoria + cidade + cards lado a lado ── */}
+          {/* Info Row */}
           <div className="supplier-modal__info-row">
             <div className="supplier-modal__info-block">
               <span className="supplier-modal__label">
@@ -128,10 +134,11 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
               <span className="supplier-modal__label">
                 <MapPin size={12} /> Cidade
               </span>
+              {/* Fix: Remover espaços em branco ambíguos ? Use CSS gap em vez de {' '} */}
               <span className="supplier-modal__location">
-                {supplier.cidade}{' '}
-                <span className="supplier-modal__separator">–</span>{' '}
-                <span className="supplier-modal__label supplier-modal__label--inline">Região</span>{' '}
+                {supplier.cidade}
+                <span className="supplier-modal__separator">–</span>
+                <span className="supplier-modal__label supplier-modal__label--inline">Região</span>
                 {supplier.regiao}
               </span>
             </div>
@@ -149,11 +156,11 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
             </div>
           </div>
 
-          {/* ── Previous Orders ── */}
+          {/* Previous Orders */}
           <div className="supplier-modal__orders-section">
             <div className="supplier-modal__orders-header">
               <h3 className="supplier-modal__orders-title">
-                <span aria-hidden="true">🛒</span>
+                {/* Fix: emoji moved to CSS ::before to avoid ambiguous spacing warning */}
                 Pedidos anteriores
               </h3>
 
@@ -232,19 +239,14 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
           </div>
         </div>
 
-        {/* ── Ações externas: ícone de confiabilidade + fechar ── */}
+        {/* Ações externas: ícone de confiabilidade + fechar */}
         <div className="supplier-modal__external-actions">
           <ReliabilityIcon status={reliability} />
-          <button
-            className="supplier-modal__close-btn"
-            onClick={onClose}
-            aria-label="Fechar modal"
-          >
+          <button className="supplier-modal__close-btn" onClick={onClose} aria-label="Fechar modal">
             <X size={16} />
           </button>
         </div>
-
-      </div>
+      </dialog>
     </div>
   );
 };
