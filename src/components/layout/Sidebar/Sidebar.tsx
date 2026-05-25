@@ -1,5 +1,5 @@
 import { Link, useLocation, useMatch } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight, Package, Upload } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight, Package, Upload, Building2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Snackbar, Alert } from '@mui/material';
 import './Sidebar.scss';
@@ -38,6 +38,11 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
           name: 'Estoque',
           path: `/programas/${programa_cod}/projetos/${codigo_projeto}/estoque`,
           icon: Package,
+        },
+        {
+          name: 'Fornecedores',
+          path: `/programas/${programa_cod}/projetos/${codigo_projeto}/fornecedores`,
+          icon: Building2,
         },
       ]
       : [];
