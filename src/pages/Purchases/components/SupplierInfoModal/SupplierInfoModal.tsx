@@ -78,7 +78,7 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
     });
   }, [supplier.pedidos_anteriores, search, projectFilter]);
 
-  // Fix: backdrop usa a função de apresentação + manipulador de teclado; o elemento de diálogo lida com a acessibilidade
+  // Fix: backdrop uses presentation role + keyboard handler; dialog element handles accessibility
   const handleBackdropKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Escape') onClose();
   };
@@ -88,10 +88,8 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
   };
 
   return (
-    // Fix: A propriedade `role="presentation"` no backdrop evita elementos não interativos com aviso de ouvinte de eventos.
     <div
       className="supplier-modal__backdrop"
-      role="presentation"
       onClick={handleBackdropClick}
       onKeyDown={handleBackdropKeyDown}
     >
@@ -134,7 +132,7 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
               <span className="supplier-modal__label">
                 <MapPin size={12} /> Cidade
               </span>
-              {/* Fix: Remover espaços em branco ambíguos ? Use CSS gap em vez de {' '} */}
+              {/* Fix: remove ambiguous whitespace — use CSS gap instead of {' '} */}
               <span className="supplier-modal__location">
                 {supplier.cidade}
                 <span className="supplier-modal__separator">–</span>
