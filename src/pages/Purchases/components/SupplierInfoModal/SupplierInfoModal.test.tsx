@@ -137,8 +137,9 @@ describe('SupplierInfoModal', () => {
   });
 
   it('calls onClose when backdrop is clicked', () => {
-    renderModal();
-    fireEvent.click(screen.getByRole('presentation'));
+    const { container } = renderModal();
+    const backdrop = container.querySelector('.supplier-modal__backdrop') as HTMLElement;
+    fireEvent.click(backdrop);
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
@@ -217,4 +218,3 @@ describe('SupplierInfoModal', () => {
     expect(screen.queryByText('PC0002')).not.toBeInTheDocument();
   });
 });
-
