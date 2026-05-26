@@ -6,134 +6,62 @@ import type { SupplierInfo } from '../../types/purchase';
 import './SuppliersScreen.scss';
 
 // MOCK DATA for suppliers
+const makeMockSupplier = (
+  id: number,
+  ativo: boolean,
+  total_pedidos: number,
+  total_atrasos: number,
+  pedidos_anteriores: SupplierInfo['pedidos_anteriores'] = []
+): SupplierInfo => ({
+  codigo_fornecedor: `FOR00${id}`,
+  nome_fornecedor: 'RTech Distribuidora 1 Ltda',
+  categoria: 'Materiais de Solda',
+  cidade: 'Jundiaí',
+  regiao: 'SP',
+  ativo,
+  total_pedidos,
+  total_atrasos,
+  pedidos_anteriores,
+});
+
 const MOCK_SUPPLIERS: SupplierInfo[] = [
-  {
-    codigo_fornecedor: 'FOR001',
-    nome_fornecedor: 'RTech Distribuidora 1 Ltda',
-    categoria: 'Materiais de Solda',
-    cidade: 'Jundiaí',
-    regiao: 'SP',
-    ativo: true,
-    total_pedidos: 5,
-    total_atrasos: 1,
-    pedidos_anteriores: [
-      {
-        codigo_projeto: 'PRJ001',
-        codigo_pedido: 'PC0001',
-        nome_material: 'Capacitor Cerâmico 10uF 0603',
-        valor_gasto: 16532.28,
-        data_pedida: '2024-11-12',
-        data_previsao: '2024-12-21',
-      },
-      {
-        codigo_projeto: 'PRJ002',
-        codigo_pedido: 'PC0002',
-        nome_material: 'Capacitor Cerâmico 10uF 0604',
-        valor_gasto: 2687.16,
-        data_pedida: '2022-08-24',
-        data_previsao: '2022-09-19',
-      },
-      {
-        codigo_projeto: 'PRJ003',
-        codigo_pedido: 'PC0003',
-        nome_material: 'Capacitor Cerâmico 1nF 0402',
-        valor_gasto: 278.64,
-        data_pedida: '2022-04-14',
-        data_previsao: '2022-05-27',
-      },
-    ],
-  },
-  {
-    codigo_fornecedor: 'FOR002',
-    nome_fornecedor: 'RTech Distribuidora 1 Ltda',
-    categoria: 'Materiais de Solda',
-    cidade: 'Jundiaí',
-    regiao: 'SP',
-    ativo: true,
-    total_pedidos: 10,
-    total_atrasos: 3,
-    pedidos_anteriores: [],
-  },
-  {
-    codigo_fornecedor: 'FOR003',
-    nome_fornecedor: 'RTech Distribuidora 1 Ltda',
-    categoria: 'Materiais de Solda',
-    cidade: 'Jundiaí',
-    regiao: 'SP',
-    ativo: true,
-    total_pedidos: 5,
-    total_atrasos: 0,
-    pedidos_anteriores: [],
-  },
-  {
-    codigo_fornecedor: 'FOR004',
-    nome_fornecedor: 'RTech Distribuidora 1 Ltda',
-    categoria: 'Materiais de Solda',
-    cidade: 'Jundiaí',
-    regiao: 'SP',
-    ativo: true,
-    total_pedidos: 5,
-    total_atrasos: 0,
-    pedidos_anteriores: [],
-  },
-  {
-    codigo_fornecedor: 'FOR005',
-    nome_fornecedor: 'RTech Distribuidora 1 Ltda',
-    categoria: 'Materiais de Solda',
-    cidade: 'Jundiaí',
-    regiao: 'SP',
-    ativo: false,
-    total_pedidos: 5,
-    total_atrasos: 2,
-    pedidos_anteriores: [],
-  },
-  {
-    codigo_fornecedor: 'FOR006',
-    nome_fornecedor: 'RTech Distribuidora 1 Ltda',
-    categoria: 'Materiais de Solda',
-    cidade: 'Jundiaí',
-    regiao: 'SP',
-    ativo: false,
-    total_pedidos: 5,
-    total_atrasos: 2,
-    pedidos_anteriores: [],
-  },
-  {
-    codigo_fornecedor: 'FOR007',
-    nome_fornecedor: 'RTech Distribuidora 1 Ltda',
-    categoria: 'Materiais de Solda',
-    cidade: 'Jundiaí',
-    regiao: 'SP',
-    ativo: true,
-    total_pedidos: 10,
-    total_atrasos: 3,
-    pedidos_anteriores: [],
-  },
-  {
-    codigo_fornecedor: 'FOR008',
-    nome_fornecedor: 'RTech Distribuidora 1 Ltda',
-    categoria: 'Materiais de Solda',
-    cidade: 'Jundiaí',
-    regiao: 'SP',
-    ativo: true,
-    total_pedidos: 5,
-    total_atrasos: 0,
-    pedidos_anteriores: [],
-  },
-  {
-    codigo_fornecedor: 'FOR009',
-    nome_fornecedor: 'RTech Distribuidora 1 Ltda',
-    categoria: 'Materiais de Solda',
-    cidade: 'Jundiaí',
-    regiao: 'SP',
-    ativo: true,
-    total_pedidos: 5,
-    total_atrasos: 0,
-    pedidos_anteriores: [],
-  },
+  makeMockSupplier(1, true, 5, 1, [
+    {
+      codigo_projeto: 'PRJ001',
+      codigo_pedido: 'PC0001',
+      nome_material: 'Capacitor Cerâmico 10uF 0603',
+      valor_gasto: 16532.28,
+      data_pedida: '2024-11-12',
+      data_previsao: '2024-12-21',
+    },
+    {
+      codigo_projeto: 'PRJ002',
+      codigo_pedido: 'PC0002',
+      nome_material: 'Capacitor Cerâmico 10uF 0604',
+      valor_gasto: 2687.16,
+      data_pedida: '2022-08-24',
+      data_previsao: '2022-09-19',
+    },
+    {
+      codigo_projeto: 'PRJ003',
+      codigo_pedido: 'PC0003',
+      nome_material: 'Capacitor Cerâmico 1nF 0402',
+      valor_gasto: 278.64,
+      data_pedida: '2022-04-14',
+      data_previsao: '2022-05-27',
+    },
+  ]),
+  makeMockSupplier(2, true, 10, 3),
+  makeMockSupplier(3, true, 5, 0),
+  makeMockSupplier(4, true, 5, 0),
+  makeMockSupplier(5, false, 5, 2),
+  makeMockSupplier(6, false, 5, 2),
+  makeMockSupplier(7, true, 10, 3),
+  makeMockSupplier(8, true, 5, 0),
+  makeMockSupplier(9, true, 5, 0),
 ];
 
-//mapeia o status do ativo para a cor da bolinha original
+// Mapeia o status do ativo para a cor da bolinha original
 const getStatusColor = (supplier: SupplierInfo): string => {
   if (!supplier.ativo) return 'red';
   const delayRate =
@@ -264,14 +192,11 @@ export default function SuppliersScreen() {
 
           <section className="suppliers-grid">
             {MOCK_SUPPLIERS.map((supplier, index) => (
-              <div
+              <button
                 key={supplier.codigo_fornecedor}
                 className="supplier-card"
                 style={{ animationDelay: `${index * 0.05}s` }}
                 onClick={() => setSelectedSupplier(supplier)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && setSelectedSupplier(supplier)}
                 aria-label={`Ver detalhes do fornecedor ${supplier.nome_fornecedor}`}
               >
                 <div className={`status-indicator status-${getStatusColor(supplier)}`} />
@@ -301,7 +226,7 @@ export default function SuppliersScreen() {
                     <p className="info-value">{supplier.cidade}</p>
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </section>
 
