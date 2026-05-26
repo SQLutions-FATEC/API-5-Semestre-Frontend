@@ -30,7 +30,7 @@ export default function SuppliersScreen() {
   };
 
   return (
-    <ProjectLayout pageClassName="suppliers-page" contentClassName="suppliers-content">
+    <ProjectLayout pageClassName="suppliers-page">
       {() => (
         <div className="suppliers-container mt-16">
           <header className="suppliers-header">
@@ -140,7 +140,7 @@ export default function SuppliersScreen() {
             {MOCK_SUPPLIERS.map((supplier, index) => (
               <div key={supplier.id} className="supplier-card" style={{ animationDelay: `${index * 0.05}s` }}>
                 <div className={`status-indicator status-${supplier.status}`} />
-                
+
                 <div className="supplier-card-header">
                   <div className="supplier-label">
                     <Building2 size={12} />
@@ -157,7 +157,7 @@ export default function SuppliersScreen() {
                     </div>
                     <p className="info-value">{supplier.category}</p>
                   </div>
-                  
+
                   <div className="info-row">
                     <div className="info-label">
                       <MapPin size={12} />
