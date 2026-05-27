@@ -42,13 +42,23 @@ export type SupplierPreviousOrder = {
 };
 
 export type SupplierInfo = {
+  id_fornecedor?: number;
   codigo_fornecedor: string;
   nome_fornecedor: string;
   categoria: string;
   cidade: string;
-  regiao: string;
-  ativo: boolean;
-  total_pedidos: number;
-  total_atrasos: number;
-  pedidos_anteriores: SupplierPreviousOrder[];
+  regiao?: string;
+  status?: string;
+  ativo?: boolean;
+  total_pedidos?: number;
+  total_atrasos?: number;
+  pedidos_anteriores?: SupplierPreviousOrder[];
+};
+
+export type SupplierListFilters = {
+  fornecedor_nome?: string;
+  fornecedor_cidade?: string;
+  programa_nome?: string;
+  projeto_nome?: string;
+  categoria?: string;
 };
