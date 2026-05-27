@@ -153,6 +153,17 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
       >
         {/* Container branco */}
         <div className="supplier-modal__container">
+          <div className="supplier-modal__external-actions">
+            <ReliabilityIcon status={reliability} />
+            <button
+              className="supplier-modal__close-btn"
+              onClick={onClose}
+              aria-label="Fechar modal"
+            >
+              <X size={16} />
+            </button>
+          </div>
+
           {/* Header */}
           <div className="supplier-modal__header">
             <span className="supplier-modal__label">Nome do fornecedor</span>
@@ -308,14 +319,6 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
               )}
             </div>
           </div>
-        </div>
-
-        {/* Ações externas: ícone de confiabilidade + fechar */}
-        <div className="supplier-modal__external-actions">
-          <ReliabilityIcon status={reliability} />
-          <button className="supplier-modal__close-btn" onClick={onClose} aria-label="Fechar modal">
-            <X size={16} />
-          </button>
         </div>
       </dialog>
     </div>

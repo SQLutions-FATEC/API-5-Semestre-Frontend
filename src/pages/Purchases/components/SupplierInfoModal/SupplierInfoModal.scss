@@ -16,44 +16,49 @@
 }
 
 // ─────────────────────────────────────────
-// Outer: modal branco + ações externas lado a lado
+// Outer: modal centralizado
 // ─────────────────────────────────────────
 .supplier-modal__outer {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 0.6rem;
-  width: 100%;
-  max-width: 920px;
+  width: min(920px, calc(100vw - 2rem));
+  max-height: 90vh;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: visible;
 }
 
 // ─────────────────────────────────────────
 // Container branco
 // ─────────────────────────────────────────
 .supplier-modal__container {
-  flex: 1;
-  min-width: 0;
+  position: relative;
+  width: 100%;
   background-color: $bg-card;
-  border-radius: 16px;
+  border-radius: 18px;
+  border: 1px solid $border-light;
   box-shadow: $shadow-md, 0 20px 40px rgba(0, 0, 0, 0.12);
-  padding: 1.5rem 1.75rem;
+  padding: 1.5rem 1.75rem 1.5rem 1.75rem;
+  padding-right: 5.25rem;
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
-  max-height: 90vh;
+  max-height: inherit;
   overflow-y: auto;
 }
 
 // ─────────────────────────────────────────
-// Ações externas (empilhadas verticalmente)
+// Ações no canto interno (empilhadas verticalmente)
 // ─────────────────────────────────────────
 .supplier-modal__external-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  flex-shrink: 0;
-  padding-top: 0.15rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
 }
 
 // ─────────────────────────────────────────
@@ -82,6 +87,19 @@
   &--danger {
     color: $color-danger-text;
     border: 1.5px solid $color-danger-badge;
+  }
+}
+
+@media (max-width: 640px) {
+  .supplier-modal__container {
+    padding-right: 1rem;
+    padding-top: 4.75rem;
+  }
+
+  .supplier-modal__external-actions {
+    flex-direction: row;
+    top: 0.85rem;
+    right: 0.85rem;
   }
 }
 
