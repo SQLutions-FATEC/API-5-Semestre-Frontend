@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { X, AlertTriangle, Check, MapPin, Tag, Search, ChevronDown } from 'lucide-react';
 import type { SupplierInfo, SupplierPreviousOrder } from '../../../../types/purchase';
+import { supplierService } from '../../../../services/supplierService';
 import './SupplierInfoModal.scss';
 
 // --- Helpers ---
@@ -63,16 +64,62 @@ interface SupplierInfoModalProps {
 const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose }) => {
   const [search, setSearch] = useState('');
   const [projectFilter, setProjectFilter] = useState('');
+  const [orders, setOrders] = useState<SupplierPreviousOrder[]>(supplier.pedidos_anteriores ?? []);
+  const [totalOrders, setTotalOrders] = useState<number | undefined>(supplier.total_pedidos);
+  const [totalDelays, setTotalDelays] = useState<number | undefined>(supplier.total_atrasos);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(true);
+  const [ordersError, setOrdersError] = useState('');
 
   const reliability = getReliabilityStatus(supplier);
 
+  useEffect(() => {
+    const codigoFornecedor = supplier.codigo_fornecedor;
+
+    if (!codigoFornecedor) {
+      setIsLoadingOrders(false);
+      return;
+    }
+
+    let isMounted = true;
+
+    const loadOrders = async () => {
+      setIsLoadingOrders(true);
+      setOrdersError('');
+
+      try {
+        const response = await supplierService.getSupplierOrders(codigoFornecedor);
+
+        if (!isMounted) return;
+
+        setOrders(response.pedidos);
+        setTotalOrders(response.quantidade_pedidos_totais);
+        setTotalDelays(response.quantidade_atrasos);
+      } catch {
+        if (!isMounted) return;
+
+        setOrders([]);
+        setOrdersError('Não foi possível carregar os pedidos deste fornecedor.');
+      } finally {
+        if (isMounted) {
+          setIsLoadingOrders(false);
+        }
+      }
+    };
+
+    void loadOrders();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [supplier.codigo_fornecedor]);
+
   const projectOptions = useMemo(() => {
-    const codes = (supplier.pedidos_anteriores ?? []).map((p) => p.codigo_projeto);
+    const codes = orders.map((p) => p.codigo_projeto);
     return Array.from(new Set(codes));
-  }, [supplier.pedidos_anteriores]);
+  }, [orders]);
 
   const filteredOrders = useMemo<SupplierPreviousOrder[]>(() => {
-    return (supplier.pedidos_anteriores ?? []).filter((order) => {
+    return orders.filter((order) => {
       const matchesSearch =
         search === '' ||
         order.codigo_projeto.toLowerCase().includes(search.toLowerCase()) ||
@@ -81,7 +128,7 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
       const matchesProject = projectFilter === '' || order.codigo_projeto === projectFilter;
       return matchesSearch && matchesProject;
     });
-  }, [supplier.pedidos_anteriores, search, projectFilter]);
+  }, [orders, search, projectFilter]);
 
   // Fix: backdrop uses presentation role + keyboard handler; dialog element handles accessibility
   const handleBackdropKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -159,13 +206,15 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
                 <>
                   <div className="supplier-modal__stat-card supplier-modal__stat-card--neutral">
                     <span className="supplier-modal__stat-label">Pedidos deste fornecedor</span>
-                    <span className="supplier-modal__stat-value">{supplier.total_pedidos}</span>
+                    <span className="supplier-modal__stat-value">
+                      {typeof totalOrders === 'number' ? totalOrders : '—'}
+                    </span>
                   </div>
 
                   <div className="supplier-modal__stat-card supplier-modal__stat-card--danger">
                     <span className="supplier-modal__stat-label">Atrasos por este fornecedor</span>
                     <span className="supplier-modal__stat-value supplier-modal__stat-value--danger">
-                      {supplier.total_atrasos}
+                      {typeof totalDelays === 'number' ? totalDelays : '—'}
                     </span>
                   </div>
                 </>
@@ -214,43 +263,49 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
             </div>
 
             <div className="supplier-modal__table-wrapper">
-              <table className="supplier-modal__table">
-                <thead>
-                  <tr>
-                    <th>codigo_projeto</th>
-                    <th>Codigo do pedido</th>
-                    <th>Nome do material</th>
-                    <th>Valor Gasto</th>
-                    <th>Data pedida</th>
-                    <th>Data_previsao</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredOrders.length > 0 ? (
-                    filteredOrders.map((order, index) => (
-                      <tr key={`${order.codigo_pedido}-${index}`}>
-                        <td>{order.codigo_projeto}</td>
-                        <td>{order.codigo_pedido}</td>
-                        <td>{order.nome_material}</td>
-                        <td>
-                          {order.valor_gasto.toLocaleString('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL',
-                          })}
-                        </td>
-                        <td>{order.data_pedida}</td>
-                        <td>{order.data_previsao}</td>
-                      </tr>
-                    ))
-                  ) : (
+              {isLoadingOrders ? (
+                <div className="supplier-modal__empty">Carregando pedidos...</div>
+              ) : ordersError ? (
+                <div className="supplier-modal__empty">{ordersError}</div>
+              ) : (
+                <table className="supplier-modal__table">
+                  <thead>
                     <tr>
-                      <td colSpan={6} className="supplier-modal__empty">
-                        Nenhum pedido encontrado
-                      </td>
+                      <th>codigo_projeto</th>
+                      <th>Codigo do pedido</th>
+                      <th>Nome do material</th>
+                      <th>Valor Gasto</th>
+                      <th>Data pedida</th>
+                      <th>Data_previsao</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filteredOrders.length > 0 ? (
+                      filteredOrders.map((order, index) => (
+                        <tr key={`${order.codigo_pedido}-${index}`}>
+                          <td>{order.codigo_projeto}</td>
+                          <td>{order.codigo_pedido}</td>
+                          <td>{order.nome_material}</td>
+                          <td>
+                            {order.valor_gasto.toLocaleString('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL',
+                            })}
+                          </td>
+                          <td>{order.data_pedida}</td>
+                          <td>{order.data_previsao}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={6} className="supplier-modal__empty">
+                          Nenhum pedido encontrado
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>
