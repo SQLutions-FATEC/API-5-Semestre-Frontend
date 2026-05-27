@@ -1,0 +1,446 @@
+@import '../../../../styles/variables';
+
+// ─────────────────────────────────────────
+// Backdrop
+// ─────────────────────────────────────────
+.supplier-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  backdrop-filter: blur(2px);
+}
+
+// ─────────────────────────────────────────
+// Outer: modal branco + ações externas lado a lado
+// ─────────────────────────────────────────
+.supplier-modal__outer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 920px;
+}
+
+// ─────────────────────────────────────────
+// Container branco
+// ─────────────────────────────────────────
+.supplier-modal__container {
+  flex: 1;
+  min-width: 0;
+  background-color: $bg-card;
+  border-radius: 16px;
+  box-shadow: $shadow-md, 0 20px 40px rgba(0, 0, 0, 0.12);
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+// ─────────────────────────────────────────
+// Ações externas (empilhadas verticalmente)
+// ─────────────────────────────────────────
+.supplier-modal__external-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  padding-top: 0.15rem;
+}
+
+// ─────────────────────────────────────────
+// Reliability icon
+// ─────────────────────────────────────────
+.supplier-modal__reliability {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background-color: $bg-card;
+
+  &--ok {
+    color: $color-success-text;
+    border: 1.5px solid $color-success-badge;
+  }
+
+  &--warning {
+    color: $color-warning-dark;
+    border: 1.5px solid $color-warning-text;
+  }
+
+  &--danger {
+    color: $color-danger-text;
+    border: 1.5px solid $color-danger-badge;
+  }
+}
+
+// ─────────────────────────────────────────
+// Close button
+// ─────────────────────────────────────────
+.supplier-modal__close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 10px;
+  border: 1px solid $border-default;
+  background-color: $bg-card;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: $transition-default;
+
+  &:hover {
+    background-color: $color-danger-bg;
+    color: $color-danger-text;
+    border-color: $color-danger-badge;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: $shadow-focus;
+  }
+}
+
+// ─────────────────────────────────────────
+// Header
+// ─────────────────────────────────────────
+.supplier-modal__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.supplier-modal__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.supplier-modal__label--inline {
+  text-transform: none;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.supplier-modal__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.supplier-modal__name {
+  font-family: $title-font;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.supplier-modal__code {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: $text-muted;
+  background-color: $bg-subtle;
+  border: 1px solid $border-default;
+  border-radius: 6px;
+  padding: 0.15rem 0.5rem;
+}
+
+.supplier-modal__status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--active {
+    background-color: $color-success-badge;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  }
+
+  &--inactive {
+    background-color: $text-muted;
+  }
+}
+
+// ─────────────────────────────────────────
+// Info Row — todos os 4 itens na mesma linha
+// ─────────────────────────────────────────
+.supplier-modal__info-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0.85rem;
+  flex-wrap: nowrap;
+
+  @media (max-width: 640px) {
+    flex-wrap: wrap;
+  }
+}
+
+.supplier-modal__info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.supplier-modal__info-block--location {
+  flex: 1;
+  min-width: 0;
+}
+
+.supplier-modal__category-badge {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $text-primary;
+  background-color: $bg-subtle;
+  border: 1px solid $border-default;
+  border-radius: 8px;
+  padding: 0.3rem 0.75rem;
+  white-space: nowrap;
+}
+
+.supplier-modal__location {
+  font-size: 0.88rem;
+  color: $text-primary;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.supplier-modal__separator {
+  color: $text-muted;
+  margin: 0 0.2rem;
+}
+
+// ─────────────────────────────────────────
+// Stat cards — lado a lado com categoria/cidade
+// ─────────────────────────────────────────
+.supplier-modal__stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  min-width: 110px;
+  text-align: center;
+  border: 1px solid $border-default;
+  flex-shrink: 0;
+
+  &--neutral {
+    background-color: $color-info-bg;
+    border-color: $color-info-border;
+  }
+
+  &--danger {
+    background-color: #fff5f5;
+    border-color: #fed7d7;
+  }
+}
+
+.supplier-modal__stat-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: $text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+  margin-bottom: 0.2rem;
+}
+
+.supplier-modal__stat-value {
+  font-size: 1.9rem;
+  font-weight: 300;
+  color: $color-info-text;
+  line-height: 1;
+
+  &--danger {
+    color: #c53030;
+  }
+}
+
+// ─────────────────────────────────────────
+// Orders section
+// ─────────────────────────────────────────
+.supplier-modal__orders-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-top: 1px solid $border-light;
+  padding-top: 1rem;
+}
+
+.supplier-modal__orders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.supplier-modal__orders-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: $text-secondary;
+  margin: 0;
+}
+
+// ─────────────────────────────────────────
+// Filters
+// ─────────────────────────────────────────
+.supplier-modal__filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.supplier-modal__filter-label {
+  font-size: 0.75rem;
+  color: $text-muted;
+  white-space: nowrap;
+}
+
+.supplier-modal__select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.supplier-modal__select {
+  appearance: none;
+  font-size: 0.8rem;
+  color: $text-secondary;
+  background-color: $bg-card;
+  border: 1px solid $border-default;
+  border-radius: 8px;
+  padding: 0.3rem 2rem 0.3rem 0.65rem;
+  cursor: pointer;
+  transition: $transition-default;
+
+  &:hover { border-color: $primary; }
+  &:focus-visible {
+    outline: none;
+    box-shadow: $shadow-focus;
+    border-color: $primary;
+  }
+}
+
+.supplier-modal__select-chevron {
+  position: absolute;
+  right: 0.5rem;
+  color: $text-muted;
+  pointer-events: none;
+}
+
+.supplier-modal__search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.supplier-modal__search-icon {
+  position: absolute;
+  left: 0.6rem;
+  color: $text-muted;
+  pointer-events: none;
+}
+
+.supplier-modal__search {
+  font-size: 0.8rem;
+  color: $text-primary;
+  background-color: $bg-card;
+  border: 1px solid $border-default;
+  border-radius: 8px;
+  padding: 0.3rem 0.65rem 0.3rem 2rem;
+  width: 200px;
+  transition: $transition-default;
+
+  &::placeholder { color: $text-muted; }
+  &:hover { border-color: $primary; }
+  &:focus-visible {
+    outline: none;
+    box-shadow: $shadow-focus;
+    border-color: $primary;
+  }
+}
+
+// ─────────────────────────────────────────
+// Table
+// ─────────────────────────────────────────
+.supplier-modal__table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid $border-default;
+}
+
+.supplier-modal__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+
+  thead tr {
+    background-color: $bg-subtle;
+    border-bottom: 2px solid $border-default;
+  }
+
+  th {
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: $text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.6rem 0.85rem;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid $border-light;
+    transition: background-color 0.15s ease;
+
+    &:last-child { border-bottom: none; }
+    &:hover { background-color: $bg-hover; }
+    &:nth-child(even) {
+      background-color: $bg-subtle;
+      &:hover { background-color: $bg-hover; }
+    }
+  }
+
+  td {
+    padding: 0.55rem 0.85rem;
+    color: $text-primary;
+    white-space: nowrap;
+  }
+}
+
+.supplier-modal__empty {
+  text-align: center;
+  color: $text-muted;
+  font-style: italic;
+  padding: 2rem !important;
+}

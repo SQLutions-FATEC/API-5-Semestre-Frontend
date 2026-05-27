@@ -31,3 +31,24 @@ export type PurchasesResponse = {
   tempo_medio_entrega_dias: number;
   pedidos: PurchaseOrderData[];
 };
+
+export type SupplierPreviousOrder = {
+  codigo_projeto: string;
+  codigo_pedido: string;
+  nome_material: string;
+  valor_gasto: number;
+  data_pedida: string;
+  data_previsao: string;
+};
+
+export type SupplierInfo = {
+  codigo_fornecedor: string;
+  nome_fornecedor: string;
+  categoria: string;
+  cidade: string;
+  regiao: string;
+  ativo: boolean;
+  total_pedidos: number;
+  total_atrasos: number;
+  pedidos_anteriores: SupplierPreviousOrder[];
+};
