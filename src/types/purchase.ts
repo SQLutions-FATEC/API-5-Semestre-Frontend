@@ -41,6 +41,24 @@ export type SupplierPreviousOrder = {
   data_previsao: string;
 };
 
+export type SupplierOrdersItem = {
+  codigo_projeto: string;
+  codigo_do_pedido: string;
+  nome_do_material: string;
+  valor_gasto: number;
+  data_pedida: string;
+  data_previsao: string;
+  is_atrasado: boolean;
+  status: string;
+};
+
+export type SupplierOrdersResponse = {
+  fornecedor: string;
+  quantidade_pedidos_totais: number;
+  quantidade_atrasos: number;
+  pedidos: SupplierOrdersItem[];
+};
+
 export type SupplierInfo = {
   id_fornecedor?: number;
   codigo_fornecedor: string;
