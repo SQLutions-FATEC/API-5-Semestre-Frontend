@@ -145,10 +145,10 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
       onClick={handleBackdropClick}
       onKeyDown={handleBackdropKeyDown}
     >
-      {/* Fix: <dialog> instead of role="dialog" for proper accessibility */}
-      <dialog
-        open
+      <div
         className="supplier-modal__outer"
+        role="dialog"
+        aria-modal="true"
         aria-label={`Informações do fornecedor ${supplier.nome_fornecedor}`}
       >
         {/* Container branco */}
@@ -320,7 +320,7 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
             </div>
           </div>
         </div>
-      </dialog>
+      </div>
     </div>
   );
 };
