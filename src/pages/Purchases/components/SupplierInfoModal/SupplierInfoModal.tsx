@@ -7,9 +7,14 @@ import './SupplierInfoModal.scss';
 
 type ReliabilityStatus = 'ok' | 'warning' | 'danger';
 
-const getReliabilityStatus = (totalOrders: number, totalDelays: number): ReliabilityStatus => {
-  if (totalOrders === 0) return 'ok';
-  const delayRate = totalDelays / totalOrders;
+const getReliabilityStatus = (supplier: SupplierInfo): ReliabilityStatus => {
+  if (supplier.ativo === false) return 'danger';
+  if (supplier.status && supplier.status.toLowerCase() !== 'ativo') return 'danger';
+  if (typeof supplier.total_pedidos !== 'number' || typeof supplier.total_atrasos !== 'number') {
+    return 'ok';
+  }
+  if (supplier.total_pedidos === 0) return 'ok';
+  const delayRate = supplier.total_atrasos / supplier.total_pedidos;
   if (delayRate >= 0.4) return 'danger';
   if (delayRate >= 0.2) return 'warning';
   return 'ok';
@@ -59,15 +64,15 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
   const [search, setSearch] = useState('');
   const [projectFilter, setProjectFilter] = useState('');
 
-  const reliability = getReliabilityStatus(supplier.total_pedidos, supplier.total_atrasos);
+  const reliability = getReliabilityStatus(supplier);
 
   const projectOptions = useMemo(() => {
-    const codes = supplier.pedidos_anteriores.map((p) => p.codigo_projeto);
+    const codes = (supplier.pedidos_anteriores ?? []).map((p) => p.codigo_projeto);
     return Array.from(new Set(codes));
   }, [supplier.pedidos_anteriores]);
 
   const filteredOrders = useMemo<SupplierPreviousOrder[]>(() => {
-    return supplier.pedidos_anteriores.filter((order) => {
+    return (supplier.pedidos_anteriores ?? []).filter((order) => {
       const matchesSearch =
         search === '' ||
         order.codigo_projeto.toLowerCase().includes(search.toLowerCase()) ||
@@ -109,13 +114,16 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
               <span className="supplier-modal__code">{supplier.codigo_fornecedor}</span>
               <span
                 className={`supplier-modal__status-dot ${
-                  supplier.ativo
+                  (supplier.ativo ?? supplier.status?.toLowerCase() === 'ativo')
                     ? 'supplier-modal__status-dot--active'
                     : 'supplier-modal__status-dot--inactive'
                 }`}
-                title={supplier.ativo ? 'Ativo' : 'Inativo'}
-                aria-label={supplier.ativo ? 'Fornecedor ativo' : 'Fornecedor inativo'}
+                title={supplier.status ?? (supplier.ativo ? 'Ativo' : 'Inativo')}
+                aria-label={
+                  supplier.status ?? (supplier.ativo ? 'Fornecedor ativo' : 'Fornecedor inativo')
+                }
               />
+              {supplier.status && <span className="supplier-modal__code">{supplier.status}</span>}
             </div>
           </div>
 
@@ -132,26 +140,36 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
               <span className="supplier-modal__label">
                 <MapPin size={12} /> Cidade
               </span>
-              {/* Fix: remove ambiguous whitespace — use CSS gap instead of {' '} */}
               <span className="supplier-modal__location">
                 {supplier.cidade}
-                <span className="supplier-modal__separator">–</span>
-                <span className="supplier-modal__label supplier-modal__label--inline">Região</span>
-                {supplier.regiao}
+                {supplier.regiao && (
+                  <>
+                    <span className="supplier-modal__separator">–</span>
+                    <span className="supplier-modal__label supplier-modal__label--inline">
+                      Região
+                    </span>
+                    {supplier.regiao}
+                  </>
+                )}
               </span>
             </div>
 
-            <div className="supplier-modal__stat-card supplier-modal__stat-card--neutral">
-              <span className="supplier-modal__stat-label">Pedidos deste fornecedor</span>
-              <span className="supplier-modal__stat-value">{supplier.total_pedidos}</span>
-            </div>
+            {typeof supplier.total_pedidos === 'number' &&
+              typeof supplier.total_atrasos === 'number' && (
+                <>
+                  <div className="supplier-modal__stat-card supplier-modal__stat-card--neutral">
+                    <span className="supplier-modal__stat-label">Pedidos deste fornecedor</span>
+                    <span className="supplier-modal__stat-value">{supplier.total_pedidos}</span>
+                  </div>
 
-            <div className="supplier-modal__stat-card supplier-modal__stat-card--danger">
-              <span className="supplier-modal__stat-label">Atrasos por este fornecedor</span>
-              <span className="supplier-modal__stat-value supplier-modal__stat-value--danger">
-                {supplier.total_atrasos}
-              </span>
-            </div>
+                  <div className="supplier-modal__stat-card supplier-modal__stat-card--danger">
+                    <span className="supplier-modal__stat-label">Atrasos por este fornecedor</span>
+                    <span className="supplier-modal__stat-value supplier-modal__stat-value--danger">
+                      {supplier.total_atrasos}
+                    </span>
+                  </div>
+                </>
+              )}
           </div>
 
           {/* Previous Orders */}
