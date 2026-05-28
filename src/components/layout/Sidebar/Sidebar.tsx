@@ -1,5 +1,13 @@
 import { Link, useLocation, useMatch } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight, Package, Upload, Building2 } from 'lucide-react';
+import {
+  LayoutDashboard,
+  ShoppingCart,
+  ChevronLeft,
+  ChevronRight,
+  Package,
+  Upload,
+  Building2,
+} from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Snackbar, Alert } from '@mui/material';
 import './Sidebar.scss';
@@ -19,39 +27,44 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
 
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const [toastSeverity, setToastSeverity] = useState<'error' | 'success' | 'info' | 'warning'>('error');
+  const [toastSeverity, setToastSeverity] = useState<'error' | 'success' | 'info' | 'warning'>(
+    'error'
+  );
 
   const navItems =
     codigo_projeto && programa_cod
       ? [
-        {
-          name: 'Visão Geral',
-          path: `/programas/${programa_cod}/projetos/${codigo_projeto}`,
-          icon: LayoutDashboard,
-        },
-        {
-          name: 'Compras',
-          path: `/programas/${programa_cod}/projetos/${codigo_projeto}/compras`,
-          icon: ShoppingCart,
-        },
-        {
-          name: 'Estoque',
-          path: `/programas/${programa_cod}/projetos/${codigo_projeto}/estoque`,
-          icon: Package,
-        },
-        {
-          name: 'Fornecedores',
-          path: `/programas/${programa_cod}/projetos/${codigo_projeto}/fornecedores`,
-          icon: Building2,
-        },
-      ]
+          {
+            name: 'Visão Geral',
+            path: `/programas/${programa_cod}/projetos/${codigo_projeto}`,
+            icon: LayoutDashboard,
+          },
+          {
+            name: 'Compras',
+            path: `/programas/${programa_cod}/projetos/${codigo_projeto}/compras`,
+            icon: ShoppingCart,
+          },
+          {
+            name: 'Estoque',
+            path: `/programas/${programa_cod}/projetos/${codigo_projeto}/estoque`,
+            icon: Package,
+          },
+          {
+            name: 'Fornecedores',
+            path: `/programas/${programa_cod}/projetos/${codigo_projeto}/fornecedores`,
+            icon: Building2,
+          },
+        ]
       : [];
 
   const handleImportClick = () => {
     fileInputRef.current?.click();
   };
 
-  const showToast = (message: string, severity: 'error' | 'success' | 'info' | 'warning' = 'error') => {
+  const showToast = (
+    message: string,
+    severity: 'error' | 'success' | 'info' | 'warning' = 'error'
+  ) => {
     setToastMessage(message);
     setToastSeverity(severity);
     setToastOpen(true);
@@ -69,7 +82,7 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
     if (!file) return;
 
     if (!file.name.toLowerCase().endsWith('.csv')) {
-      showToast("Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.");
+      showToast('Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.');
       if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
@@ -81,14 +94,13 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
       // const response = await api.post('/upload-csv', formData);
 
       console.log('Arquivo pronto para envio:', file.name);
-
     } catch (error: any) {
-      const errorMessage = error?.message || "Erro desconhecido";
+      const errorMessage = error?.message || 'Erro desconhecido';
 
-      if (errorMessage.includes("formato incorreto")) {
-        showToast("Erro na importação: Os dados estão no formato incorreto");
-      } else if (errorMessage.includes("Células vazias")) {
-        showToast("Erro na importação: Células vazias detectadas no documento");
+      if (errorMessage.includes('formato incorreto')) {
+        showToast('Erro na importação: Os dados estão no formato incorreto');
+      } else if (errorMessage.includes('Células vazias')) {
+        showToast('Erro na importação: Células vazias detectadas no documento');
       } else {
         showToast(errorMessage);
       }
@@ -132,7 +144,14 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
             onClick={handleImportClick}
             className={`nav-item import-btn ${isCollapsed ? 'centered' : ''}`}
             title={isCollapsed ? 'Importar CSV' : undefined}
-            style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: 'inherit' }}
+            style={{
+              width: '100%',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              textAlign: 'left',
+              color: 'inherit',
+            }}
           >
             <Upload size={20} className="icon" />
             {!isCollapsed && <span className="label">Importar planilha</span>}

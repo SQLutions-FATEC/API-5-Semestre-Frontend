@@ -81,8 +81,8 @@ export default function ProjectOverviewHeader({
   return (
     <div className="unified-project-header">
       <div className="header-top-navigation">
-        <button 
-          className="back-to-projects-button" 
+        <button
+          className="back-to-projects-button"
           onClick={() => navigate(`/programas/${programCode}/projetos`)}
           title="Voltar para a lista de projetos"
         >
