@@ -180,6 +180,11 @@
   &--inactive {
     background-color: $text-muted;
   }
+
+  &--blocked {
+    background-color: $color-danger-badge;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  }
 }
 
 // ─────────────────────────────────────────
@@ -342,7 +347,10 @@
   cursor: pointer;
   transition: $transition-default;
 
-  &:hover { border-color: $primary; }
+  &:hover {
+    border-color: $primary;
+  }
+
   &:focus-visible {
     outline: none;
     box-shadow: $shadow-focus;
@@ -380,8 +388,14 @@
   width: 200px;
   transition: $transition-default;
 
-  &::placeholder { color: $text-muted; }
-  &:hover { border-color: $primary; }
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:hover {
+    border-color: $primary;
+  }
+
   &:focus-visible {
     outline: none;
     box-shadow: $shadow-focus;
@@ -423,11 +437,20 @@
     border-bottom: 1px solid $border-light;
     transition: background-color 0.15s ease;
 
-    &:last-child { border-bottom: none; }
-    &:hover { background-color: $bg-hover; }
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: $bg-hover;
+    }
+
     &:nth-child(even) {
       background-color: $bg-subtle;
-      &:hover { background-color: $bg-hover; }
+
+      &:hover {
+        background-color: $bg-hover;
+      }
     }
   }
 
