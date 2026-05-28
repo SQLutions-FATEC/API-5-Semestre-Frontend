@@ -56,6 +56,59 @@ export default function SuppliersScreen() {
     void loadSuppliers(filters);
   };
 
+  const renderSupplierContent = () => {
+    if (isLoading) {
+      return <p>Carregando fornecedores...</p>;
+    }
+
+    if (suppliers.length === 0) {
+      return <p>Nenhum fornecedor encontrado.</p>;
+    }
+
+    return (
+      <section className="suppliers-grid">
+        {suppliers.map((supplier, index) => (
+          <button
+            key={supplier.codigo_fornecedor}
+            type="button"
+            className="supplier-card"
+            style={{ animationDelay: `${index * 0.05}s` }}
+            onClick={() => setSelectedSupplier(supplier)}
+            aria-label={`Ver detalhes do fornecedor ${supplier.nome_fornecedor}`}
+          >
+            <div className={`status-indicator status-${getStatusColor(supplier)}`} />
+
+            <div className="supplier-card-header">
+              <div className="supplier-label">
+                <Building2 size={12} />
+                <span>Nome do fornecedor</span>
+              </div>
+              <h3 className="supplier-name">{supplier.nome_fornecedor}</h3>
+            </div>
+
+            <div className="supplier-card-body">
+              <div className="info-row">
+                <div className="info-label">
+                  <Package size={12} />
+                  <span>Categoria</span>
+                </div>
+                <p className="info-value">{supplier.categoria}</p>
+              </div>
+
+              <div className="info-row">
+                <div className="info-label">
+                  <MapPin size={12} />
+                  <span>Cidade</span>
+                </div>
+                <p className="info-value">{supplier.cidade}</p>
+              </div>
+            </div>
+          </button>
+        ))}
+      </section>
+    );
+  };
+
   return (
     <ProjectLayout pageClassName="suppliers-page">
       {() => (
@@ -170,52 +223,7 @@ export default function SuppliersScreen() {
 
           {error && <p>{error}</p>}
 
-          {isLoading ? (
-            <p>Carregando fornecedores...</p>
-          ) : suppliers.length > 0 ? (
-            <section className="suppliers-grid">
-              {suppliers.map((supplier, index) => (
-                <button
-                  key={supplier.codigo_fornecedor}
-                  type="button"
-                  className="supplier-card"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                  onClick={() => setSelectedSupplier(supplier)}
-                  aria-label={`Ver detalhes do fornecedor ${supplier.nome_fornecedor}`}
-                >
-                  <div className={`status-indicator status-${getStatusColor(supplier)}`} />
-
-                  <div className="supplier-card-header">
-                    <div className="supplier-label">
-                      <Building2 size={12} />
-                      <span>Nome do fornecedor</span>
-                    </div>
-                    <h3 className="supplier-name">{supplier.nome_fornecedor}</h3>
-                  </div>
-
-                  <div className="supplier-card-body">
-                    <div className="info-row">
-                      <div className="info-label">
-                        <Package size={12} />
-                        <span>Categoria</span>
-                      </div>
-                      <p className="info-value">{supplier.categoria}</p>
-                    </div>
-
-                    <div className="info-row">
-                      <div className="info-label">
-                        <MapPin size={12} />
-                        <span>Cidade</span>
-                      </div>
-                      <p className="info-value">{supplier.cidade}</p>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </section>
-          ) : (
-            <p>Nenhum fornecedor encontrado.</p>
-          )}
+          {renderSupplierContent()}
 
           {selectedSupplier && (
             <SupplierInfoModal
