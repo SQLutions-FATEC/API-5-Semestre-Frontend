@@ -1,88 +1,112 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProjectLayout from '../../components/ProjectLayout/ProjectLayout';
 import { Building2, Package, MapPin, Network, Monitor, ChevronDown } from 'lucide-react';
 import SupplierInfoModal from '../Purchases/components/SupplierInfoModal/SupplierInfoModal';
-import type { SupplierInfo } from '../../types/purchase';
+import type { SupplierInfo, SupplierListFilters } from '../../types/purchase';
+import { supplierService } from '../../services/supplierService';
 import './SuppliersScreen.scss';
 
-// MOCK DATA for suppliers
-const makeMockSupplier = (
-  id: number,
-  ativo: boolean,
-  total_pedidos: number,
-  total_atrasos: number,
-  pedidos_anteriores: SupplierInfo['pedidos_anteriores'] = []
-): SupplierInfo => ({
-  codigo_fornecedor: `FOR00${id}`,
-  nome_fornecedor: 'RTech Distribuidora 1 Ltda',
-  categoria: 'Materiais de Solda',
-  cidade: 'Jundiaí',
-  regiao: 'SP',
-  ativo,
-  total_pedidos,
-  total_atrasos,
-  pedidos_anteriores,
-});
+const INITIAL_FILTERS: SupplierListFilters = {
+  fornecedor_nome: '',
+  fornecedor_cidade: '',
+  programa_nome: '',
+  projeto_nome: '',
+  categoria: '',
+};
 
-const MOCK_SUPPLIERS: SupplierInfo[] = [
-  makeMockSupplier(1, true, 5, 1, [
-    {
-      codigo_projeto: 'PRJ001',
-      codigo_pedido: 'PC0001',
-      nome_material: 'Capacitor Cerâmico 10uF 0603',
-      valor_gasto: 16532.28,
-      data_pedida: '2024-11-12',
-      data_previsao: '2024-12-21',
-    },
-    {
-      codigo_projeto: 'PRJ002',
-      codigo_pedido: 'PC0002',
-      nome_material: 'Capacitor Cerâmico 10uF 0604',
-      valor_gasto: 2687.16,
-      data_pedida: '2022-08-24',
-      data_previsao: '2022-09-19',
-    },
-    {
-      codigo_projeto: 'PRJ003',
-      codigo_pedido: 'PC0003',
-      nome_material: 'Capacitor Cerâmico 1nF 0402',
-      valor_gasto: 278.64,
-      data_pedida: '2022-04-14',
-      data_previsao: '2022-05-27',
-    },
-  ]),
-  makeMockSupplier(2, true, 10, 3),
-  makeMockSupplier(3, true, 5, 0),
-  makeMockSupplier(4, true, 5, 0),
-  makeMockSupplier(5, false, 5, 2),
-  makeMockSupplier(6, false, 5, 2),
-  makeMockSupplier(7, true, 10, 3),
-  makeMockSupplier(8, true, 5, 0),
-  makeMockSupplier(9, true, 5, 0),
-];
-
-// Mapeia o status do ativo para a cor da bolinha original
 const getStatusColor = (supplier: SupplierInfo): string => {
-  if (!supplier.ativo) return 'red';
-  const delayRate =
-    supplier.total_pedidos === 0 ? 0 : supplier.total_atrasos / supplier.total_pedidos;
-  if (delayRate >= 0.4) return 'red';
-  if (delayRate >= 0.2) return 'yellow';
+  const status = supplier.status?.trim().toLowerCase();
+  if (status && status !== 'ativo' && status !== 'active') return 'red';
+  if (supplier.ativo === false) return 'red';
   return 'green';
 };
 
 export default function SuppliersScreen() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useState({
-    materialType: '',
-    city: '',
-    program: '',
-    project: '',
-  });
+  const [filters, setFilters] = useState<SupplierListFilters>(INITIAL_FILTERS);
+  const [suppliers, setSuppliers] = useState<SupplierInfo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierInfo | null>(null);
 
-  const handleFilterChange = (field: string, value: string) => {
+  const handleFilterChange = (field: keyof SupplierListFilters, value: string) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const loadSuppliers = async (nextFilters: SupplierListFilters = filters) => {
+    setError('');
+    setIsSubmitting(true);
+    try {
+      const data = await supplierService.getSuppliers(nextFilters);
+      setSuppliers(data);
+    } catch {
+      setSuppliers([]);
+      setError('Não foi possível carregar os fornecedores.');
+    } finally {
+      setIsSubmitting(false);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadSuppliers(INITIAL_FILTERS);
+  }, []);
+
+  const handleApplyFilters = () => {
+    void loadSuppliers(filters);
+  };
+
+  const renderSupplierContent = () => {
+    if (isLoading) {
+      return <p>Carregando fornecedores...</p>;
+    }
+
+    if (suppliers.length === 0) {
+      return <p>Nenhum fornecedor encontrado.</p>;
+    }
+
+    return (
+      <section className="suppliers-grid">
+        {suppliers.map((supplier, index) => (
+          <button
+            key={supplier.codigo_fornecedor}
+            type="button"
+            className="supplier-card"
+            style={{ animationDelay: `${index * 0.05}s` }}
+            onClick={() => setSelectedSupplier(supplier)}
+            aria-label={`Ver detalhes do fornecedor ${supplier.nome_fornecedor}`}
+          >
+            <div className={`status-indicator status-${getStatusColor(supplier)}`} />
+
+            <div className="supplier-card-header">
+              <div className="supplier-label">
+                <Building2 size={12} />
+                <span>Nome do fornecedor</span>
+              </div>
+              <h3 className="supplier-name">{supplier.nome_fornecedor}</h3>
+            </div>
+
+            <div className="supplier-card-body">
+              <div className="info-row">
+                <div className="info-label">
+                  <Package size={12} />
+                  <span>Categoria</span>
+                </div>
+                <p className="info-value">{supplier.categoria}</p>
+              </div>
+
+              <div className="info-row">
+                <div className="info-label">
+                  <MapPin size={12} />
+                  <span>Cidade</span>
+                </div>
+                <p className="info-value">{supplier.cidade}</p>
+              </div>
+            </div>
+          </button>
+        ))}
+      </section>
+    );
   };
 
   return (
@@ -106,8 +130,8 @@ export default function SuppliersScreen() {
                     <input
                       type="text"
                       placeholder="Pesquisar fornecedores..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      value={filters.fornecedor_nome}
+                      onChange={(e) => handleFilterChange('fornecedor_nome', e.target.value)}
                       className="filter-input text-input"
                     />
                   </div>
@@ -122,8 +146,8 @@ export default function SuppliersScreen() {
                     <input
                       type="text"
                       placeholder="Filtrar por categorias..."
-                      value={filters.materialType}
-                      onChange={(e) => handleFilterChange('materialType', e.target.value)}
+                      value={filters.categoria}
+                      onChange={(e) => handleFilterChange('categoria', e.target.value)}
                       className="filter-input"
                     />
                     <ChevronDown size={16} className="select-icon" />
@@ -139,8 +163,8 @@ export default function SuppliersScreen() {
                     <input
                       type="text"
                       placeholder="Filtrar por cidades..."
-                      value={filters.city}
-                      onChange={(e) => handleFilterChange('city', e.target.value)}
+                      value={filters.fornecedor_cidade}
+                      onChange={(e) => handleFilterChange('fornecedor_cidade', e.target.value)}
                       className="filter-input"
                     />
                     <ChevronDown size={16} className="select-icon" />
@@ -158,8 +182,8 @@ export default function SuppliersScreen() {
                     <input
                       type="text"
                       placeholder="Filtrar por programas..."
-                      value={filters.program}
-                      onChange={(e) => handleFilterChange('program', e.target.value)}
+                      value={filters.programa_nome}
+                      onChange={(e) => handleFilterChange('programa_nome', e.target.value)}
                       className="filter-input"
                     />
                     <ChevronDown size={16} className="select-icon" />
@@ -175,8 +199,8 @@ export default function SuppliersScreen() {
                     <input
                       type="text"
                       placeholder="Filtrar por projetos..."
-                      value={filters.project}
-                      onChange={(e) => handleFilterChange('project', e.target.value)}
+                      value={filters.projeto_nome}
+                      onChange={(e) => handleFilterChange('projeto_nome', e.target.value)}
                       className="filter-input"
                     />
                     <ChevronDown size={16} className="select-icon" />
@@ -184,51 +208,22 @@ export default function SuppliersScreen() {
                 </div>
 
                 <div className="filter-action">
-                  <button className="apply-filters-btn">Aplicar Filtros</button>
+                  <button
+                    type="button"
+                    className="apply-filters-btn"
+                    onClick={handleApplyFilters}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Aplicando...' : 'Aplicar Filtros'}
+                  </button>
                 </div>
               </div>
             </div>
           </section>
 
-          <section className="suppliers-grid">
-            {MOCK_SUPPLIERS.map((supplier, index) => (
-              <button
-                key={supplier.codigo_fornecedor}
-                className="supplier-card"
-                style={{ animationDelay: `${index * 0.05}s` }}
-                onClick={() => setSelectedSupplier(supplier)}
-                aria-label={`Ver detalhes do fornecedor ${supplier.nome_fornecedor}`}
-              >
-                <div className={`status-indicator status-${getStatusColor(supplier)}`} />
+          {error && <p>{error}</p>}
 
-                <div className="supplier-card-header">
-                  <div className="supplier-label">
-                    <Building2 size={12} />
-                    <span>Nome do fornecedor</span>
-                  </div>
-                  <h3 className="supplier-name">{supplier.nome_fornecedor}</h3>
-                </div>
-
-                <div className="supplier-card-body">
-                  <div className="info-row">
-                    <div className="info-label">
-                      <Package size={12} />
-                      <span>Categoria</span>
-                    </div>
-                    <p className="info-value">{supplier.categoria}</p>
-                  </div>
-
-                  <div className="info-row">
-                    <div className="info-label">
-                      <MapPin size={12} />
-                      <span>Cidade</span>
-                    </div>
-                    <p className="info-value">{supplier.cidade}</p>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </section>
+          {renderSupplierContent()}
 
           {selectedSupplier && (
             <SupplierInfoModal

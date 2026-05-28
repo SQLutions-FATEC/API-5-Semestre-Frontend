@@ -57,7 +57,7 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
     setToastOpen(true);
   };
 
-  const handleCloseToast = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleCloseToast = (_event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
