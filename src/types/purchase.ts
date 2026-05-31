@@ -62,6 +62,15 @@ export type SupplierDetail = {
   status: string;
 };
 
+export type SupplierListItem = {
+  id_fornecedor: number;
+  codigo_fornecedor: string;
+  razao_social: string;
+  cidade: string;
+  categoria: string;
+  status: string;
+};
+
 export type SupplierOrder = {
   codigo_projeto: string;
   codigo_do_pedido: string;
