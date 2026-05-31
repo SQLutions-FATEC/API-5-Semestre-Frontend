@@ -164,6 +164,7 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplierId, onClo
                 title={`Status: ${fornecedorInfo.status}`}
                 aria-label={`Status do fornecedor: ${fornecedorInfo.status}`}
               />
+              {supplier.status && <span className="supplier-modal__code">{supplier.status}</span>}
             </div>
           </div>
 
@@ -282,9 +283,34 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplierId, onClo
                         Nenhum pedido encontrado.
                       </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filteredOrders.length > 0 ? (
+                      filteredOrders.map((order, index) => (
+                        <tr key={`${order.codigo_pedido}-${index}`}>
+                          <td>{order.codigo_projeto}</td>
+                          <td>{order.codigo_pedido}</td>
+                          <td>{order.nome_material}</td>
+                          <td>
+                            {order.valor_gasto.toLocaleString('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL',
+                            })}
+                          </td>
+                          <td>{order.data_pedida}</td>
+                          <td>{order.data_previsao}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={6} className="supplier-modal__empty">
+                          Nenhum pedido encontrado
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>

@@ -48,7 +48,7 @@ export default function SuppliersScreen() {
     fetchSuppliers();
   }, []);
 
-  const handleFilterChange = (field: string, value: string) => {
+  const handleFilterChange = (field: keyof SupplierListFilters, value: string) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -77,8 +77,8 @@ export default function SuppliersScreen() {
                     <input
                       type="text"
                       placeholder="Pesquisar fornecedores..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      value={filters.fornecedor_nome}
+                      onChange={(e) => handleFilterChange('fornecedor_nome', e.target.value)}
                       className="filter-input text-input"
                     />
                   </div>
@@ -93,8 +93,8 @@ export default function SuppliersScreen() {
                     <input
                       type="text"
                       placeholder="Filtrar por categorias..."
-                      value={filters.materialType}
-                      onChange={(e) => handleFilterChange('materialType', e.target.value)}
+                      value={filters.categoria}
+                      onChange={(e) => handleFilterChange('categoria', e.target.value)}
                       className="filter-input"
                     />
                     <ChevronDown size={16} className="select-icon" />
@@ -110,8 +110,8 @@ export default function SuppliersScreen() {
                     <input
                       type="text"
                       placeholder="Filtrar por cidades..."
-                      value={filters.city}
-                      onChange={(e) => handleFilterChange('city', e.target.value)}
+                      value={filters.fornecedor_cidade}
+                      onChange={(e) => handleFilterChange('fornecedor_cidade', e.target.value)}
                       className="filter-input"
                     />
                     <ChevronDown size={16} className="select-icon" />
@@ -129,8 +129,8 @@ export default function SuppliersScreen() {
                     <input
                       type="text"
                       placeholder="Filtrar por programas..."
-                      value={filters.program}
-                      onChange={(e) => handleFilterChange('program', e.target.value)}
+                      value={filters.programa_nome}
+                      onChange={(e) => handleFilterChange('programa_nome', e.target.value)}
                       className="filter-input"
                     />
                     <ChevronDown size={16} className="select-icon" />
@@ -146,8 +146,8 @@ export default function SuppliersScreen() {
                     <input
                       type="text"
                       placeholder="Filtrar por projetos..."
-                      value={filters.project}
-                      onChange={(e) => handleFilterChange('project', e.target.value)}
+                      value={filters.projeto_nome}
+                      onChange={(e) => handleFilterChange('projeto_nome', e.target.value)}
                       className="filter-input"
                     />
                     <ChevronDown size={16} className="select-icon" />
