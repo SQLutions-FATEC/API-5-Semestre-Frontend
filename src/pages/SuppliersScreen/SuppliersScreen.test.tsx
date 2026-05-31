@@ -1,8 +1,8 @@
-import { render, fireEvent, screen, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import SuppliersScreen from './SuppliersScreen';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { supplierService } from '../../services/supplierService';
+import SuppliersScreen from './SuppliersScreen';
 
 // Mock do ProjectLayout para evitar problemas com dependências internas dele
 vi.mock('../../components/ProjectLayout/ProjectLayout', () => ({
@@ -13,19 +13,21 @@ vi.mock('../../components/ProjectLayout/ProjectLayout', () => ({
   ),
 }));
 
+// 1. CORREÇÃO: Mockando a função correta 'listSuppliers'
 vi.mock('../../services/supplierService', () => ({
   supplierService: {
-    getSuppliers: vi.fn(),
+    listSuppliers: vi.fn(),
   },
 }));
 
-const mockedGetSuppliers = vi.mocked(supplierService.getSuppliers);
+const mockedListSuppliers = vi.mocked(supplierService.listSuppliers);
 
+// 2. CORREÇÃO: Usando 'razao_social' para bater com o SupplierListItem do backend
 const suppliers = [
   {
     id_fornecedor: 1,
     codigo_fornecedor: 'F001',
-    nome_fornecedor: 'RTech Distribuidora 1 Ltda',
+    razao_social: 'RTech Distribuidora 1 Ltda',
     categoria: 'Materiais de Solda',
     cidade: 'Jundiaí',
     status: 'Ativo',
@@ -34,7 +36,7 @@ const suppliers = [
   {
     id_fornecedor: 2,
     codigo_fornecedor: 'F002',
-    nome_fornecedor: 'Tech Corp Eletrônicos',
+    razao_social: 'Tech Corp Eletrônicos',
     categoria: 'Eletrônica',
     cidade: 'São Paulo',
     status: 'Inativo',
@@ -43,7 +45,8 @@ const suppliers = [
 ];
 
 beforeEach(() => {
-  mockedGetSuppliers.mockResolvedValue(suppliers as never);
+  vi.clearAllMocks();
+  mockedListSuppliers.mockResolvedValue(suppliers as never);
 });
 
 const renderWithRouter = (
@@ -66,7 +69,7 @@ describe('SuppliersScreen', () => {
     expect(screen.getByText('Fornecedores')).toBeTruthy();
 
     await waitFor(() =>
-      expect(mockedGetSuppliers).toHaveBeenCalledWith({
+      expect(mockedListSuppliers).toHaveBeenCalledWith({
         fornecedor_nome: '',
         fornecedor_cidade: '',
         programa_nome: '',
@@ -83,7 +86,7 @@ describe('SuppliersScreen', () => {
 
     await screen.findByText('RTech Distribuidora 1 Ltda');
 
-    const callsBeforeApply = mockedGetSuppliers.mock.calls.length;
+    const callsBeforeApply = mockedListSuppliers.mock.calls.length;
 
     fireEvent.change(screen.getByPlaceholderText('Pesquisar fornecedores...'), {
       target: { value: 'RTech' },
@@ -104,10 +107,10 @@ describe('SuppliersScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Aplicar Filtros' }));
 
     await waitFor(() =>
-      expect(mockedGetSuppliers.mock.calls.length).toBeGreaterThan(callsBeforeApply)
+      expect(mockedListSuppliers.mock.calls.length).toBeGreaterThan(callsBeforeApply)
     );
 
-    expect(mockedGetSuppliers).toHaveBeenLastCalledWith({
+    expect(mockedListSuppliers).toHaveBeenLastCalledWith({
       fornecedor_nome: 'RTech',
       categoria: 'Solda',
       fornecedor_cidade: 'Jundiaí',
