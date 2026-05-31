@@ -85,7 +85,7 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         },
       });
 
-      if (response.data && response.data.mensagem) {
+      if (response.data?.mensagem) {
         showToast(response.data.mensagem, 'success');
       }
 
