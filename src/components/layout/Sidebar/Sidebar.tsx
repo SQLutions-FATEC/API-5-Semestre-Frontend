@@ -2,6 +2,7 @@ import { Link, useLocation, useMatch } from 'react-router-dom';
 import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight, Package, Upload, Building2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Snackbar, Alert } from '@mui/material';
+import { api } from '../../../services/api';
 import './Sidebar.scss';
 
 interface SidebarProps {
@@ -75,15 +76,21 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
     }
 
     try {
-      // Simulação de chamada ao backend
-      // const formData = new FormData();
-      // formData.append('file', file);
-      // const response = await api.post('/upload-csv', formData);
+      const formData = new FormData();
+      formData.append('file', file);
 
-      console.log('Arquivo pronto para envio:', file.name);
+      const response = await api.post('/importar_dados/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data && response.data.mensagem) {
+        showToast(response.data.mensagem, 'success');
+      }
 
     } catch (error: any) {
-      const errorMessage = error?.message || "Erro desconhecido";
+      const errorMessage = error?.response?.data?.erro || error?.message || "Erro desconhecido";
 
       if (errorMessage.includes("formato incorreto")) {
         showToast("Erro na importação: Os dados estão no formato incorreto");
