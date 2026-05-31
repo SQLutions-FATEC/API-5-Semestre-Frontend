@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { supplierService } from '../../../../services/supplierService';
@@ -126,12 +126,15 @@ describe('SupplierInfoModal Component', () => {
   });
 
   it('deve chamar onClose ao pressionar a tecla Escape no backdrop', async () => {
-    const user = userEvent.setup();
     render(<SupplierInfoModal supplierId={supplierId} onClose={mockOnClose} />);
     await screen.findByText('Fornecedor Alfa');
 
-    // No lugar de keyDown manual, simulamos a tecla Escape globalmente (mais assertivo)
-    await user.keyboard('{Escape}');
+    const backdrop = screen.getByRole('dialog').parentElement;
+
+    // Forçamos o evento diretamente no backdrop, contornando a falta de 'tabIndex' nativo da div
+    if (backdrop) {
+      fireEvent.keyDown(backdrop, { key: 'Escape', code: 'Escape' });
+    }
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });

@@ -1,27 +1,37 @@
-import { useState, useEffect } from 'react';
+import { Building2, ChevronDown, MapPin, Monitor, Network, Package } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import ProjectLayout from '../../components/ProjectLayout/ProjectLayout';
-import { Building2, Package, MapPin, Network, Monitor, ChevronDown } from 'lucide-react';
-import SupplierInfoModal from '../Purchases/components/SupplierInfoModal/SupplierInfoModal';
 import { supplierService } from '../../services/supplierService';
 import type { SupplierListItem } from '../../types/purchase';
+import SupplierInfoModal from '../Purchases/components/SupplierInfoModal/SupplierInfoModal';
 import './SuppliersScreen.scss';
 
-// Mapeia o status do backend para a cor da bolinha
+// Tipagem correta para o estado de filtros
+interface SupplierListFilters {
+  fornecedor_nome: string;
+  categoria: string;
+  fornecedor_cidade: string;
+  programa_nome: string;
+  projeto_nome: string;
+}
+
 const getStatusColor = (status: string): string => {
   const statusLower = status?.toLowerCase() || '';
   if (statusLower === 'ativo') return 'green';
   if (statusLower === 'bloqueado') return 'red';
-  return 'yellow'; // Inativo ou outro
+  return 'yellow';
 };
 
 export default function SuppliersScreen() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useState({
-    materialType: '',
-    city: '',
-    program: '',
-    project: '',
+  // Estado de filtros unificado e com as chaves corretas esperadas pela API
+  const [filters, setFilters] = useState<SupplierListFilters>({
+    fornecedor_nome: '',
+    categoria: '',
+    fornecedor_cidade: '',
+    programa_nome: '',
+    projeto_nome: '',
   });
+
   const [suppliers, setSuppliers] = useState<SupplierListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierListItem | null>(null);
@@ -29,13 +39,8 @@ export default function SuppliersScreen() {
   const fetchSuppliers = async () => {
     setLoading(true);
     try {
-      const data = await supplierService.listSuppliers({
-        fornecedor_nome: searchTerm,
-        categoria: filters.materialType,
-        fornecedor_cidade: filters.city,
-        programa_nome: filters.program,
-        projeto_nome: filters.project
-      });
+      // Agora passamos o objeto filters inteiro e perfeitamente mapeado
+      const data = await supplierService.listSuppliers(filters);
       setSuppliers(data);
     } catch (error) {
       console.error('Erro ao buscar fornecedores:', error);
@@ -46,7 +51,7 @@ export default function SuppliersScreen() {
 
   useEffect(() => {
     fetchSuppliers();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleFilterChange = (field: keyof SupplierListFilters, value: string) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
