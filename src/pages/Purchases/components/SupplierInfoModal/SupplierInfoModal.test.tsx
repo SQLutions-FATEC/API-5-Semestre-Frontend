@@ -104,21 +104,28 @@ describe('SupplierInfoModal Component', () => {
   });
 
   it('deve disparar uma nova chamada de API após o debounce ao digitar no filtro de projeto', async () => {
-    vi.useFakeTimers();
-
+    // 1. Renderiza com o relógio NORMAL (Real) para as chamadas de API resolverem
     render(<SupplierInfoModal supplierId={supplierId} onClose={mockOnClose} />);
     await screen.findByText('Fornecedor Alfa');
 
+    // 2. SÓ AGORA ativamos os timers falsos para testar o debounce de 500ms
+    vi.useFakeTimers();
+
     const projectInput = screen.getByPlaceholderText('Ex: PRJ-001...');
 
-    await userEvent.type(projectInput, 'PRJ-XYZ');
+    // 3. Usamos fireEvent em vez de userEvent para evitar conflitos de timing interno
+    fireEvent.change(projectInput, { target: { value: 'PRJ-XYZ' } });
 
+    // A API só deve ter sido chamada 1 vez (no carregamento inicial do useEffect)
     expect(supplierService.getSupplierOrders).toHaveBeenCalledTimes(1);
 
+    // 4. Avançamos o tempo virtualmente em 500ms
     vi.advanceTimersByTime(500);
 
+    // 5. Verificamos se a API foi chamada novamente com a string digitada
     expect(supplierService.getSupplierOrders).toHaveBeenCalledWith(supplierId, 'PRJ-XYZ');
 
+    // 6. Por fim, devolvemos o relógio ao normal para não quebrar os próximos testes
     vi.useRealTimers();
   });
 
