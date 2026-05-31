@@ -80,3 +80,39 @@ export type SupplierListFilters = {
   projeto_nome?: string;
   categoria?: string;
 };
+
+export type SupplierDetail = {
+  id_fornecedor: number;
+  codigo_fornecedor: string;
+  cidade: string;
+  estado: string;
+  categoria: string;
+  status: string;
+};
+
+export type SupplierListItem = {
+  id_fornecedor: number;
+  codigo_fornecedor: string;
+  razao_social: string;
+  cidade: string;
+  categoria: string;
+  status: string;
+};
+
+export type SupplierOrder = {
+  codigo_projeto: string;
+  codigo_do_pedido: string;
+  nome_do_material: string;
+  valor_gasto: number;
+  data_pedida: string | null;
+  data_previsao: string | null;
+  is_atrasado: boolean;
+  status: string;
+};
+
+export type SupplierOrdersResponse = {
+  fornecedor: string;
+  quantidade_pedidos_totais: number;
+  quantidade_atrasos: number;
+  pedidos: SupplierOrder[];
+};

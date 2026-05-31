@@ -1,136 +1,120 @@
+import { AlertTriangle, Check, MapPin, Search, Tag, X } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { X, AlertTriangle, Check, MapPin, Tag, Search, ChevronDown } from 'lucide-react';
-import type { SupplierInfo, SupplierPreviousOrder } from '../../../../types/purchase';
 import { supplierService } from '../../../../services/supplierService';
+import type {
+  SupplierDetail,
+  SupplierOrder,
+  SupplierOrdersResponse
+} from '../../../../types/purchase';
 import './SupplierInfoModal.scss';
 
-// --- Helpers ---
+// ─────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────
 
 type ReliabilityStatus = 'ok' | 'warning' | 'danger';
 
-const getReliabilityStatus = (supplier: SupplierInfo): ReliabilityStatus => {
-  if (supplier.ativo === false) return 'danger';
-  if (supplier.status && supplier.status.toLowerCase() !== 'ativo') return 'danger';
-  if (typeof supplier.total_pedidos !== 'number' || typeof supplier.total_atrasos !== 'number') {
-    return 'ok';
-  }
-  if (supplier.total_pedidos === 0) return 'ok';
-  const delayRate = supplier.total_atrasos / supplier.total_pedidos;
-  if (delayRate >= 0.4) return 'danger';
-  if (delayRate >= 0.2) return 'warning';
-  return 'ok';
+const getReliabilityStatus = (totalOrders: number, totalDelays: number): ReliabilityStatus => {
+  if (totalOrders === 0) return 'ok';
+
+  const successRate = (totalOrders - totalDelays) / totalOrders;
+
+  if (successRate >= 0.75) return 'ok';       // >= 75%
+  if (successRate >= 0.50) return 'warning';  // >= 50% e <= 74.9%
+  return 'danger';                            // < 50%
 };
 
 const ReliabilityIcon: React.FC<{ status: ReliabilityStatus }> = ({ status }) => {
   if (status === 'ok') {
     return (
-      <span
-        className="supplier-modal__reliability supplier-modal__reliability--ok"
-        aria-label="Fornecedor confiável"
-      >
+      <span className="supplier-modal__reliability supplier-modal__reliability--ok" aria-label="Confiável">
         <Check size={20} strokeWidth={2.5} />
       </span>
     );
   }
   if (status === 'warning') {
     return (
-      <span
-        className="supplier-modal__reliability supplier-modal__reliability--warning"
-        aria-label="Fornecedor com atrasos moderados"
-      >
+      <span className="supplier-modal__reliability supplier-modal__reliability--warning" aria-label="Atenção">
         <AlertTriangle size={20} strokeWidth={2.5} />
       </span>
     );
   }
   return (
-    <span
-      className="supplier-modal__reliability supplier-modal__reliability--danger"
-      aria-label="Fornecedor com alta taxa de atraso"
-    >
-      <AlertTriangle size={20} strokeWidth={2.5} />
+    <span className="supplier-modal__reliability supplier-modal__reliability--danger" aria-label="Crítico">
+      <X size={20} strokeWidth={2.5} />
     </span>
   );
 };
 
-// --- Props ---
+// Mapeia o texto do backend para as classes do seu SCSS
+const getStatusClass = (status: string | undefined) => {
+  if (!status) return 'supplier-modal__status-dot--inactive';
+
+  const statusLower = status.toLowerCase();
+  if (statusLower === 'ativo') return 'supplier-modal__status-dot--active'; // Verde
+  if (statusLower === 'bloqueado') return 'supplier-modal__status-dot--blocked'; // Vermelho
+  return 'supplier-modal__status-dot--inactive'; // Amarelo/Inativo
+};
+
+// ─────────────────────────────────────────
+// Props do Componente
+// ─────────────────────────────────────────
 
 interface SupplierInfoModalProps {
-  supplier: SupplierInfo;
+  supplierId: string | number;
   onClose: () => void;
 }
 
-// --- Component ---
+// ─────────────────────────────────────────
+// Componente
+// ─────────────────────────────────────────
 
-const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose }) => {
-  const [search, setSearch] = useState('');
-  const [projectFilter, setProjectFilter] = useState('');
-  const [orders, setOrders] = useState<SupplierPreviousOrder[]>(supplier.pedidos_anteriores ?? []);
-  const [totalOrders, setTotalOrders] = useState<number | undefined>(supplier.total_pedidos);
-  const [totalDelays, setTotalDelays] = useState<number | undefined>(supplier.total_atrasos);
-  const [isLoadingOrders, setIsLoadingOrders] = useState(true);
-  const [ordersError, setOrdersError] = useState('');
+const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplierId, onClose }) => {
+  const [fornecedorInfo, setFornecedorInfo] = useState<SupplierDetail | null>(null);
+  const [pedidosInfo, setPedidosInfo] = useState<SupplierOrdersResponse | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const reliability = getReliabilityStatus(supplier);
+  // Filtros
+  const [localSearch, setLocalSearch] = useState('');
+  const [projectInput, setProjectInput] = useState('');
+  const [debouncedProject, setDebouncedProject] = useState('');
 
   useEffect(() => {
-    const codigoFornecedor = supplier.codigo_fornecedor;
+    const handler = setTimeout(() => {
+      setDebouncedProject(projectInput);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [projectInput]);
 
-    if (!codigoFornecedor) {
-      setIsLoadingOrders(false);
-      return;
-    }
+  useEffect(() => {
+    setLoading(true);
 
-    let isMounted = true;
+    Promise.all([
+      supplierService.getSupplierDetail(supplierId),
+      supplierService.getSupplierOrders(supplierId, debouncedProject)
+    ])
+      .then(([dadosFornecedor, dadosPedidos]) => {
+        setFornecedorInfo(dadosFornecedor);
+        setPedidosInfo(dadosPedidos);
+      })
+      .catch(err => console.error("Erro ao buscar dados do modal:", err))
+      .finally(() => setLoading(false));
 
-    const loadOrders = async () => {
-      setIsLoadingOrders(true);
-      setOrdersError('');
+  }, [supplierId, debouncedProject]);
 
-      try {
-        const response = await supplierService.getSupplierOrders(codigoFornecedor);
+  const filteredOrders = useMemo<SupplierOrder[]>(() => {
+    if (!pedidosInfo?.pedidos) return [];
 
-        if (!isMounted) return;
-
-        setOrders(response.pedidos);
-        setTotalOrders(response.quantidade_pedidos_totais);
-        setTotalDelays(response.quantidade_atrasos);
-      } catch {
-        if (!isMounted) return;
-
-        setOrders([]);
-        setOrdersError('Não foi possível carregar os pedidos deste fornecedor.');
-      } finally {
-        if (isMounted) {
-          setIsLoadingOrders(false);
-        }
-      }
-    };
-
-    void loadOrders();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [supplier.codigo_fornecedor]);
-
-  const projectOptions = useMemo(() => {
-    const codes = orders.map((p) => p.codigo_projeto);
-    return Array.from(new Set(codes));
-  }, [orders]);
-
-  const filteredOrders = useMemo<SupplierPreviousOrder[]>(() => {
-    return orders.filter((order) => {
-      const matchesSearch =
-        search === '' ||
-        order.codigo_projeto.toLowerCase().includes(search.toLowerCase()) ||
-        order.codigo_pedido.toLowerCase().includes(search.toLowerCase()) ||
-        order.nome_material.toLowerCase().includes(search.toLowerCase());
-      const matchesProject = projectFilter === '' || order.codigo_projeto === projectFilter;
-      return matchesSearch && matchesProject;
+    return pedidosInfo.pedidos.filter((order) => {
+      const term = localSearch.toLowerCase();
+      return (
+        term === '' ||
+        order.codigo_do_pedido.toLowerCase().includes(term) ||
+        order.nome_do_material.toLowerCase().includes(term)
+      );
     });
-  }, [orders, search, projectFilter]);
+  }, [pedidosInfo, localSearch]);
 
-  // Fix: backdrop uses presentation role + keyboard handler; dialog element handles accessibility
   const handleBackdropKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Escape') onClose();
   };
@@ -139,49 +123,48 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
     if (e.target === e.currentTarget) onClose();
   };
 
+  if (loading || !fornecedorInfo || !pedidosInfo) {
+    return (
+      <div className="supplier-modal__backdrop">
+        <dialog open className="supplier-modal__outer">
+          <div className="supplier-modal__container" style={{ alignItems: 'center', justifyContent: 'center', minHeight: '300px' }}>
+            <span className="supplier-modal__label">Carregando dados do fornecedor...</span>
+          </div>
+        </dialog>
+      </div>
+    );
+  }
+
+  const reliability = getReliabilityStatus(
+    pedidosInfo.quantidade_pedidos_totais,
+    pedidosInfo.quantidade_atrasos
+  );
+
   return (
     <div
       className="supplier-modal__backdrop"
       onClick={handleBackdropClick}
       onKeyDown={handleBackdropKeyDown}
     >
-      <div
+      <dialog
+        open
         className="supplier-modal__outer"
-        role="dialog"
-        aria-modal="true"
-        aria-label={`Informações do fornecedor ${supplier.nome_fornecedor}`}
+        aria-label={`Informações do fornecedor ${pedidosInfo.fornecedor}`}
       >
-        {/* Container branco */}
         <div className="supplier-modal__container">
-          <div className="supplier-modal__external-actions">
-            <ReliabilityIcon status={reliability} />
-            <button
-              className="supplier-modal__close-btn"
-              onClick={onClose}
-              aria-label="Fechar modal"
-            >
-              <X size={16} />
-            </button>
-          </div>
 
           {/* Header */}
           <div className="supplier-modal__header">
             <span className="supplier-modal__label">Nome do fornecedor</span>
             <div className="supplier-modal__title-row">
-              <h2 className="supplier-modal__name">{supplier.nome_fornecedor}</h2>
-              <span className="supplier-modal__code">{supplier.codigo_fornecedor}</span>
+              <h2 className="supplier-modal__name">{pedidosInfo.fornecedor}</h2>
+              <span className="supplier-modal__code">{fornecedorInfo.codigo_fornecedor}</span>
               <span
-                className={`supplier-modal__status-dot ${
-                  (supplier.ativo ?? supplier.status?.toLowerCase() === 'ativo')
-                    ? 'supplier-modal__status-dot--active'
-                    : 'supplier-modal__status-dot--inactive'
-                }`}
-                title={supplier.status ?? (supplier.ativo ? 'Ativo' : 'Inativo')}
-                aria-label={
-                  supplier.status ?? (supplier.ativo ? 'Fornecedor ativo' : 'Fornecedor inativo')
-                }
+                className={`supplier-modal__status-dot ${getStatusClass(fornecedorInfo.status)}`}
+                title={`Status: ${fornecedorInfo.status}`}
+                aria-label={`Status do fornecedor: ${fornecedorInfo.status}`}
               />
-              {supplier.status && <span className="supplier-modal__code">{supplier.status}</span>}
+              {fornecedorInfo.status && <span className="supplier-modal__code">{fornecedorInfo.status}</span>}
             </div>
           </div>
 
@@ -191,7 +174,7 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
               <span className="supplier-modal__label">
                 <Tag size={12} /> Categoria
               </span>
-              <span className="supplier-modal__category-badge">{supplier.categoria}</span>
+              <span className="supplier-modal__category-badge">{fornecedorInfo.categoria}</span>
             </div>
 
             <div className="supplier-modal__info-block supplier-modal__info-block--location">
@@ -199,128 +182,122 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplier, onClose
                 <MapPin size={12} /> Cidade
               </span>
               <span className="supplier-modal__location">
-                {supplier.cidade}
-                {supplier.regiao && (
-                  <>
-                    <span className="supplier-modal__separator">–</span>
-                    <span className="supplier-modal__label supplier-modal__label--inline">
-                      Região
-                    </span>
-                    {supplier.regiao}
-                  </>
-                )}
+                {fornecedorInfo.cidade}
+                <span className="supplier-modal__separator">–</span>
+                <span className="supplier-modal__label supplier-modal__label--inline">Estado</span>
+                {' '}{fornecedorInfo.estado}
               </span>
             </div>
 
-            {typeof supplier.total_pedidos === 'number' &&
-              typeof supplier.total_atrasos === 'number' && (
-                <>
-                  <div className="supplier-modal__stat-card supplier-modal__stat-card--neutral">
-                    <span className="supplier-modal__stat-label">Pedidos deste fornecedor</span>
-                    <span className="supplier-modal__stat-value">
-                      {typeof totalOrders === 'number' ? totalOrders : '—'}
-                    </span>
-                  </div>
+            <div className="supplier-modal__stat-card supplier-modal__stat-card--neutral">
+              <span className="supplier-modal__stat-label">Pedidos deste fornecedor</span>
+              <span className="supplier-modal__stat-value">{pedidosInfo.quantidade_pedidos_totais}</span>
+            </div>
 
-                  <div className="supplier-modal__stat-card supplier-modal__stat-card--danger">
-                    <span className="supplier-modal__stat-label">Atrasos por este fornecedor</span>
-                    <span className="supplier-modal__stat-value supplier-modal__stat-value--danger">
-                      {typeof totalDelays === 'number' ? totalDelays : '—'}
-                    </span>
-                  </div>
-                </>
-              )}
+            <div className="supplier-modal__stat-card supplier-modal__stat-card--danger">
+              <span className="supplier-modal__stat-label">Atrasos por este fornecedor</span>
+              <span className="supplier-modal__stat-value supplier-modal__stat-value--danger">
+                {pedidosInfo.quantidade_atrasos}
+              </span>
+            </div>
           </div>
 
-          {/* Previous Orders */}
+          {/* Orders Section */}
           <div className="supplier-modal__orders-section">
             <div className="supplier-modal__orders-header">
-              <h3 className="supplier-modal__orders-title">
-                {/* Fix: emoji moved to CSS ::before to avoid ambiguous spacing warning */}
-                Pedidos anteriores
-              </h3>
+              <h3 className="supplier-modal__orders-title">Pedidos anteriores</h3>
 
               <div className="supplier-modal__filters">
-                <span className="supplier-modal__filter-label">Filtrar por projeto</span>
-                <div className="supplier-modal__select-wrapper">
-                  <select
-                    className="supplier-modal__select"
-                    value={projectFilter}
-                    onChange={(e) => setProjectFilter(e.target.value)}
-                    aria-label="Filtrar por projeto"
-                  >
-                    <option value="">Pesquisar programa...</option>
-                    {projectOptions.map((code) => (
-                      <option key={code} value={code}>
-                        {code}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown size={14} className="supplier-modal__select-chevron" />
+                {/* Filtro via API (Projeto) */}
+                <span className="supplier-modal__filter-label">Buscar Projeto</span>
+                <div className="supplier-modal__search-wrapper" style={{ marginRight: '8px' }}>
+                  <Search size={14} className="supplier-modal__search-icon" />
+                  <input
+                    type="text"
+                    className="supplier-modal__search"
+                    placeholder="Ex: PRJ-001..."
+                    value={projectInput}
+                    onChange={(e) => setProjectInput(e.target.value)}
+                    aria-label="Buscar projeto na API"
+                  />
                 </div>
 
+                {/* Filtro Local (Pedido/Material) */}
                 <div className="supplier-modal__search-wrapper">
                   <Search size={14} className="supplier-modal__search-icon" />
                   <input
                     type="text"
                     className="supplier-modal__search"
                     placeholder="Buscar pedido ou material..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    aria-label="Buscar pedidos anteriores"
+                    value={localSearch}
+                    onChange={(e) => setLocalSearch(e.target.value)}
+                    aria-label="Filtrar pedidos listados"
                   />
                 </div>
               </div>
             </div>
 
             <div className="supplier-modal__table-wrapper">
-              {isLoadingOrders ? (
-                <div className="supplier-modal__empty">Carregando pedidos...</div>
-              ) : ordersError ? (
-                <div className="supplier-modal__empty">{ordersError}</div>
-              ) : (
-                <table className="supplier-modal__table">
-                  <thead>
-                    <tr>
-                      <th>codigo_projeto</th>
-                      <th>Codigo do pedido</th>
-                      <th>Nome do material</th>
-                      <th>Valor Gasto</th>
-                      <th>Data pedida</th>
-                      <th>Data_previsao</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredOrders.length > 0 ? (
-                      filteredOrders.map((order, index) => (
-                        <tr key={`${order.codigo_pedido}-${index}`}>
-                          <td>{order.codigo_projeto}</td>
-                          <td>{order.codigo_pedido}</td>
-                          <td>{order.nome_material}</td>
-                          <td>
-                            {order.valor_gasto.toLocaleString('pt-BR', {
-                              style: 'currency',
-                              currency: 'BRL',
-                            })}
-                          </td>
-                          <td>{order.data_pedida}</td>
-                          <td>{order.data_previsao}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={6} className="supplier-modal__empty">
-                          Nenhum pedido encontrado
+              <table className="supplier-modal__table">
+                <thead>
+                  <tr>
+                    <th>Projeto</th>
+                    <th>Pedido</th>
+                    <th>Material</th>
+                    <th>Valor Gasto</th>
+                    <th>Data Pedido</th>
+                    <th>Previsão</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredOrders.length > 0 ? (
+                    filteredOrders.map((order, index) => (
+                      <tr key={`${order.codigo_do_pedido}-${index}`}>
+                        <td>{order.codigo_projeto}</td>
+                        <td>{order.codigo_do_pedido}</td>
+                        <td>{order.nome_do_material}</td>
+                        <td>
+                          {order.valor_gasto.toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          })}
+                        </td>
+                        <td>
+                          {order.data_pedida
+                            ? new Date(order.data_pedida).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                            : '-'}
+                        </td>
+                        <td style={{
+                          color: order.is_atrasado ? '#c53030' : 'inherit',
+                          fontWeight: order.is_atrasado ? '600' : 'normal'
+                        }}>
+                          {order.data_previsao
+                            ? new Date(order.data_previsao).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                            : '-'}
                         </td>
                       </tr>
-                    )}
-                  </tbody>
-                </table>
-              )}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6} className="supplier-modal__empty">
+                        Nenhum pedido encontrado.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-      </div>
+
+        {/* Ações Externas */}
+        <div className="supplier-modal__external-actions">
+          <ReliabilityIcon status={reliability} />
+          <button className="supplier-modal__close-btn" onClick={onClose} aria-label="Fechar modal">
+            <X size={16} />
+          </button>
+        </div>
+      </dialog>
     </div>
   );
 };

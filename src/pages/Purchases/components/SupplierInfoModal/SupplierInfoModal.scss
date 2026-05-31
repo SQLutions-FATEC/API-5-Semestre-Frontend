@@ -13,20 +13,34 @@
   z-index: 1000;
   padding: 1rem;
   backdrop-filter: blur(2px);
+  height: 100%;
+}
+
+.supplier-modal__outer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 920px;
+  border-radius: 24px;
+  overflow: hidden;
+  margin: auto;
+  position: relative;
 }
 
 // ─────────────────────────────────────────
 // Outer: modal centralizado
 // ─────────────────────────────────────────
 .supplier-modal__outer {
-  display: block;
-  width: min(920px, calc(100vw - 2rem));
-  max-height: 90vh;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: transparent;
-  overflow: visible;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 920px;
+  border-radius: 24px;
+  overflow: hidden;
 }
 
 // ─────────────────────────────────────────
@@ -36,8 +50,7 @@
   position: relative;
   width: 100%;
   background-color: $bg-card;
-  border-radius: 18px;
-  border: 1px solid $border-light;
+  border-radius: 24px;
   box-shadow: $shadow-md, 0 20px 40px rgba(0, 0, 0, 0.12);
   padding: 1.5rem 1.75rem 1.5rem 1.75rem;
   padding-right: 5.25rem;
@@ -198,6 +211,11 @@
 
   &--inactive {
     background-color: $text-muted;
+  }
+
+  &--blocked {
+    background-color: $color-danger-badge;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
   }
 }
 
@@ -361,7 +379,10 @@
   cursor: pointer;
   transition: $transition-default;
 
-  &:hover { border-color: $primary; }
+  &:hover {
+    border-color: $primary;
+  }
+
   &:focus-visible {
     outline: none;
     box-shadow: $shadow-focus;
@@ -399,8 +420,14 @@
   width: 200px;
   transition: $transition-default;
 
-  &::placeholder { color: $text-muted; }
-  &:hover { border-color: $primary; }
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:hover {
+    border-color: $primary;
+  }
+
   &:focus-visible {
     outline: none;
     box-shadow: $shadow-focus;
@@ -442,11 +469,20 @@
     border-bottom: 1px solid $border-light;
     transition: background-color 0.15s ease;
 
-    &:last-child { border-bottom: none; }
-    &:hover { background-color: $bg-hover; }
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: $bg-hover;
+    }
+
     &:nth-child(even) {
       background-color: $bg-subtle;
-      &:hover { background-color: $bg-hover; }
+
+      &:hover {
+        background-color: $bg-hover;
+      }
     }
   }
 
