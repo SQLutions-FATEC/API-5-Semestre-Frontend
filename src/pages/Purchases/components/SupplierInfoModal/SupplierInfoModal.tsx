@@ -1,5 +1,6 @@
 import { AlertTriangle, Check, MapPin, Search, Tag, X } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
+import { supplierService } from '../../../../services/supplierService';
 import type {
   SupplierDetail,
   SupplierOrder,
@@ -88,15 +89,10 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplierId, onClo
   useEffect(() => {
     setLoading(true);
 
-    const fetchFornecedor = fetch(`/api/fornecedor/${supplierId}/`).then(res => res.json());
-
-    let pedidosUrl = `/api/fornecedor/${supplierId}/pedidos/`;
-    if (debouncedProject) {
-      pedidosUrl += `?id_projeto=${encodeURIComponent(debouncedProject)}`;
-    }
-    const fetchPedidos = fetch(pedidosUrl).then(res => res.json());
-
-    Promise.all([fetchFornecedor, fetchPedidos])
+    Promise.all([
+      supplierService.getSupplierDetail(supplierId),
+      supplierService.getSupplierOrders(supplierId, debouncedProject)
+    ])
       .then(([dadosFornecedor, dadosPedidos]) => {
         setFornecedorInfo(dadosFornecedor);
         setPedidosInfo(dadosPedidos);
