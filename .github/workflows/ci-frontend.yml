@@ -1,0 +1,62 @@
+name: Frontend CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop-1
+      - develop-2
+      - develop-3
+    types: [opened, synchronize, reopened]
+
+jobs:
+  commit-build:
+    name: "Estagio 1: Commit Build (Rapido)"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Checkout codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Analise Estatica (Linter)
+        run: npm run lint
+
+      - name: Testes unitarios (Vitest)
+        run: npm run test -- --run
+
+  secondary-build:
+    name: "Estagio 2: Build e Cobertura"
+    runs-on: ubuntu-latest
+    needs: commit-build
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Checkout codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Testes com cobertura
+        run: npm run test:coverage -- --run

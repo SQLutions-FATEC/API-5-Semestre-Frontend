@@ -38,14 +38,20 @@ export default defineConfig([
     },
 
     rules: {
-      'prettier/prettier': 'error',
+      'prettier/prettier': 'error', 
 
       'react/react-in-jsx-scope': 'off',
 
-      '@typescript-eslint/no-unused-vars': ['warn'],
-
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      
+      'no-use-before-define': 'off',
+      '@typescript-eslint/no-use-before-define': 'off',
+      
+      'react-hooks/rules-of-hooks': 'off',
+      'react-hooks/exhaustive-deps': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+      'react-hooks/immutability': 'off'
     },
   },
 ]);

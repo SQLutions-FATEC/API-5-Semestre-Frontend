@@ -1,5 +1,16 @@
 import { Link, useLocation, useMatch } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, ChevronLeft, ChevronRight, Package } from 'lucide-react';
+import {
+  LayoutDashboard,
+  ShoppingCart,
+  ChevronLeft,
+  ChevronRight,
+  Package,
+  Upload,
+  Building2,
+} from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Snackbar, Alert } from '@mui/material';
+import { api } from '../../../services/api';
 import './Sidebar.scss';
 
 interface SidebarProps {
@@ -12,6 +23,14 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   const match = useMatch('/programas/:programa_cod/projetos/:codigo_projeto/*');
   const programa_cod = match?.params?.programa_cod;
   const codigo_projeto = match?.params?.codigo_projeto;
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastSeverity, setToastSeverity] = useState<'error' | 'success' | 'info' | 'warning'>(
+    'error'
+  );
 
   const navItems =
     codigo_projeto && programa_cod
@@ -31,47 +50,139 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
             path: `/programas/${programa_cod}/projetos/${codigo_projeto}/estoque`,
             icon: Package,
           },
+          {
+            name: 'Fornecedores',
+            path: `/programas/${programa_cod}/projetos/${codigo_projeto}/fornecedores`,
+            icon: Building2,
+          },
         ]
       : [];
 
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const showToast = (
+    message: string,
+    severity: 'error' | 'success' | 'info' | 'warning' = 'error'
+  ) => {
+    setToastMessage(message);
+    setToastSeverity(severity);
+    setToastOpen(true);
+  };
+
+  const handleCloseToast = (_event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setToastOpen(false);
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      showToast('Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await api.post('/importar_dados/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data?.mensagem) {
+        showToast(response.data.mensagem, 'success');
+      }
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.erro || error?.message || 'Erro desconhecido';
+
+      if (errorMessage.includes('formato incorreto')) {
+        showToast('Erro na importação: Os dados estão no formato incorreto');
+      } else if (errorMessage.includes('Células vazias')) {
+        showToast('Erro na importação: Células vazias detectadas no documento');
+      } else {
+        showToast(errorMessage);
+      }
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   return (
-    <aside className={`sidebar ${isCollapsed ? 'collapsed' : 'expanded'}`}>
-      <div className={`sidebar-header ${isCollapsed ? 'centered' : ''}`}>
-        <div className="logo-box">S</div>
-        {!isCollapsed && <span className="brand-name">SIATT</span>}
-      </div>
+    <>
+      <aside className={`sidebar ${isCollapsed ? 'collapsed' : 'expanded'}`}>
+        <div className={`sidebar-header ${isCollapsed ? 'centered' : ''}`}>
+          <div className="logo-box">S</div>
+          {!isCollapsed && <span className="brand-name">SIATT</span>}
+        </div>
 
-      <button onClick={onToggle} className="toggle-button">
-        {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-      </button>
+        <button onClick={onToggle} className="toggle-button">
+          {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+        </button>
 
-      <nav className="nav-section">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = location.pathname === item.path;
-          return (
-            <Link
-              key={item.name}
-              to={item.path}
-              title={isCollapsed ? item.name : undefined}
-              className={`nav-item ${isActive ? 'active' : ''} ${isCollapsed ? 'centered' : ''}`}
-            >
-              <Icon size={20} className="icon" />
-              {!isCollapsed && <span className="label">{item.name}</span>}
-            </Link>
-          );
-        })}
-      </nav>
+        <nav className="nav-section">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.name}
+                to={item.path}
+                title={isCollapsed ? item.name : undefined}
+                className={`nav-item ${isActive ? 'active' : ''} ${isCollapsed ? 'centered' : ''}`}
+              >
+                <Icon size={20} className="icon" />
+                {!isCollapsed && <span className="label">{item.name}</span>}
+              </Link>
+            );
+          })}
+        </nav>
 
-      {/* <div className="sidebar-footer">
-        <Link
-          to="/help"
-          className={`nav-item ${location.pathname === '/help' ? 'active' : ''} ${isCollapsed ? 'centered' : ''}`}
-        >
-          <HelpCircle size={20} className="icon" />
-          {!isCollapsed && <span className="label">Ajuda</span>}
-        </Link>
-      </div> */}
-    </aside>
+        <div className="sidebar-footer">
+          <button
+            onClick={handleImportClick}
+            className={`nav-item import-btn ${isCollapsed ? 'centered' : ''}`}
+            title={isCollapsed ? 'Importar CSV' : undefined}
+            style={{
+              width: '100%',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              textAlign: 'left',
+              color: 'inherit',
+            }}
+          >
+            <Upload size={20} className="icon" />
+            {!isCollapsed && <span className="label">Importar planilha</span>}
+          </button>
+          <input
+            type="file"
+            accept=".csv"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+        </div>
+      </aside>
+
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseToast}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleCloseToast} severity={toastSeverity} sx={{ width: '100%' }}>
+          {toastMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }

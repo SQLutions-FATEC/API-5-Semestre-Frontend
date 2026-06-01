@@ -7,7 +7,7 @@ describe('SectionHeader', () => {
   it('renders without crashing', () => {
     const { container } = render(
       <MemoryRouter>
-        <SectionHeader />
+        <SectionHeader title="Test title" />
       </MemoryRouter>
     );
     expect(container).toBeTruthy();

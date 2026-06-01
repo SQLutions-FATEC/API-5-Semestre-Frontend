@@ -17,10 +17,10 @@ export default function PageHeader({ icon, title, subtitle, backTo }: PageHeader
     <div className="page-header">
       <div className="page-header-top">
         {backTo && (
-          <button 
-            className="back-button" 
-            onClick={() => navigate(backTo)} 
-            aria-label="Voltar" 
+          <button
+            className="back-button"
+            onClick={() => navigate(backTo)}
+            aria-label="Voltar"
             title="Voltar"
           >
             <ArrowLeft size={24} />
