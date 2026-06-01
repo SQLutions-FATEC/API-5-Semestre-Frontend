@@ -101,9 +101,8 @@ export default function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
       if (response.data?.mensagem) {
         showToast(response.data.mensagem, 'success');
       }
-
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.erro || error?.message || "Erro desconhecido";
+      const errorMessage = error?.response?.data?.erro || error?.message || 'Erro desconhecido';
 
       if (errorMessage.includes('formato incorreto')) {
         showToast('Erro na importação: Os dados estão no formato incorreto');

@@ -186,15 +186,21 @@ describe('Sidebar', () => {
 
     const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
     const file = new File(['id,name\n1,test'], 'data.csv', { type: 'text/csv' });
-    
-    vi.mocked(api.post).mockResolvedValueOnce({ data: { mensagem: "Importação realizada com sucesso" } });
+
+    vi.mocked(api.post).mockResolvedValueOnce({
+      data: { mensagem: 'Importação realizada com sucesso' },
+    });
 
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
-      expect(api.post).toHaveBeenCalledWith('/importar_dados/', expect.any(FormData), expect.objectContaining({
-        headers: { 'Content-Type': 'multipart/form-data' }
-      }));
+      expect(api.post).toHaveBeenCalledWith(
+        '/importar_dados/',
+        expect.any(FormData),
+        expect.objectContaining({
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+      );
       expect(screen.getByText('Importação realizada com sucesso')).toBeInTheDocument();
     });
   });
@@ -209,9 +215,9 @@ describe('Sidebar', () => {
 
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-      
+
       vi.mocked(api.post).mockRejectedValueOnce({
-        response: { data: { erro: "formato incorreto" } }
+        response: { data: { erro: 'formato incorreto' } },
       });
 
       fireEvent.change(fileInput, { target: { files: [file] } });
@@ -232,9 +238,9 @@ describe('Sidebar', () => {
 
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-      
+
       vi.mocked(api.post).mockRejectedValueOnce({
-        response: { data: { erro: "Células vazias" } }
+        response: { data: { erro: 'Células vazias' } },
       });
 
       fireEvent.change(fileInput, { target: { files: [file] } });
@@ -255,9 +261,9 @@ describe('Sidebar', () => {
 
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-      
+
       vi.mocked(api.post).mockRejectedValueOnce({
-        response: { data: { erro: "Arquivo não enviado" } }
+        response: { data: { erro: 'Arquivo não enviado' } },
       });
 
       fireEvent.change(fileInput, { target: { files: [file] } });
@@ -273,16 +279,16 @@ describe('Sidebar', () => {
           <Sidebar isCollapsed={false} onToggle={mockToggle} />
         </MemoryRouter>
       );
-      
+
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-      
+
       vi.mocked(api.post).mockRejectedValueOnce({
-        response: { data: { erro: "Apenas arquivos CSV são permitidos" } }
+        response: { data: { erro: 'Apenas arquivos CSV são permitidos' } },
       });
 
       fireEvent.change(fileInput, { target: { files: [file] } });
-      
+
       await waitFor(() => {
         expect(screen.getByText('Apenas arquivos CSV são permitidos')).toBeInTheDocument();
       });
@@ -294,14 +300,14 @@ describe('Sidebar', () => {
           <Sidebar isCollapsed={false} onToggle={mockToggle} />
         </MemoryRouter>
       );
-      
+
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-      
-      vi.mocked(api.post).mockRejectedValueOnce(new Error("Outro erro de servidor"));
+
+      vi.mocked(api.post).mockRejectedValueOnce(new Error('Outro erro de servidor'));
 
       fireEvent.change(fileInput, { target: { files: [file] } });
-      
+
       await waitFor(() => {
         expect(screen.getByText('Outro erro de servidor')).toBeInTheDocument();
       });
