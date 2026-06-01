@@ -102,14 +102,8 @@ const ProjectListingScreen: React.FC = () => {
       <div style={{ textAlign: 'center', padding: '40px' }}>
         <Search size={48} style={{ opacity: 0.2, marginBottom: '16px' }} />
         <h3>Nenhum projeto encontrado</h3>
-        <p>
-          Não encontramos resultados para a busca. Verifique a ortografia ou limpe os filtros.
-        </p>
-        <button
-          className="clear-filter-button"
-          onClick={handleClear}
-          style={{ marginTop: '16px' }}
-        >
+        <p>Não encontramos resultados para a busca. Verifique a ortografia ou limpe os filtros.</p>
+        <button className="clear-filter-button" onClick={handleClear} style={{ marginTop: '16px' }}>
           Limpar busca
         </button>
       </div>

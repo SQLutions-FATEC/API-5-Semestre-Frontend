@@ -4,7 +4,7 @@ import { supplierService } from '../../../../services/supplierService';
 import type {
   SupplierDetail,
   SupplierOrder,
-  SupplierOrdersResponse
+  SupplierOrdersResponse,
 } from '../../../../types/purchase';
 import './SupplierInfoModal.scss';
 
@@ -19,28 +19,37 @@ const getReliabilityStatus = (totalOrders: number, totalDelays: number): Reliabi
 
   const successRate = (totalOrders - totalDelays) / totalOrders;
 
-  if (successRate >= 0.75) return 'ok';       // >= 75%
-  if (successRate >= 0.50) return 'warning';  // >= 50% e <= 74.9%
-  return 'danger';                            // < 50%
+  if (successRate >= 0.75) return 'ok'; // >= 75%
+  if (successRate >= 0.5) return 'warning'; // >= 50% e <= 74.9%
+  return 'danger'; // < 50%
 };
 
 const ReliabilityIcon: React.FC<{ status: ReliabilityStatus }> = ({ status }) => {
   if (status === 'ok') {
     return (
-      <span className="supplier-modal__reliability supplier-modal__reliability--ok" aria-label="Confiável">
+      <span
+        className="supplier-modal__reliability supplier-modal__reliability--ok"
+        aria-label="Confiável"
+      >
         <Check size={20} strokeWidth={2.5} />
       </span>
     );
   }
   if (status === 'warning') {
     return (
-      <span className="supplier-modal__reliability supplier-modal__reliability--warning" aria-label="Atenção">
+      <span
+        className="supplier-modal__reliability supplier-modal__reliability--warning"
+        aria-label="Atenção"
+      >
         <AlertTriangle size={20} strokeWidth={2.5} />
       </span>
     );
   }
   return (
-    <span className="supplier-modal__reliability supplier-modal__reliability--danger" aria-label="Crítico">
+    <span
+      className="supplier-modal__reliability supplier-modal__reliability--danger"
+      aria-label="Crítico"
+    >
       <X size={20} strokeWidth={2.5} />
     </span>
   );
@@ -91,15 +100,14 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplierId, onClo
 
     Promise.all([
       supplierService.getSupplierDetail(supplierId),
-      supplierService.getSupplierOrders(supplierId, debouncedProject)
+      supplierService.getSupplierOrders(supplierId, debouncedProject),
     ])
       .then(([dadosFornecedor, dadosPedidos]) => {
         setFornecedorInfo(dadosFornecedor);
         setPedidosInfo(dadosPedidos);
       })
-      .catch(err => console.error("Erro ao buscar dados do modal:", err))
+      .catch((err) => console.error('Erro ao buscar dados do modal:', err))
       .finally(() => setLoading(false));
-
   }, [supplierId, debouncedProject]);
 
   const filteredOrders = useMemo<SupplierOrder[]>(() => {
@@ -127,7 +135,10 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplierId, onClo
     return (
       <div className="supplier-modal__backdrop">
         <dialog open className="supplier-modal__outer">
-          <div className="supplier-modal__container" style={{ alignItems: 'center', justifyContent: 'center', minHeight: '300px' }}>
+          <div
+            className="supplier-modal__container"
+            style={{ alignItems: 'center', justifyContent: 'center', minHeight: '300px' }}
+          >
             <span className="supplier-modal__label">Carregando dados do fornecedor...</span>
           </div>
         </dialog>
@@ -152,7 +163,6 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplierId, onClo
         aria-label={`Informações do fornecedor ${pedidosInfo.fornecedor}`}
       >
         <div className="supplier-modal__container">
-
           {/* Header */}
           <div className="supplier-modal__header">
             <span className="supplier-modal__label">Nome do fornecedor</span>
@@ -164,7 +174,9 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplierId, onClo
                 title={`Status: ${fornecedorInfo.status}`}
                 aria-label={`Status do fornecedor: ${fornecedorInfo.status}`}
               />
-              {fornecedorInfo.status && <span className="supplier-modal__code">{fornecedorInfo.status}</span>}
+              {fornecedorInfo.status && (
+                <span className="supplier-modal__code">{fornecedorInfo.status}</span>
+              )}
             </div>
           </div>
 
@@ -184,14 +196,18 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplierId, onClo
               <span className="supplier-modal__location">
                 {fornecedorInfo.cidade}
                 <span className="supplier-modal__separator">–</span>
-                <span className="supplier-modal__label supplier-modal__label--inline">Estado</span>
-                {' '}{fornecedorInfo.estado}
+                <span className="supplier-modal__label supplier-modal__label--inline">
+                  Estado
+                </span>{' '}
+                {fornecedorInfo.estado}
               </span>
             </div>
 
             <div className="supplier-modal__stat-card supplier-modal__stat-card--neutral">
               <span className="supplier-modal__stat-label">Pedidos deste fornecedor</span>
-              <span className="supplier-modal__stat-value">{pedidosInfo.quantidade_pedidos_totais}</span>
+              <span className="supplier-modal__stat-value">
+                {pedidosInfo.quantidade_pedidos_totais}
+              </span>
             </div>
 
             <div className="supplier-modal__stat-card supplier-modal__stat-card--danger">
@@ -264,15 +280,21 @@ const SupplierInfoModal: React.FC<SupplierInfoModalProps> = ({ supplierId, onClo
                         </td>
                         <td>
                           {order.data_pedida
-                            ? new Date(order.data_pedida).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                            ? new Date(order.data_pedida).toLocaleDateString('pt-BR', {
+                                timeZone: 'UTC',
+                              })
                             : '-'}
                         </td>
-                        <td style={{
-                          color: order.is_atrasado ? '#c53030' : 'inherit',
-                          fontWeight: order.is_atrasado ? '600' : 'normal'
-                        }}>
+                        <td
+                          style={{
+                            color: order.is_atrasado ? '#c53030' : 'inherit',
+                            fontWeight: order.is_atrasado ? '600' : 'normal',
+                          }}
+                        >
                           {order.data_previsao
-                            ? new Date(order.data_previsao).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                            ? new Date(order.data_previsao).toLocaleDateString('pt-BR', {
+                                timeZone: 'UTC',
+                              })
                             : '-'}
                         </td>
                       </tr>

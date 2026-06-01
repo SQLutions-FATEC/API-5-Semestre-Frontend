@@ -43,10 +43,10 @@ describe('StockScreen', () => {
     (projectService.getStockSobras as any).mockResolvedValue({
       alertas_estoque_ocioso: [],
       conflitos_compra_aberta: [],
-      valor_total_material: 0
+      valor_total_material: 0,
     });
     (commitmentService.getAnalytics as any).mockResolvedValue({
-      empenho_por_material: []
+      empenho_por_material: [],
     });
   });
 
@@ -57,17 +57,17 @@ describe('StockScreen', () => {
 
   it('toggles chart type when clicking the selector', async () => {
     const { getByLabelText } = renderWithRouter(<StockScreen />);
-    
+
     const selector = getByLabelText(/Alternar visualização do gráfico/i);
-    
+
     expect(selector.textContent).toContain('Quantidade');
-    
+
     await act(async () => {
       fireEvent.click(selector);
     });
 
     expect(selector.textContent).toContain('Custo');
-    
+
     await act(async () => {
       fireEvent.click(selector);
     });
@@ -81,9 +81,12 @@ describe('StockScreen', () => {
     renderWithRouter(<StockScreen />);
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Erro ao buscar dados de estoque:', expect.any(Error));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Erro ao buscar dados de estoque:',
+        expect.any(Error)
+      );
     });
-    
+
     consoleSpy.mockRestore();
   });
 
@@ -94,9 +97,12 @@ describe('StockScreen', () => {
     renderWithRouter(<StockScreen />);
 
     await waitFor(() => {
-      expect(consoleWarnSpy).toHaveBeenCalledWith('Erro ao buscar analytics, usando dados vazios:', expect.any(Error));
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'Erro ao buscar analytics, usando dados vazios:',
+        expect.any(Error)
+      );
     });
-    
+
     consoleWarnSpy.mockRestore();
   });
 
@@ -104,11 +110,11 @@ describe('StockScreen', () => {
     (projectService.getStockSobras as any).mockResolvedValue({
       alertas_estoque_ocioso: [],
       conflitos_compra_aberta: [],
-      valor_total_material: 1500.50
+      valor_total_material: 1500.5,
     });
 
     const { getByText } = renderWithRouter(<StockScreen />);
-    
+
     await waitFor(() => {
       expect(getByText(/R\$ 1\.500,50/)).toBeTruthy();
     });
@@ -119,7 +125,7 @@ describe('StockScreen', () => {
     (projectService.getStockSobras as any).mockResolvedValue({
       alertas_estoque_ocioso: null,
       conflitos_compra_aberta: undefined,
-      valor_total_material: null
+      valor_total_material: null,
     });
     (commitmentService.getAnalytics as any).mockResolvedValue(null);
 
@@ -135,27 +141,27 @@ describe('StockScreen', () => {
     (projectService.getStockSobras as any).mockResolvedValue({
       alertas_estoque_ocioso: [
         {
-          codigo_material: "MAT1",
-          descricao: "Material Teste",
+          codigo_material: 'MAT1',
+          descricao: 'Material Teste',
           sobras_detectadas: [
             {
-              projeto_origem_codigo: "PRJ_X",
-              projeto_origem_nome: "Projeto X",
+              projeto_origem_codigo: 'PRJ_X',
+              projeto_origem_nome: 'Projeto X',
               quantidade_disponivel: 100,
-              status_projeto_origem: "Concluido",
-              localizacao_fisica: "Armário B"
-            }
-          ]
-        }
+              status_projeto_origem: 'Concluido',
+              localizacao_fisica: 'Armário B',
+            },
+          ],
+        },
       ],
       conflitos_compra_aberta: [
         {
-          material: "Material Teste",
-          pedido_compra_atual: "PED_001",
+          material: 'Material Teste',
+          pedido_compra_atual: 'PED_001',
           quantidade_no_pedido: 10,
-          disponivel_outras_fontes: 100
-        }
-      ]
+          disponivel_outras_fontes: 100,
+        },
+      ],
     });
 
     const { getByText } = renderWithRouter(<StockScreen />);
@@ -167,7 +173,7 @@ describe('StockScreen', () => {
 
     const pedidosTab = getByText('Pedidos abertos');
     fireEvent.click(pedidosTab);
-    
+
     expect(getByText(/O pedido \(PED_001\) esta pedindo o material Material Teste/)).toBeTruthy();
   });
 });

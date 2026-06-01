@@ -10,7 +10,7 @@ vi.mock('react-router-dom', async () => {
   return {
     ...actual,
     useMatch: () => ({ params: { programa_cod: '123', codigo_projeto: '456' } }),
-    useLocation: () => ({ pathname: '/programas/123/projetos/456' })
+    useLocation: () => ({ pathname: '/programas/123/projetos/456' }),
   };
 });
 
@@ -75,7 +75,7 @@ describe('Sidebar', () => {
     );
     const importBtn = screen.getByText('Importar planilha').closest('button');
     const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
-    
+
     const clickSpy = vi.spyOn(fileInput, 'click');
     if (importBtn) fireEvent.click(importBtn);
     expect(clickSpy).toHaveBeenCalled();
@@ -87,14 +87,16 @@ describe('Sidebar', () => {
         <Sidebar isCollapsed={false} onToggle={mockToggle} />
       </MemoryRouter>
     );
-    
+
     const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
     const file = new File(['dummy content'], 'test.txt', { type: 'text/plain' });
-    
+
     fireEvent.change(fileInput, { target: { files: [file] } });
-    
+
     await waitFor(() => {
-      expect(screen.getByText('Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.')).toBeInTheDocument();
+      expect(
+        screen.getByText('Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.')
+      ).toBeInTheDocument();
     });
   });
 
@@ -104,14 +106,16 @@ describe('Sidebar', () => {
         <Sidebar isCollapsed={false} onToggle={mockToggle} />
       </MemoryRouter>
     );
-    
+
     const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
     const file = new File(['dummy content'], 'test.txt', { type: 'text/plain' });
-    
+
     // Trigger toast
     fireEvent.change(fileInput, { target: { files: [file] } });
-    
-    const toastMessage = await screen.findByText('Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.');
+
+    const toastMessage = await screen.findByText(
+      'Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.'
+    );
     expect(toastMessage).toBeInTheDocument();
 
     // Find the close button of the Snackbar
@@ -119,7 +123,11 @@ describe('Sidebar', () => {
     fireEvent.click(closeButton);
 
     await waitFor(() => {
-      expect(screen.queryByText('Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          'Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.'
+        )
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -129,26 +137,30 @@ describe('Sidebar', () => {
         <Sidebar isCollapsed={false} onToggle={mockToggle} />
       </MemoryRouter>
     );
-    
+
     const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
     const file = new File(['dummy content'], 'test.txt', { type: 'text/plain' });
-    
+
     fireEvent.change(fileInput, { target: { files: [file] } });
-    
-    const toastMessage = await screen.findByText('Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.');
+
+    const toastMessage = await screen.findByText(
+      'Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.'
+    );
     expect(toastMessage).toBeInTheDocument();
 
     // Simula o evento de clickaway pressionando ESC, que as vezes despacha onClose com clickaway no MUI
     fireEvent.keyDown(document.body, { key: 'Escape', code: 'Escape' });
-    
+
     // Opcionalmente, podemos acionar onClick away clicando no background do presentation
     const presentation = screen.queryByRole('presentation');
     if (presentation && presentation.firstChild) {
       fireEvent.click(presentation.firstChild as Element);
     }
-    
+
     // O texto ainda deve estar no documento (toast aberto)
-    expect(screen.getByText('Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Erro na seleção: Formato de arquivo não suportado, só é permitido .csv.')
+    ).toBeInTheDocument();
   });
 
   it('does nothing if no file is selected', () => {
@@ -157,11 +169,11 @@ describe('Sidebar', () => {
         <Sidebar isCollapsed={false} onToggle={mockToggle} />
       </MemoryRouter>
     );
-    
+
     const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
-    
+
     fireEvent.change(fileInput, { target: { files: [] } });
-    
+
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
@@ -171,18 +183,24 @@ describe('Sidebar', () => {
         <Sidebar isCollapsed={false} onToggle={mockToggle} />
       </MemoryRouter>
     );
-    
+
     const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
     const file = new File(['id,name\n1,test'], 'data.csv', { type: 'text/csv' });
-    
-    vi.mocked(api.post).mockResolvedValueOnce({ data: { mensagem: "Importação realizada com sucesso" } });
+
+    vi.mocked(api.post).mockResolvedValueOnce({
+      data: { mensagem: 'Importação realizada com sucesso' },
+    });
 
     fireEvent.change(fileInput, { target: { files: [file] } });
-    
+
     await waitFor(() => {
-      expect(api.post).toHaveBeenCalledWith('/importar_dados/', expect.any(FormData), expect.objectContaining({
-        headers: { 'Content-Type': 'multipart/form-data' }
-      }));
+      expect(api.post).toHaveBeenCalledWith(
+        '/importar_dados/',
+        expect.any(FormData),
+        expect.objectContaining({
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+      );
       expect(screen.getByText('Importação realizada com sucesso')).toBeInTheDocument();
     });
   });
@@ -194,18 +212,20 @@ describe('Sidebar', () => {
           <Sidebar isCollapsed={false} onToggle={mockToggle} />
         </MemoryRouter>
       );
-      
+
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-      
+
       vi.mocked(api.post).mockRejectedValueOnce({
-        response: { data: { erro: "formato incorreto" } }
+        response: { data: { erro: 'formato incorreto' } },
       });
 
       fireEvent.change(fileInput, { target: { files: [file] } });
-      
+
       await waitFor(() => {
-        expect(screen.getByText('Erro na importação: Os dados estão no formato incorreto')).toBeInTheDocument();
+        expect(
+          screen.getByText('Erro na importação: Os dados estão no formato incorreto')
+        ).toBeInTheDocument();
       });
     });
 
@@ -215,18 +235,20 @@ describe('Sidebar', () => {
           <Sidebar isCollapsed={false} onToggle={mockToggle} />
         </MemoryRouter>
       );
-      
+
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-      
+
       vi.mocked(api.post).mockRejectedValueOnce({
-        response: { data: { erro: "Células vazias" } }
+        response: { data: { erro: 'Células vazias' } },
       });
 
       fireEvent.change(fileInput, { target: { files: [file] } });
-      
+
       await waitFor(() => {
-        expect(screen.getByText('Erro na importação: Células vazias detectadas no documento')).toBeInTheDocument();
+        expect(
+          screen.getByText('Erro na importação: Células vazias detectadas no documento')
+        ).toBeInTheDocument();
       });
     });
 
@@ -236,16 +258,16 @@ describe('Sidebar', () => {
           <Sidebar isCollapsed={false} onToggle={mockToggle} />
         </MemoryRouter>
       );
-      
+
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-      
+
       vi.mocked(api.post).mockRejectedValueOnce({
-        response: { data: { erro: "Arquivo não enviado" } }
+        response: { data: { erro: 'Arquivo não enviado' } },
       });
 
       fireEvent.change(fileInput, { target: { files: [file] } });
-      
+
       await waitFor(() => {
         expect(screen.getByText('Arquivo não enviado')).toBeInTheDocument();
       });
@@ -257,16 +279,16 @@ describe('Sidebar', () => {
           <Sidebar isCollapsed={false} onToggle={mockToggle} />
         </MemoryRouter>
       );
-      
+
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-      
+
       vi.mocked(api.post).mockRejectedValueOnce({
-        response: { data: { erro: "Apenas arquivos CSV são permitidos" } }
+        response: { data: { erro: 'Apenas arquivos CSV são permitidos' } },
       });
 
       fireEvent.change(fileInput, { target: { files: [file] } });
-      
+
       await waitFor(() => {
         expect(screen.getByText('Apenas arquivos CSV são permitidos')).toBeInTheDocument();
       });
@@ -278,14 +300,14 @@ describe('Sidebar', () => {
           <Sidebar isCollapsed={false} onToggle={mockToggle} />
         </MemoryRouter>
       );
-      
+
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-      
-      vi.mocked(api.post).mockRejectedValueOnce(new Error("Outro erro de servidor"));
+
+      vi.mocked(api.post).mockRejectedValueOnce(new Error('Outro erro de servidor'));
 
       fireEvent.change(fileInput, { target: { files: [file] } });
-      
+
       await waitFor(() => {
         expect(screen.getByText('Outro erro de servidor')).toBeInTheDocument();
       });

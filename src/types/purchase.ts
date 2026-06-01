@@ -109,10 +109,3 @@ export type SupplierOrder = {
   is_atrasado: boolean;
   status: string;
 };
-
-export type SupplierOrdersResponse = {
-  fornecedor: string;
-  quantidade_pedidos_totais: number;
-  quantidade_atrasos: number;
-  pedidos: SupplierOrder[];
-};

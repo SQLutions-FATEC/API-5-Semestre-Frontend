@@ -51,7 +51,7 @@ export default function SuppliersScreen() {
 
   useEffect(() => {
     fetchSuppliers();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleFilterChange = (field: keyof SupplierListFilters, value: string) => {
     setFilters((prev) => ({ ...prev, [field]: value }));
@@ -160,7 +160,9 @@ export default function SuppliersScreen() {
                 </div>
 
                 <div className="filter-action">
-                  <button className="apply-filters-btn" onClick={handleApplyFilters}>Aplicar Filtros</button>
+                  <button className="apply-filters-btn" onClick={handleApplyFilters}>
+                    Aplicar Filtros
+                  </button>
                 </div>
               </div>
             </div>

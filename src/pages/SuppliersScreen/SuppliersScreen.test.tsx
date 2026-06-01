@@ -125,8 +125,6 @@ describe('SuppliersScreen', () => {
     await user.click(supplierCard);
 
     // Como mockamos o modal, ele deve abrir sem erros agora
-    expect(
-      await screen.findByRole('dialog', { hidden: true })
-    ).toBeTruthy();
+    expect(await screen.findByRole('dialog', { hidden: true })).toBeTruthy();
   });
 });

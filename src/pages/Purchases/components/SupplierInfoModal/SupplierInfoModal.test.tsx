@@ -2,10 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { supplierService } from '../../../../services/supplierService';
-import type {
-  SupplierDetail,
-  SupplierOrdersResponse
-} from '../../../../types/purchase';
+import type { SupplierDetail, SupplierOrdersResponse } from '../../../../types/purchase';
 import SupplierInfoModal from './SupplierInfoModal';
 
 // Mock do serviço
@@ -34,22 +31,22 @@ const mockSupplierOrders: SupplierOrdersResponse = {
       codigo_projeto: 'PRJ-001',
       codigo_do_pedido: 'PED-123',
       nome_do_material: 'Tubo de Aço',
-      valor_gasto: 1500.50,
+      valor_gasto: 1500.5,
       data_pedida: '2026-01-10T00:00:00Z',
       data_previsao: '2026-01-20T00:00:00Z',
       is_atrasado: false,
-      status: 'Entregue'
+      status: 'Entregue',
     },
     {
       codigo_projeto: 'PRJ-002',
       codigo_do_pedido: 'PED-456',
       nome_do_material: 'Viga de Ferro',
-      valor_gasto: 3000.00,
+      valor_gasto: 3000.0,
       data_pedida: '2026-02-15T00:00:00Z',
       data_previsao: '2026-02-25T00:00:00Z',
       is_atrasado: true,
-      status: 'Atrasado'
-    }
+      status: 'Atrasado',
+    },
   ],
 };
 
@@ -109,9 +106,12 @@ describe('SupplierInfoModal Component', () => {
     await user.type(projectInput, 'PRJ-XYZ');
 
     // Usa o waitFor normal (tempo real) para esperar os 500ms passarem de forma segura
-    await waitFor(() => {
-      expect(supplierService.getSupplierOrders).toHaveBeenCalledWith(supplierId, 'PRJ-XYZ');
-    }, { timeout: 2000 });
+    await waitFor(
+      () => {
+        expect(supplierService.getSupplierOrders).toHaveBeenCalledWith(supplierId, 'PRJ-XYZ');
+      },
+      { timeout: 2000 }
+    );
   });
 
   it('deve chamar onClose ao clicar no botão fechar', async () => {
