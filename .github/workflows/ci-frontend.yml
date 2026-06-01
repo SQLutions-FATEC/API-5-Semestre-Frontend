@@ -1,9 +1,13 @@
 name: Frontend CI
 
 on:
-  push:
+  pull_request:
     branches:
-      - 129-DevOps--Frontend-CI
+      - main
+      - develop-1
+      - develop-2
+      - develop-3
+    types: [opened, synchronize, reopened]
 
 jobs:
   commit-build:
