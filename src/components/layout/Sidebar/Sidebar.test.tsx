@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import { api } from '../../../services/api';
 
 // Mock useMatch e useLocation para testar a renderização dos links
 vi.mock('react-router-dom', async () => {
@@ -12,6 +13,12 @@ vi.mock('react-router-dom', async () => {
     useLocation: () => ({ pathname: '/programas/123/projetos/456' }),
   };
 });
+
+vi.mock('../../../services/api', () => ({
+  api: {
+    post: vi.fn(),
+  },
+}));
 
 describe('Sidebar', () => {
   const mockToggle = vi.fn();
@@ -170,7 +177,7 @@ describe('Sidebar', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
-  it('accepts a valid csv file without showing error toast (mock backend success)', async () => {
+  it('accepts a valid csv file and shows success toast on successful api post', async () => {
     const { container } = render(
       <MemoryRouter>
         <Sidebar isCollapsed={false} onToggle={mockToggle} />
@@ -179,16 +186,17 @@ describe('Sidebar', () => {
 
     const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
     const file = new File(['id,name\n1,test'], 'data.csv', { type: 'text/csv' });
-
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    
+    vi.mocked(api.post).mockResolvedValueOnce({ data: { mensagem: "Importação realizada com sucesso" } });
 
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Arquivo pronto para envio:', 'data.csv');
+      expect(api.post).toHaveBeenCalledWith('/importar_dados/', expect.any(FormData), expect.objectContaining({
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }));
+      expect(screen.getByText('Importação realizada com sucesso')).toBeInTheDocument();
     });
-
-    consoleSpy.mockRestore();
   });
 
   describe('Simulação de erros do backend', () => {
@@ -201,10 +209,9 @@ describe('Sidebar', () => {
 
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-
-      // Simulando o lançamento de um erro pelo backend através de um spy no console.log
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {
-        throw new Error('Erro na importação: Os dados estão no formato incorreto');
+      
+      vi.mocked(api.post).mockRejectedValueOnce({
+        response: { data: { erro: "formato incorreto" } }
       });
 
       fireEvent.change(fileInput, { target: { files: [file] } });
@@ -214,8 +221,6 @@ describe('Sidebar', () => {
           screen.getByText('Erro na importação: Os dados estão no formato incorreto')
         ).toBeInTheDocument();
       });
-
-      consoleSpy.mockRestore();
     });
 
     it('mostra erro de células vazias', async () => {
@@ -227,9 +232,9 @@ describe('Sidebar', () => {
 
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {
-        throw new Error('Erro na importação: Células vazias detectadas no documento');
+      
+      vi.mocked(api.post).mockRejectedValueOnce({
+        response: { data: { erro: "Células vazias" } }
       });
 
       fireEvent.change(fileInput, { target: { files: [file] } });
@@ -239,11 +244,9 @@ describe('Sidebar', () => {
           screen.getByText('Erro na importação: Células vazias detectadas no documento')
         ).toBeInTheDocument();
       });
-
-      consoleSpy.mockRestore();
     });
 
-    it('mostra erro genérico desconhecido', async () => {
+    it('mostra erro "Arquivo não enviado"', async () => {
       const { container } = render(
         <MemoryRouter>
           <Sidebar isCollapsed={false} onToggle={mockToggle} />
@@ -252,18 +255,56 @@ describe('Sidebar', () => {
 
       const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
       const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
-
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {
-        throw new Error('Outro erro de servidor');
+      
+      vi.mocked(api.post).mockRejectedValueOnce({
+        response: { data: { erro: "Arquivo não enviado" } }
       });
 
       fireEvent.change(fileInput, { target: { files: [file] } });
 
       await waitFor(() => {
-        expect(screen.getByText('Outro erro de servidor')).toBeInTheDocument();
+        expect(screen.getByText('Arquivo não enviado')).toBeInTheDocument();
+      });
+    });
+
+    it('mostra erro "Apenas arquivos CSV são permitidos"', async () => {
+      const { container } = render(
+        <MemoryRouter>
+          <Sidebar isCollapsed={false} onToggle={mockToggle} />
+        </MemoryRouter>
+      );
+      
+      const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
+      
+      vi.mocked(api.post).mockRejectedValueOnce({
+        response: { data: { erro: "Apenas arquivos CSV são permitidos" } }
       });
 
-      consoleSpy.mockRestore();
+      fireEvent.change(fileInput, { target: { files: [file] } });
+      
+      await waitFor(() => {
+        expect(screen.getByText('Apenas arquivos CSV são permitidos')).toBeInTheDocument();
+      });
+    });
+
+    it('mostra erro genérico desconhecido caso falhe com erro diferente', async () => {
+      const { container } = render(
+        <MemoryRouter>
+          <Sidebar isCollapsed={false} onToggle={mockToggle} />
+        </MemoryRouter>
+      );
+      
+      const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+      const file = new File(['1,2,3'], 'data.csv', { type: 'text/csv' });
+      
+      vi.mocked(api.post).mockRejectedValueOnce(new Error("Outro erro de servidor"));
+
+      fireEvent.change(fileInput, { target: { files: [file] } });
+      
+      await waitFor(() => {
+        expect(screen.getByText('Outro erro de servidor')).toBeInTheDocument();
+      });
     });
   });
 });
