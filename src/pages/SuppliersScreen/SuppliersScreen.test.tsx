@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { supplierService } from '../../services/supplierService';
 import SuppliersScreen from './SuppliersScreen';
 
+
 // Mock do ProjectLayout para evitar problemas com dependências internas dele
 vi.mock('../../components/ProjectLayout/ProjectLayout', () => ({
   default: ({ children }: { children: any }) => (
